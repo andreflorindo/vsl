@@ -1,1 +1,2 @@
-# core nice
+# CORE
+Main components
