@@ -1,3 +1,6 @@
+// Inspired from moveit_setup_assistant: header_wighet.h, start_screen_widget.h, setup_screen_widget.h
+
+
 // ROS
 #include <ros/ros.h>
 #include <ros/package.h>  // for getting file path for loadng images
@@ -27,10 +30,17 @@
 #include <boost/filesystem/path.hpp>        // for reading folders/files
 #include <boost/filesystem/operations.hpp>  // for reading folders/files
 
+// MoveIt
+#include <moveit/rdf_loader/rdf_loader.h>
+
+
+
 #ifndef MOVEIT_ROS_MOVEIT_SETUP_ASSISTANT_WIDGETS_SETUP_SCREEN_WIDGET_
 #define MOVEIT_ROS_MOVEIT_SETUP_ASSISTANT_WIDGETS_SETUP_SCREEN_WIDGET_
 #ifndef MOVEIT_MOVEIT_SETUP_ASSISTANT_WIDGETS_START_SCREEN_WIDGET_
 #define MOVEIT_MOVEIT_SETUP_ASSISTANT_WIDGETS_START_SCREEN_WIDGET_
+#ifndef MOVEIT_ROS_MOVEIT_SETUP_ASSISTANT_WIDGETS_HEADER_WIDGET_
+#define MOVEIT_ROS_MOVEIT_SETUP_ASSISTANT_WIDGETS_HEADER_WIDGET_
 #ifndef Q_MOC_RUN
 #include <urdf/model.h>                                       // for testing a valid urdf is loaded
 #include <srdfdom/model.h>                                    // for testing a valid srdf is loaded
@@ -69,8 +79,39 @@ class SetupScreenWidget : public QWidget
 
 namespace vsl_screen_window
 {
-    class SelectModeWidget;
-    class LoadPathArgsWidget;
+    class HeaderWidget : public QWidget
+    {
+        Q_OBJECT
+        
+        private:
+            // Stores the path qstring
+            QLineEdit* path_box_;
+
+        Q_SIGNALS:
+            void pathChanged(const QString& path);
+            void pathEditingFinished();
+
+        private Q_SLOTS:
+            /// Load the file dialog
+            void btnFileDialog();
+
+        public:
+            /// Contructor
+            HeaderWidget(const std::string& title, const std::string& instructions, QWidget* parent);
+            
+            /// Returns the file path in QString format
+            QString getQPath() const;
+
+            /// Returns the file path in std::string format
+            std::string getPath() const;
+
+            /// Set the path with QString
+            void setPath(const QString& path);
+
+            /// Set the path with std string
+            void setPath(const std::string& path);
+    };
+
 
     class StartScreenWidget : public SetupScreenWidget
     {
@@ -80,8 +121,6 @@ namespace vsl_screen_window
             StartScreenWidget(QWidget* parent, const MoveItConfigDataPtr& config_data);
             ~StartScreenWidget() override;
             SelectModeWidget* select_mode_;
-            LoadPathArgsWidget* stack_path_;
-            LoadPathArgsWidget* urdf_file_;
             QPushButton* btn_load_;
             QLabel* next_label_;
             QProgressBar* progress_bar_;
