@@ -1,3 +1,20 @@
+#include <vsl_sreen_window.h>
+
+
+void SetupScreenWidget::focusGiven()
+{}
+
+bool SetupScreenWidget::focusLost()
+{
+    return true;  // accept switching by default
+}
+
+
+namespace vsl_screen_window
+{
+
+namespace fs = boost::filesystem;
+
 bool getFileContent(std::string fileName, std::vector<double> & path)
 {
 	// Open the File
@@ -21,4 +38,5 @@ bool getFileContent(std::string fileName, std::vector<double> & path)
 	//Close The File
 	path_file.close();
 	return true;
+}
 }

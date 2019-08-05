@@ -35,7 +35,6 @@
 /* Author: Sachin Chitta, Michael Lautman */
 
 #include <pluginlib/class_loader.h>
-#include <ros/ros.h>
 
 // MoveIt!
 #include <moveit/robot_model_loader/robot_model_loader.h>
@@ -49,11 +48,14 @@
 
 #include <boost/scoped_ptr.hpp>
 
+
+#include <vsl_screen_window.h>
+#include <vsl_moveit.h>
+
 int main(int argc, char** argv)
 {
-  const std::string node_name = "motion_planning_tutorial";
-  ros::init(argc, argv, node_name);
-  ros::AsyncSpinner spinner(1);
+  ros::init(argc, argv, "vsl_moveit");
+  ros::AsyncSpinner spinner(2);   //or 1
   spinner.start();
   ros::NodeHandle node_handle("~");
 
