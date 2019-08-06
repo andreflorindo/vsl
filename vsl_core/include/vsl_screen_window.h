@@ -124,29 +124,9 @@ namespace vsl_screen_window
             void readyToProgress();                                                                                         //<----Review
 
         private:
-            /// load package settings from .setup_assistant file
-            bool loadPackageSettings(bool show_warnings);
-
-            /// Load chosen files for creating new package
-            bool loadNewFiles();                                                    //<----
 
             /// Load exisiting package files
             bool loadExistingFiles();
-
-            /// Load SRDF File
-            bool loadSRDFFile(const std::string& srdf_file_path);
-
-            /// Put SRDF File on Parameter Server
-            bool setSRDFFile(const std::string& srdf_string);
-
-            //// Extract the package/stack name and relative path to urdf from an absolute path name
-            bool extractPackageNameFromPath();
-
-            /// Make the full URDF path using the loaded .setup_assistant data
-            bool createFullURDFPath();
-
-            /// Make the full SRDF path using the loaded .setup_assistant data
-            bool createFullSRDFPath(const std::string& package_path);
 
             bool getFileContent(const std::string& srdf_file_path)
 

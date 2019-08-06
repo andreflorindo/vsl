@@ -182,74 +182,16 @@ namespace vsl_screen_window
         }
     }
 
-    bool StartScreenWidget::loadPackageSettings(bool show_warnings)
-    {
-        // Get the package path
-        std::string package_path_input = header->getPath();
-
-        // Check that input is provided
-        if (package_path_input.empty())
-        {
-            if (show_warnings)
-            {
-            QMessageBox::warning(this, "Error Loading Files", "Please specify a configuration package path to load.");
-            }
-            return false;
-        }
-
-        // check that the folder exists
-        if (!config_data_->setPackagePath(package_path_input))
-        {
-            if (show_warnings)
-            {
-                QMessageBox::critical(this, "Error Loading Files", "The specified path is not a directory or is not accessable");
-            }
-            return false;
-        }
-
-        std::string setup_assistant_path;
-
-        // Check if the old package is a setup assistant package. If it is not, quit
-        if (!config_data_->getSetupAssistantYAMLPath(setup_assistant_path))
-        {
-            if (show_warnings)
-            QMessageBox::warning(
-                this, "Incorrect Directory/Package",
-                QString("The chosen package location exists but was not created using MoveIt! Setup Assistant. "
-                        "If this is a mistake, provide the missing file: ")
-                    .append(setup_assistant_path.c_str()));
-            return false;
-        }
-
-        // Get setup assistant data
-        if (!config_data_->inputSetupAssistantYAML(setup_assistant_path))
-        {
-            if (show_warnings)
-            {
-            QMessageBox::warning(this, "Setup Assistant File Error",
-                            QString("Unable to correctly parse the setup assistant configuration file: ")
-                                .append(setup_assistant_path.c_str()));
-            }
-            return false;
-        }
-        return true;
-    }
-
     bool StartScreenWidget::loadExistingFiles()
-    {
+    {   
+        std::string path_input = header->getPath();
+        
         // Progress Indicator
         progress_bar_->setValue(10);
         QApplication::processEvents();
-        
-        if (!loadPackageSettings(true))
-            return false;
-
-        // Progress Indicator
-        progress_bar_->setValue(30);
-        QApplication::processEvents();
 
         // Load the Path file
-        if (!getFileContent(config_data_-> header, Path.vector))            //<-------------  Review
+        if (!getFileContent(path_input, Path.vector))            //<-------------  Review
             return false;  // error occured
 
         // Progress Indicator
