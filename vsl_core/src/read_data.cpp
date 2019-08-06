@@ -15,7 +15,7 @@ bool SetupScreenWidget::focusLost()
 
 namespace vsl_screen_window
 {
-    namespace fs = boost::filesystem;
+    //namespace fs = boost::filesystem;                                       //<----Review
 
     HeaderWidget::HeaderWidget(const std::string& title, const std::string& instructions, QWidget* parent) : QWidget(parent)
     {
@@ -185,7 +185,7 @@ namespace vsl_screen_window
     bool StartScreenWidget::loadPackageSettings(bool show_warnings)
     {
         // Get the package path
-        std::string package_path_input = stack_path_->getPath();
+        std::string package_path_input = header->getPath();
 
         // Check that input is provided
         if (package_path_input.empty())
@@ -235,48 +235,98 @@ namespace vsl_screen_window
         return true;
     }
 
+    bool StartScreenWidget::loadExistingFiles()
+    {
+        // Progress Indicator
+        progress_bar_->setValue(10);
+        QApplication::processEvents();
+        
+        if (!loadPackageSettings(true))
+            return false;
+
+        // Progress Indicator
+        progress_bar_->setValue(30);
+        QApplication::processEvents();
+
+        // Load the Path file
+        if (!getFileContent(config_data_-> header, Path.vector))            //<-------------  Review
+            return false;  // error occured
+
+        // Progress Indicator
+        progress_bar_->setValue(50);
+        QApplication::processEvents();
 
 
+        // Test colision, kinematics and if the robot can perform
+
+        // Progress Indicator
+        progress_bar_->setValue(100);
+        QApplication::processEvents();
+
+        next_label_->show();  // only show once the files have been loaded
+
+        ROS_INFO("Loading Setup Assistant Complete");
+        return true;  // success
+
+    }
+
+    bool StartScreenWidget::getFileContent(const std::string& filename, std::vector<double> & newVector)            //<-------------  Review
+   {    
+        if (filename.empty())
+        {
+            ROS_ERROR_NAMED("read_data", "Path is empty");
+            return false;
+        }
+
+        if (!boost::filesystem::exists(filename))
+        {
+            ROS_ERROR_NAMED("read_data", "File does not exist");
+            return false;
+        }
+        
+        // Open the File
+	    std::ifstream path_file(filename.c_str());
+        
+	    if(!path_file.good())
+	    {
+            ROS_ERROR_NAMED("rdf_loader", "Unable to load path");
+            QMessageBox::warning(this, "Error Loading Files", "Program could not open the file.\nPlease check console for errors.");
+		    return false;
+	    }
+
+        /*
+        std::string buffer;
+
+        path_file.seekg(0, std::ios::end);
+        buffer.reserve(path_file.tellg());
+        path_file.seekg(0, std::ios::beg);
+        buffer.assign((std::istreambuf_iterator<char>(path_file)), std::istreambuf_iterator<char>());
+        path_file.close();
+        */
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        //https://stackoverflow.com/questions/46663046/save-read-double-vector-from-file-c                    //<-------------  Review
+        std::vector<char> buffer{};
+        std::ifstream ifs(filename, std::ios::in | std::ifstream::binary);
+        std::istreambuf_iterator<char> iter(ifs);
+        std::istreambuf_iterator<char> end{};
+        std::copy(iter, end, std::back_inserter(buffer));
+        newVector.reserve(buffer.size() / sizeof(double));
+        memcpy(&newVector[0], &buffer[0], buffer.size());
+        //Review , only reading a vector, now how to read a matrix 
+        // If z is not given in the file, maybe add a collumn of zeros
+        return true;
+   }
 
 }
 
 
-bool getFileContent(std::string fileName, std::vector<double> & path)
+
+
+/*
+bool getFileContent(const std::string& fileName, std::vector<double> & path)
 {
-	// Open the File
-	std::ifstream path_file(fileName.c_str());
- 
-	// Check if object is valid
-	if(!path_file)
-	{
-		std::cerr << "Program could not open the file: "<<fileName<<std::endl;
-		return false;
-	}
+
  
 	std::string str;
 	// Read the next line from File until it reaches the end.
@@ -290,3 +340,4 @@ bool getFileContent(std::string fileName, std::vector<double> & path)
 	path_file.close();
 	return true;
 }
+*/

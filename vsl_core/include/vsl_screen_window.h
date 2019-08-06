@@ -1,5 +1,6 @@
-// Inspired from moveit_setup_assistant: header_wighet.h, start_screen_widget.h, setup_screen_widget.h
-
+// Inspired from moveit_setup_assistant, header_wighet.h, start_screen_widget.h, setup_screen_widget.h
+#ifndef VSL_SCREEN_WINDOW_H_
+#define VSL_SCREEN_WINDOW_H_
 
 // ROS
 #include <ros/ros.h>
@@ -30,22 +31,23 @@
 #include <boost/filesystem/path.hpp>        // for reading folders/files
 #include <boost/filesystem/operations.hpp>  // for reading folders/files
 
-// MoveIt
-#include <moveit/rdf_loader/rdf_loader.h>
-
-
-
-#ifndef MOVEIT_ROS_MOVEIT_SETUP_ASSISTANT_WIDGETS_SETUP_SCREEN_WIDGET_
-#define MOVEIT_ROS_MOVEIT_SETUP_ASSISTANT_WIDGETS_SETUP_SCREEN_WIDGET_
-#ifndef MOVEIT_MOVEIT_SETUP_ASSISTANT_WIDGETS_START_SCREEN_WIDGET_
-#define MOVEIT_MOVEIT_SETUP_ASSISTANT_WIDGETS_START_SCREEN_WIDGET_
-#ifndef MOVEIT_ROS_MOVEIT_SETUP_ASSISTANT_WIDGETS_HEADER_WIDGET_
-#define MOVEIT_ROS_MOVEIT_SETUP_ASSISTANT_WIDGETS_HEADER_WIDGET_
-#ifndef Q_MOC_RUN
 #include <urdf/model.h>                                       // for testing a valid urdf is loaded
-#include <srdfdom/model.h>                                    // for testing a valid srdf is loaded
+#include <srdfdom/model.h>    // for testing a valid srdf is loaded
+
+
 #include <moveit/setup_assistant/tools/moveit_config_data.h>  // common datastructure class
-#endif
+
+
+
+typedef struct Path
+{
+    std::vector<double> vector;
+    std::vector<double> x;
+    std::vector<double> y;
+    std::vector<double> z;
+};
+
+
 
 class SetupScreenWidget : public QWidget
 {
@@ -62,19 +64,6 @@ class SetupScreenWidget : public QWidget
         /// function called when widget lost focus, allows to accept/reject changes and to reject switching (returning false)
         virtual bool focusLost();
 
-        Q_SIGNALS:
-            /// Event for when the current screen is in modal view. Essential disabled the left navigation
-            void isModal(bool isModal);
-
-            /// Event for telling rviz to highlight a link of the robot
-            void highlightLink(const std::string& name, const QColor&);
-
-            /// Event for telling rviz to highlight a group of the robot
-            void highlightGroup(const std::string& name);
-
-            /// Event for telling rviz to unhighlight all links of the robot
-            void unhighlightAll();
-
 };
 
 namespace vsl_screen_window
@@ -88,8 +77,8 @@ namespace vsl_screen_window
             QLineEdit* path_box_;
 
         Q_SIGNALS:
-            void pathChanged(const QString& path);
-            void pathEditingFinished();
+            void pathChanged(const QString& path);                                                      //<----Review
+            void pathEditingFinished();                                                                   //<----Review
 
         private Q_SLOTS:
             /// Load the file dialog
@@ -120,47 +109,29 @@ namespace vsl_screen_window
         public:
             StartScreenWidget(QWidget* parent, const MoveItConfigDataPtr& config_data);
             ~StartScreenWidget() override;
-            SelectModeWidget* select_mode_;
+            SelectModeWidget* select_mode_;                                                                                  //<----Review
             QPushButton* btn_load_;
             QLabel* next_label_;
             QProgressBar* progress_bar_;
-            QImage* right_image_;
-            QLabel* right_image_label_;
 
-            moveit_setup_assistant::MoveItConfigDataPtr config_data_;
+            moveit_setup_assistant::MoveItConfigDataPtr config_data_;                                                          //<----Review
 
         private Q_SLOTS:
-            /// User has chosen to show new options
-            void showNewOptions();
-
-            /// User has chosen to show edit options
-            void showExistingOptions();
 
             /// Button event for loading user chosen files
             void loadFilesClick();
-
-            /// load package settings
-            void onPackagePathChanged(const QString& path);
-
-            /// enable xacro arguments
-            void onUrdfPathChanged(const QString& path);
-
-        Q_SIGNALS:
-            void readyToProgress();
-            void loadRviz();
+        
+            void readyToProgress();                                                                                         //<----Review
 
         private:
             /// load package settings from .setup_assistant file
             bool loadPackageSettings(bool show_warnings);
 
             /// Load chosen files for creating new package
-            bool loadNewFiles();
+            bool loadNewFiles();                                                    //<----
 
             /// Load exisiting package files
             bool loadExistingFiles();
-
-            /// Load URDF File to Parameter Server
-            bool loadURDFFile(const std::string& urdf_file_path, const std::string& xacro_args);
 
             /// Load SRDF File
             bool loadSRDFFile(const std::string& srdf_file_path);
@@ -177,8 +148,8 @@ namespace vsl_screen_window
             /// Make the full SRDF path using the loaded .setup_assistant data
             bool createFullSRDFPath(const std::string& package_path);
 
-            /// Loads sensors_3d yaml file
-            bool load3DSensorsFile();
+            bool getFileContent(const std::string& srdf_file_path)
+
     };
 
     class SelectModeWidget : public QFrame
