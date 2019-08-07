@@ -1,5 +1,5 @@
 // Inspired from moveit_setup_assistant: header_wighet.cpp, start_screen_widget.cpp, setup_screen_widget.cpp
-/* Author: Andre Florindo oi*/
+/* Author: Andre Florindo*/
 
 
 #include <vsl_sreen_window.h>
@@ -112,10 +112,10 @@ namespace vsl_screen_window
 
 
     StartScreenWidget::StartScreenWidget(QWidget* parent, const MoveItConfigDataPtr& config_data)
-    : SetupScreenWidget(parent), config_data_(config_data)
+    : SetupScreenWidget( 	vsl_support 	iles 	3 days ago), config_data_(config_data)
     {
-        // Basic widget container
-        QVBoxLayout* layout = new QVBoxLayout(this);
+        // Basic widget 	readme.md 	Add text 	5 days agoner
+        QVBoxLayout* layreadme.mdnew QVBoxLayout(this);
 
         // Top Label Area ---------------------------------------------------
         HeaderWidget* header = new HeaderWidget("VSL Deposition Motion Planner", "Specify the location of the file containing the laydown path to perform.", this);
