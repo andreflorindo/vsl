@@ -1,4 +1,5 @@
 // Inspired from moveit_setup_assistant: header_wighet.cpp, start_screen_widget.cpp, setup_screen_widget.cpp
+/* Author: Andre Florindo*/
 
 
 #include <vsl_sreen_window.h>
