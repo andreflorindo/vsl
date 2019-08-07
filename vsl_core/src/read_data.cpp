@@ -1,22 +1,157 @@
-// Inspired from moveit_setup_assistant: header_wighet.cpp, start_screen_widget.cpp, setup_screen_widget.cpp
+// Inspired from setup_assistant_widget.cpp, header_wighet.cpp, start_screen_widget.cpp, setup_screen_widget.cpp
 /* Author: Andre Florindo*/
 
 
 #include <vsl_sreen_window.h>
 
-
-void SetupScreenWidget::focusGiven()
-{}
-
-bool SetupScreenWidget::focusLost()
-{
-    return true;  // accept switching by default
-}
-
-
 namespace vsl_screen_window
 {
-    //namespace fs = boost::filesystem;                                       //<----Review
+    StartScreenWidget::StartScreenWidget(QWidget* parent)
+    {
+        QVBoxLayout* layout = new QVBoxLayout();
+        layout->setAlignment(Qt::AlignTop);
+
+        // Top Label Area ---------------------------------------------------
+        HeaderWidget* header = new HeaderWidget("VSL Deposition Motion Planner", "Specify the location of the file containing the laydown path to perform.", this);
+        layout->addWidget(header);
+
+        // Load settings box ---------------------------------------------
+        QHBoxLayout* load_files_layout = new QHBoxLayout();
+        progress_bar_ = new QProgressBar(this);
+        progress_bar_->setMaximum(100);
+        progress_bar_->setMinimum(0);
+        progress_bar_->hide();
+        load_files_layout->addWidget(progress_bar_);
+        btn_load_ = new QPushButton("&Load Files", this);
+        btn_load_->setMinimumWidth(180);
+        btn_load_->setMinimumHeight(40);
+        load_files_layout->addWidget(btn_load_);
+        load_files_layout->setAlignment(btn_load_, Qt::AlignRight);
+        connect(btn_load_, SIGNAL(clicked()), this, SLOT(loadFilesClick()));
+
+        // Next step instructions
+        next_label_ = new QLabel(this);
+        QFont next_label_font(QFont().defaultFamily(), 11, QFont::Bold);
+        next_label_->setFont(next_label_font);
+        next_label_->setText("Success! Use the left navigation pane to continue.");
+        next_label_->hide();  // only show once the files have been loaded.
+
+        // Final Layout Setup ---------------------------------------------
+        // Alignment
+        layout->setAlignment(Qt::AlignTop);
+        // Verticle Spacer
+        QWidget* vspacer = new QWidget(this);
+        vspacer->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+        layout->addWidget(vspacer);
+        // Attach bottom layout
+        layout->addWidget(next_label_);
+        layout->setAlignment(next_label_, Qt::AlignRight);
+        layout->addLayout(load_files_layout);
+        this->setLayout(layout);
+
+        this->setWindowTitle("VSL Deposition Motion Planner");  // title of window
+        QApplication::processEvents();
+    }
+
+    void StartScreenWidget::loadFilesClick()
+    {
+        btn_load_->setDisabled(true);
+        progress_bar_->show();
+
+        bool result;
+
+        result = loadExistingFiles();
+
+        // Check if there was a failure loading files
+        if (!result)
+        {
+            btn_load_->setDisabled(false);
+            progress_bar_->hide();
+        }
+    }
+
+    bool StartScreenWidget::loadExistingFiles()
+    {   
+        std::string path_input = header->getPath();
+        
+        // Progress Indicator
+        progress_bar_->setValue(10);
+        QApplication::processEvents();
+
+        // Load the Path file
+        if (!getFileContent(path_input, Path.vector))            //<-------------  Review
+            return false;  // error occured
+
+        // Progress Indicator
+        progress_bar_->setValue(50);
+        QApplication::processEvents();
+
+
+        // Test colision, kinematics and if the robot can perform
+
+        // Progress Indicator
+        progress_bar_->setValue(100);
+        QApplication::processEvents();
+
+        next_label_->show();  // only show once the files have been loaded
+
+        ROS_INFO("Loading Setup Assistant Complete");
+        return true;  // success
+
+    }
+
+    bool StartScreenWidget::getFileContent(const std::string& filename, std::vector<double> & newVector)            //<-------------  Review
+   {    
+        if (filename.empty())
+        {
+            ROS_ERROR_NAMED("read_data", "Path is empty");
+            QMessageBox::warning(this, "Error Loading Files", "No path file specified");
+            return false;
+        }
+
+        if (!boost::filesystem::exists(filename))
+        {
+            ROS_ERROR_NAMED("read_data", "File does not exist");
+            QMessageBox::warning(this, "Error Loading Files", "Unable to locate the path file");
+            return false;
+        }
+
+        // Open the File
+	    std::ifstream path_file(filename.c_str());
+        
+	    if(!path_file.good())
+	    {
+            ROS_ERROR_NAMED("rdf_loader", "Unable to load path");
+            QMessageBox::warning(this, "Error Loading Files", "Program could not open the file.\nPlease check console for errors.");
+		    return false;
+	    }
+
+        
+
+        /*
+        std::string buffer;
+
+        path_file.seekg(0, std::ios::end);
+        buffer.reserve(path_file.tellg());
+        path_file.seekg(0, std::ios::beg);
+        buffer.assign((std::istreambuf_iterator<char>(path_file)), std::istreambuf_iterator<char>());
+        path_file.close();
+        */
+
+
+        //https://stackoverflow.com/questions/46663046/save-read-double-vector-from-file-c                    //<-------------  Review
+        std::vector<char> buffer{};
+        std::ifstream ifs(filename, std::ios::in | std::ifstream::binary);
+        std::istreambuf_iterator<char> iter(ifs);
+        std::istreambuf_iterator<char> end{};
+        std::copy(iter, end, std::back_inserter(buffer));
+        newVector.reserve(buffer.size() / sizeof(double));
+        memcpy(&newVector[0], &buffer[0], buffer.size());
+        //Review , only reading a vector, now how to read a matrix 
+        // If z is not given in the file, maybe add a collumn of zeros
+        return true;
+   }
+
 
     HeaderWidget::HeaderWidget(const std::string& title, const std::string& instructions, QWidget* parent) : QWidget(parent)
     {
@@ -110,156 +245,6 @@ namespace vsl_screen_window
         path_box_->setText(QString(path.c_str()));
     }
 
-
-    StartScreenWidget::StartScreenWidget(QWidget* parent, const MoveItConfigDataPtr& config_data)
-    : SetupScreenWidget( 	vsl_support 	iles 	3 days ago), config_data_(config_data)
-    {
-        // Basic widget 	readme.md 	Add text 	5 days agoner
-        QVBoxLayout* layreadme.mdnew QVBoxLayout(this);
-
-        // Top Label Area ---------------------------------------------------
-        HeaderWidget* header = new HeaderWidget("VSL Deposition Motion Planner", "Specify the location of the file containing the laydown path to perform.", this);
-        layout->addWidget(header);
-
-        // Load settings box ---------------------------------------------
-        QHBoxLayout* load_files_layout = new QHBoxLayout();
-        progress_bar_ = new QProgressBar(this);
-        progress_bar_->setMaximum(100);
-        progress_bar_->setMinimum(0);
-        progress_bar_->hide();
-        load_files_layout->addWidget(progress_bar_);
-        btn_load_ = new QPushButton("&Load Files", this);
-        btn_load_->setMinimumWidth(180);
-        btn_load_->setMinimumHeight(40);
-        load_files_layout->addWidget(btn_load_);
-        load_files_layout->setAlignment(btn_load_, Qt::AlignRight);
-        connect(btn_load_, SIGNAL(clicked()), this, SLOT(loadFilesClick()));
-
-        // Next step instructions
-        next_label_ = new QLabel(this);
-        QFont next_label_font(QFont().defaultFamily(), 11, QFont::Bold);
-        next_label_->setFont(next_label_font);
-        next_label_->setText("Success! Use the left navigation pane to continue.");
-        next_label_->hide();  // only show once the files have been loaded.
-
-        // Final Layout Setup ---------------------------------------------
-        // Alignment
-        layout->setAlignment(Qt::AlignTop);
-        // Verticle Spacer
-        QWidget* vspacer = new QWidget(this);
-        vspacer->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
-        layout->addWidget(vspacer);
-        // Attach bottom layout
-        layout->addWidget(next_label_);
-        layout->setAlignment(next_label_, Qt::AlignRight);
-        layout->addLayout(load_files_layout);
-        this->setLayout(layout);
-
-        // Debug mode: auto load the configuration file by clicking button after a timeout
-        if (config_data_->debug_)
-        {
-            // select_mode_->btn_exist_->click();
-            QTimer* update_timer = new QTimer(this);
-            update_timer->setSingleShot(true);  // only run once
-            connect(update_timer, SIGNAL(timeout()), btn_load_, SLOT(click()));
-            update_timer->start(100);
-        }
-    }
-
-    void StartScreenWidget::loadFilesClick()
-    {
-        btn_load_->setDisabled(true);
-        progress_bar_->show();
-
-        bool result;
-
-        result = loadExistingFiles();
-
-        // Check if there was a failure loading files
-        if (!result)
-        {
-            btn_load_->setDisabled(false);
-            progress_bar_->hide();
-        }
-    }
-
-    bool StartScreenWidget::loadExistingFiles()
-    {   
-        std::string path_input = header->getPath();
-        
-        // Progress Indicator
-        progress_bar_->setValue(10);
-        QApplication::processEvents();
-
-        // Load the Path file
-        if (!getFileContent(path_input, Path.vector))            //<-------------  Review
-            return false;  // error occured
-
-        // Progress Indicator
-        progress_bar_->setValue(50);
-        QApplication::processEvents();
-
-
-        // Test colision, kinematics and if the robot can perform
-
-        // Progress Indicator
-        progress_bar_->setValue(100);
-        QApplication::processEvents();
-
-        next_label_->show();  // only show once the files have been loaded
-
-        ROS_INFO("Loading Setup Assistant Complete");
-        return true;  // success
-
-    }
-
-    bool StartScreenWidget::getFileContent(const std::string& filename, std::vector<double> & newVector)            //<-------------  Review
-   {    
-        if (filename.empty())
-        {
-            ROS_ERROR_NAMED("read_data", "Path is empty");
-            return false;
-        }
-
-        if (!boost::filesystem::exists(filename))
-        {
-            ROS_ERROR_NAMED("read_data", "File does not exist");
-            return false;
-        }
-        
-        // Open the File
-	    std::ifstream path_file(filename.c_str());
-        
-	    if(!path_file.good())
-	    {
-            ROS_ERROR_NAMED("rdf_loader", "Unable to load path");
-            QMessageBox::warning(this, "Error Loading Files", "Program could not open the file.\nPlease check console for errors.");
-		    return false;
-	    }
-
-        /*
-        std::string buffer;
-
-        path_file.seekg(0, std::ios::end);
-        buffer.reserve(path_file.tellg());
-        path_file.seekg(0, std::ios::beg);
-        buffer.assign((std::istreambuf_iterator<char>(path_file)), std::istreambuf_iterator<char>());
-        path_file.close();
-        */
-
-
-        //https://stackoverflow.com/questions/46663046/save-read-double-vector-from-file-c                    //<-------------  Review
-        std::vector<char> buffer{};
-        std::ifstream ifs(filename, std::ios::in | std::ifstream::binary);
-        std::istreambuf_iterator<char> iter(ifs);
-        std::istreambuf_iterator<char> end{};
-        std::copy(iter, end, std::back_inserter(buffer));
-        newVector.reserve(buffer.size() / sizeof(double));
-        memcpy(&newVector[0], &buffer[0], buffer.size());
-        //Review , only reading a vector, now how to read a matrix 
-        // If z is not given in the file, maybe add a collumn of zeros
-        return true;
-   }
 
 }
 
