@@ -2,7 +2,7 @@
 /* Author: Andre Florindo*/
 
 
-#include <vsl_sreen_window.h>
+#include <vsl_screen_window.h>
 
 namespace vsl_screen_window
 {
@@ -79,7 +79,7 @@ namespace vsl_screen_window
         QApplication::processEvents();
 
         // Load the Path file
-        if (!getFileContent(path_input, Path.vector))            //<-------------  Review
+        if (!getFileContent(path_input, Path Path.vector))            //<-------------  Review
             return false;  // error occured
 
         // Progress Indicator

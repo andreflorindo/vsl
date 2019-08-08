@@ -1,4 +1,4 @@
-#include <vsl_sreen_window.h>
+#include <vsl_screen_window.h>
 
 int main(int argc, char **argv)
 {
@@ -13,7 +13,8 @@ int main(int argc, char **argv)
 
     // Create Qt Application
     QApplication qt_app(argc, argv);
-    vsl_screen_window::SetupAssistantWidget saw(nullptr);
+    vsl_screen_window::SetupAssistantWidget saw(nullptr)
+    
     saw.setMinimumWidth(980);
     saw.setMinimumHeight(550);
     saw.show();

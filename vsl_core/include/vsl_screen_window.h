@@ -5,7 +5,13 @@
 // ROS
 #include <ros/ros.h>
 
+// C
+#include <fstream>  
+#include <streambuf>
+#include <iostream>
+
 // Qt
+#include <QCloseEvent>
 #include <QWidget>
 #include <QLineEdit>
 #include <QPushButton>
@@ -27,12 +33,6 @@
 #include <QStringList>
 #include <QStackedLayout>
 #include <QListWidgetItem>
-#include <QCloseEvent>
-
-// C
-#include <fstream>  
-#include <streambuf>
-#include <iostream>
 
 // Boost
 #include <boost/filesystem/path.hpp>        // for reading folders/files
@@ -51,14 +51,13 @@ namespace vsl_screen_window
         std::vector<double> z;
     };
     
-    class StartScreenWidget : public SetupScreenWidget
+    class StartScreenWidget
     {
         Q_OBJECT
         
         public:
-            StartScreenWidget(QWidget* parent, const MoveItConfigDataPtr& config_data);
-            ~StartScreenWidget() override;
-            SelectModeWidget* select_mode_;                                                                                  //<----Review
+            StartScreenWidget(QWidget* parent);
+            //~StartScreenWidget() override;                                                                                 //<----Review
             QPushButton* btn_load_;
             QLabel* next_label_;
             QProgressBar* progress_bar_;
@@ -75,7 +74,7 @@ namespace vsl_screen_window
             /// Load exisiting package files
             bool loadExistingFiles();
 
-            bool getFileContent(const std::string& srdf_file_path)
+            bool getFileContent(const std::string& srdf_file_path);
 
     };
 
