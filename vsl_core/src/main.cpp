@@ -1,3 +1,6 @@
+// Autor: Andre Florindo
+
+
 #include <vsl_screen_window.h>
 
 int main(int argc, char **argv)
