@@ -132,7 +132,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(vsl src/vsl.cpp)
+add_executable(read_file src/read_file.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -142,10 +142,10 @@ add_executable(vsl src/vsl.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(vsl ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(read_file ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(vsl ${catkin_LIBRARIES})
+target_link_libraries(read_file ${catkin_LIBRARIES})
 
 #############
 ## Install ##
