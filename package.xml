@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>vsl_core</name>
+  <name>vsl</name>
   <version>0.0.0</version>
-  <description>The vsl_core package</description>
+  <description>The vsl package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->
@@ -53,7 +53,6 @@
   <build_export_depend>roscpp</build_export_depend>
   <exec_depend>roscpp</exec_depend>
   <build_depend>libogre-dev</build_depend>
-  <build_depend>qtbase5-dev</build_depend>
   <build_depend>libqt5-opengl-dev</build_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
