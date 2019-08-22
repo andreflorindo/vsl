@@ -47,6 +47,7 @@ bool getFileContent(CourseStruct *&course)
         ROS_ERROR_NAMED("vsl", "Path as not able to be found");
         return false;
     }
+    
     std::istream_iterator<double> infile_begin{infile};
     std::istream_iterator<double> eof{};
     std::vector<double> file_nums{infile_begin, eof};
@@ -64,19 +65,17 @@ bool getFileContent(CourseStruct *&course)
     {
         if (i == nx * 3)
         {
-            course->x[nx] = file_nums[i];
+            course->x.emplace_back(file_nums[i]);
             nx++;
         }
         else if (i == 1 + ny * 3)
         {
-            course->y[ny] = file_nums[i];
+            course->y.emplace_back(file_nums[i]);
             ny++;       
         }
         else
-        {
-            course->z[nz] = file_nums[i];
-            nz++;
-        }
+            course->z.emplace_back(file_nums[i]);
+        
     }
 
     return true;
