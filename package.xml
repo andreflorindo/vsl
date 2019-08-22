@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>vsl</name>
+  <name>vsl_core</name>
   <version>0.0.0</version>
-  <description>The vsl package</description>
+  <description>The vsl_core package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->
