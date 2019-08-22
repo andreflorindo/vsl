@@ -55,7 +55,6 @@ bool getFileContent(CourseStruct *&course)
 
     int nx = 0;
     int ny = 0;
-    int nz = 0;
 
     course->x.reserve(file_nums.size() / 3);
     course->y.reserve(file_nums.size() / 3);
