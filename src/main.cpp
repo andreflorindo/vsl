@@ -18,11 +18,11 @@ int main(int argc, char **argv)
 
     const int result = getFileContent(course);
 
-    //for (int i = 0; i < course->x.size(); i++)
-    //{
-      //  std::cout << course->x[i]<< std::endl;
-    //}
-    
+    /*for (int i = 0; i < course->x.size(); i++)
+    {
+        std::cout << course->y[i]<< std::endl;
+    }
+    */
     
     spinner.stop();
 
