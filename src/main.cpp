@@ -6,7 +6,7 @@
 int main(int argc, char **argv)
 {
     // Start ROS Node                                            <----------
-    ros::init(argc, argv, "read_only", ros::init_options::NoSigintHandler);
+    ros::init(argc, argv, "main");
 
     // ROS Spin
     ros::AsyncSpinner spinner(1);
@@ -24,8 +24,7 @@ int main(int argc, char **argv)
     //}
     
     
-    // Shutdown ROS
-    ros::shutdown();
+    spinner.stop();
 
     return 0;
 }

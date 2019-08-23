@@ -103,8 +103,8 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS 
   include
-  #LIBRARIES
-  #src
+  LIBRARIES
+  ${PROJECT_NAME}
  CATKIN_DEPENDS
    roscpp
 #  DEPENDS system_lib
@@ -141,14 +141,14 @@ add_executable(main src/main.cpp)
 ## target back to the shorter version for ease of user use
 ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
 # set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
-add_library(read_file src/read_file.cpp)
+#add_library(read_file src/read_file.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 add_dependencies(main ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(main read_file ${catkin_LIBRARIES})
+target_link_libraries(main ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 #############
 ## Install ##
