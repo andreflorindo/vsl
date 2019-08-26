@@ -9,7 +9,7 @@ bool getFileContent(CourseStruct *&course)
 {
     //     https://stackoverflow.com/questions/46663046/save-read-double-vector-from-file-c                    //<-------------  Other way
 
-    std::ifstream infile{"/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/simplePath.txt", std::ios::in};
+    std::ifstream infile{"/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_support/examples/simplePath.txt", std::ios::in};
 
     if (!infile.good())
     {

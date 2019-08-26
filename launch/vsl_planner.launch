@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<launch>
+  <node name="main" pkg="vsl_core" type="main" output="screen" />
+</launch>
