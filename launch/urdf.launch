@@ -1,5 +1,6 @@
 <launch>
   <include file="$(find atomic_cells)/launch/load_atomic_no_eef_cell.launch"/>
+
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" output="screen">
     <param name="use_gui" value="true"/>
     <rosparam file="$(find atomic_cells)/config/zeros.yaml"/>    
