@@ -1,7 +1,6 @@
 /* Author: Andre Florindo*/
 
-#include <vsl_application.h>
-
+#include <vsl_planner.h>
 
 int main(int argc, char **argv)
 {
@@ -12,7 +11,9 @@ int main(int argc, char **argv)
     ros::AsyncSpinner spinner(2);
     spinner.start();
 
-    ros::NodeHandle nh;
+    vsl_motion_planning::VSLPlanner planner;
+    
+    planner.initRos();
 
     CourseStruct *course = new CourseStruct;
 

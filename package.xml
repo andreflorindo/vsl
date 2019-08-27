@@ -44,6 +44,8 @@
   <exec_depend>roscpp</exec_depend>
   <build_depend>libogre-dev</build_depend>
   <build_depend>libqt5-opengl-dev</build_depend>
+  <depend>moveit_msgs</depend>
+  <depend>moveit_ros_planning_interface</depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

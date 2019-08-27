@@ -1,11 +1,11 @@
-#include <vsl_core/vsl_application.h>
+#include <vsl_planner.h>
 #include <descartes_utilities/ros_conversions.h>
 
 namespace vsl_motion_planning
 {
 
-VSLPlanner::VSLPlanner() {}
-VSLPlanner::~VSLPlanner() {}
+// VSLPlanner::VSLPlanner() {}
+// VSLPlanner::~VSLPlanner() {}
 
 void VSLPlanner::publishPosesMarkers(const EigenSTL::vector_Isometry3d& poses)
 {

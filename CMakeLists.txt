@@ -9,10 +9,12 @@ add_compile_options(-std=c++11)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  moveit_msgs
+  moveit_ros_planning_interface
 )
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED COMPONENTS system)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -107,6 +109,8 @@ catkin_package(
   ${PROJECT_NAME}
  CATKIN_DEPENDS
    roscpp
+   moveit_msgs
+   moveit_ros_planning_interface
 #  DEPENDS system_lib
 )
 
@@ -124,6 +128,7 @@ include_directories(
 ## Declare a C++ library
  add_library(${PROJECT_NAME}
    src/task/read_file.cpp
+   src/task/init_ros.cpp
  )
 
 ## Add cmake target dependencies of the library

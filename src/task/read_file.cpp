@@ -3,7 +3,8 @@
 // Add vector<CourseStruct> in case there are more courses
 // If z is not given in the file, maybe add a collumn of zeros
 
-#include <vsl_application.h>
+#include <vsl_planner.h>
+
 
 bool getFileContent(CourseStruct *&course)
 {
