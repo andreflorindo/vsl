@@ -19,13 +19,9 @@ void VSLPlanner::initRos()
     ros::NodeHandle ph("~");
 
     if (ph.getParam("group_name", config_.group_name) &&
-
         ph.getParam("tip_link", config_.tip_link) &&
-
         ph.getParam("base_link", config_.base_link) &&
-
         ph.getParam("world_frame", config_.world_frame) &&
-
         ph.getParam("trajectory/time_delay", config_.time_delay) &&
         ph.getParam("trajectory/foci_distance", config_.foci_distance) &&
         ph.getParam("trajectory/num_points", config_.num_points) &&
