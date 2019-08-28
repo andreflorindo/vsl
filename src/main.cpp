@@ -15,6 +15,8 @@ int main(int argc, char **argv)
     
     planner.initRos();
 
+    planner.initDescartes();
+
     CourseStruct *course = new CourseStruct;
 
     const int result = getFileContent(course);

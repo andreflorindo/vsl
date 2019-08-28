@@ -12,32 +12,37 @@
 #include <fstream>
 #include <iterator>
 #include <vector>
+#include <eigen_conversions/eigen_msg.h>
 
- #include <actionlib/client/simple_action_client.h>
- #include <moveit_msgs/ExecuteTrajectoryAction.h>
-// #include <moveit/move_group_interface/move_group_interface.h>
-// #include <descartes_trajectory/axial_symmetric_pt.h>
-// #include <descartes_trajectory/cart_trajectory_pt.h>
-// #include <descartes_planner/dense_planner.h>
-// #include <descartes_planner/sparse_planner.h>
- #include <visualization_msgs/MarkerArray.h>
-// #include <eigen_conversions/eigen_msg.h>
-// #include <ur5_demo_descartes/ur5_robot_model.h>
+// Action-Server
+#include <actionlib/client/simple_action_client.h>
+
+// MoveIt
+#include <moveit_msgs/ExecuteTrajectoryAction.h>
+#include <moveit/move_group_interface/move_group_interface.h>
+#include <visualization_msgs/MarkerArray.h>
+
+//Descartes
+#include <kukakr210r2700extra_descartes/kukakr210r2700extra_robot_model.h>
+#include <descartes_trajectory/axial_symmetric_pt.h>
+#include <descartes_trajectory/cart_trajectory_pt.h>
+#include <descartes_planner/dense_planner.h>
+#include <descartes_planner/sparse_planner.h>
 
 
 namespace vsl_motion_planning
 {
 
-// const std::string ROBOT_DESCRIPTION_PARAM = "robot_description";
+ const std::string ROBOT_DESCRIPTION_PARAM = "robot_description";
  const std::string EXECUTE_TRAJECTORY_ACTION = "execute_trajectory";
  const std::string VISUALIZE_TRAJECTORY_TOPIC = "visualize_trajectory_curve";
  const double SERVER_TIMEOUT = 5.0f; // seconds
 // const double ORIENTATION_INCREMENT = 0.5f;
 // const double EPSILON = 0.0001f;
-// const double AXIS_LINE_LENGHT = 0.01;
-// const double AXIS_LINE_WIDTH = 0.001;
-// const std::string PLANNER_ID = "RRTConnectkConfigDefault";
-// const std::string HOME_POSITION_NAME = "home";
+ const double AXIS_LINE_LENGHT = 0.01;
+ const double AXIS_LINE_WIDTH = 0.001;
+ const std::string PLANNER_ID = "RRTConnectkConfigDefault";
+ const std::string HOME_POSITION_NAME = "home";
 // typedef std::vector<descartes_core::TrajectoryPtPtr> DescartesTrajectory;
 
 struct Configuration
@@ -83,8 +88,7 @@ public:
    */
 
   void initRos();
-//  void initDescartes();
-//   void moveHome();
+  void initDescartes();
 //   void generateTrajectory(DescartesTrajectory& traj);
 //   void planPath(DescartesTrajectory& input_traj,DescartesTrajectory& output_path);
 //   void runPath(const DescartesTrajectory& path);
@@ -125,12 +129,12 @@ public:
 
 
 
-//   /* Application Descartes Constructs
-//    *  Components accessing the path planning capabilities in the Descartes library
-//    */
-//   descartes_core::RobotModelPtr robot_model_ptr_; /* Performs tasks specific to the Robot
-//                                                      such IK, FK and collision detection*/
-//   descartes_planner::SparsePlanner planner_;      /* Plans a smooth robot path given a trajectory of points */
+   /* Application Descartes Constructs
+    *  Components accessing the path planning capabilities in the Descartes library
+    */
+   descartes_core::RobotModelPtr robot_model_ptr_; /* Performs tasks specific to the Robot
+                                                      such IK, FK and collision detection*/
+   descartes_planner::SparsePlanner planner_;      /* Plans a smooth robot path given a trajectory of points */
 
 };
 

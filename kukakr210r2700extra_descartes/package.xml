@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>kukakr210r2700extra_descartes</name>
+  <version>0.0.0</version>
+  <description>The kukakr210r2700extra_descartes package</description>
+
+  <maintainer email="a.m.mendesflorindo@student.tudelft.nl">Andre Florindo</maintainer>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>descartes_core</depend>
+  <depend>descartes_moveit</depend>
+  <depend>pluginlib</depend>
+  <depend>moveit_core</depend>
+  <depend>liblapack-dev</depend>
+  <depend>roscpp</depend>
+  <depend>tf_conversions</depend>
+
+  <export>
+    <descartes_core plugin="${prefix}/kukakr210r2700extra_descartes_plugins.xml"/>
+  </export>
+</package>

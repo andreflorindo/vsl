@@ -2,9 +2,9 @@
 
 /* INIT ROS
   Goal:
+    - Load missing application parameters from the ros parameter server.
+    - Use a private NodeHandle in order to load parameters defined in the node's namespace.
     - Create a ros service client that will be used to send a robot path for execution.
-
-  Hints:
 */
 
 namespace vsl_motion_planning

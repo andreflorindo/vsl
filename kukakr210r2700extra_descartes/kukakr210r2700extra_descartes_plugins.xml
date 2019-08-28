@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<library path="lib/libkukakr210r2700extra_descartes">
+<class name="kukakr210r2700extra_descartes/KukaRobotModel" type="kukakr210r2700extra_descartes_plugins::KukaRobotModel" base_class_type="descartes_core::RobotModel">
+<description>This is a Descartes robot model adapter for kukakr210r2700</description>
+</class>
+</library>
