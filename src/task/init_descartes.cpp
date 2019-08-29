@@ -14,7 +14,8 @@ namespace vsl_motion_planning
 void VSLPlanner::initDescartes()
 {
     // Instantiating a robot model
-    robot_model_ptr_.reset(new kukakr210r2700extra_descartes::KukaRobotModel());
+    robot_model_ptr_.reset(new descartes_moveit::IkFastMoveitStateAdapter);
+    robot_model_ptr_->setCheckCollisions(true);
 
     if (robot_model_ptr_->initialize(ROBOT_DESCRIPTION_PARAM,
                                      config_.group_name,
@@ -40,12 +41,12 @@ void VSLPlanner::initDescartes()
         exit(-1);
     }
 
-    // moving home
+    // moving above-table
 
     moveit::planning_interface::MoveGroupInterface move_group(config_.group_name);
     move_group.setPlannerId(PLANNER_ID);  //RRTConnect
 
-    // setting home position as target
+    // setting above-table position as target
     if (!move_group.setNamedTarget(HOME_POSITION_NAME))
     {
         ROS_ERROR_STREAM("Failed to set home '" << HOME_POSITION_NAME << "' position");

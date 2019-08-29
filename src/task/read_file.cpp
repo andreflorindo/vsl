@@ -5,8 +5,7 @@
 
 #include <vsl_planner.h>
 
-
-bool getFileContent(CourseStruct *&course)
+bool ReadFileContent(CourseStruct *&course)
 {
     //     https://stackoverflow.com/questions/46663046/save-read-double-vector-from-file-c                    //<-------------  Other way
 
@@ -14,10 +13,10 @@ bool getFileContent(CourseStruct *&course)
 
     if (!infile.good())
     {
-        ROS_ERROR_NAMED("vsl", "Path as not able to be found");
-        return false;
+        ROS_ERROR_STREAM("Path as not able to be found. Trajectory generation failed");
+        exit(-1);
     }
-    
+
     std::istream_iterator<double> infile_begin{infile};
     std::istream_iterator<double> eof{};
     std::vector<double> file_nums{infile_begin, eof};
@@ -25,10 +24,11 @@ bool getFileContent(CourseStruct *&course)
 
     int nx = 0;
     int ny = 0;
+    int npoints = file_nums.size() / 3;
 
-    course->x.reserve(file_nums.size() / 3);
-    course->y.reserve(file_nums.size() / 3);
-    course->z.reserve(file_nums.size() / 3);
+    course->x.reserve(npoints);
+    course->y.reserve(npoints);
+    course->z.reserve(npoints);
 
     for (int i = 0; i < file_nums.size(); i++)
     {
@@ -40,20 +40,23 @@ bool getFileContent(CourseStruct *&course)
         else if (i == 1 + ny * 3)
         {
             course->y.emplace_back(file_nums[i]);
-            ny++;       
+            ny++;
         }
         else
             course->z.emplace_back(file_nums[i]);
-        
     }
-    ROS_INFO("File found, reading complete");
+
+    // publishing trajectory poses for visualization
+    EigenSTL::vector_Isometry3d poses;
+    publishPosesMarkers(poses);
+
+    ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");
+    ROS_INFO_STREAM("Trajectory with " << file_nums.size() / 3 << " points was generated");
 
     return true;
-
 };
 
-// bool DemoApplication::createLemniscateCurve(//double foci_distance, double sphere_radius,
-//                                  // int num_points, int num_lemniscates,
+// bool DemoApplication::createLemniscateCurve(
 //                                   const Eigen::Vector3d& sphere_center,
 //                                   EigenSTL::vector_Isometry3d& poses)
 
@@ -65,7 +68,7 @@ bool getFileContent(CourseStruct *&course)
 //       ROS_ERROR_NAMED("vsl", "Path as not able to be found");
 //       return false;
 //   }
-    
+
 //   std::istream_iterator<double> infile_begin{infile};
 //   std::istream_iterator<double> eof{};
 //   std::vector<double> file_nums{infile_begin, eof};
@@ -91,13 +94,13 @@ bool getFileContent(CourseStruct *&course)
 //       else if (i == 1 + ny * 3)
 //       {
 //           y.emplace_back(file_nums[i]);
-//           ny++;       
+//           ny++;
 //       }
 //       else
 //           z.emplace_back(file_nums[i]);
-        
+
 //   }
-  
+
 //   Eigen::Vector3d offset(sphere_center[0],sphere_center[1],sphere_center[2]);
 //   Eigen::Vector3d unit_z,unit_y,unit_x;
 //   Eigen::Isometry3d pose;
@@ -122,8 +125,6 @@ bool getFileContent(CourseStruct *&course)
 //          ,unit_x(1),unit_y(1),unit_z(1),0
 //          ,unit_x(2),unit_y(2),unit_z(2),0
 //          ,0,0,0,1;
-
-
 
 //       pose = Eigen::Translation3d(offset(0) + x[i],
 //                                   offset(1) + y[i],

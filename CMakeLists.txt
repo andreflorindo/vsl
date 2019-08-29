@@ -11,6 +11,11 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   moveit_msgs
   moveit_ros_planning_interface
+  descartes_core
+  descartes_moveit
+  descartes_trajectory
+  descartes_planner
+  eigen_conversions
 )
 
 ## System dependencies are found with CMake's conventions
@@ -111,6 +116,11 @@ catkin_package(
    roscpp
    moveit_msgs
    moveit_ros_planning_interface
+   descartes_core
+   descartes_moveit
+   descartes_trajectory
+   descartes_planner
+   eigen_conversions
 #  DEPENDS system_lib
 )
 
@@ -129,6 +139,7 @@ include_directories(
  add_library(${PROJECT_NAME}
    src/task/read_file.cpp
    src/task/init_ros.cpp
+   src/task/init_descartes.cpp
  )
 
 ## Add cmake target dependencies of the library

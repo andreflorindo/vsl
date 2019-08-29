@@ -19,10 +19,6 @@
     <arg name="load_robot_description" value="true"/>
   </include>
 
-  <!-- If needed, broadcast static tf for robot root -->
-      
-  <!-- Given the published joint states, publish tf for the robot links -->
-
   <!-- Run the main MoveIt executable without trajectory execution (we do not have controllers configured by default) -->
   <include file="$(find atomic_moveit_no_eef)/launch/move_group.launch">
     <arg name="allow_trajectory_execution" value="true"/>  
@@ -39,9 +35,7 @@
   'kr210_joint_a5',
   'kr210_joint_a6']</rosparam>
 
-  <!-- run the "real robot" interface nodes -->
-  <!--   - this typically includes: robot_state, motion_interface, and joint_trajectory_action nodes -->
-  <!--   - replace these calls with appropriate robot-specific calls or launch files -->
+  <!-- run the "real robot" interface nodes
   <group unless="$(arg sim)">
     <remap from="/follow_joint_trajectory/status" to="/joint_trajectory_action/status" />
     <remap from="/follow_joint_trajectory/feedback" to="/joint_trajectory_action/feedback" />
@@ -49,20 +43,12 @@
     <remap from="/follow_joint_trajectory/goal" to="/joint_trajectory_action/goal" />
     <remap from="/follow_joint_trajectory/cancel" to="/joint_trajectory_action/cancel" />
 
-   <!-- <include file="$(find ur_modern_driver)/launch/ur_common.launch">
-      <arg name="prefix" value="$(arg prefix)" />
-      <arg name="robot_ip" value="$(arg robot_ip)" />
-      <arg name="min_payload" value="$(arg min_payload)" />
-      <arg name="max_payload" value="$(arg max_payload)" />
-    </include>  -->
-    
     <param name="move_group/trajectory_execution/execution_duration_monitoring" value="false"/>
 
-    <!-- TF Buffer Server -->
     <node pkg="tf2_ros" type="buffer_server" name="tf2_buffer_server" output="screen">
       <param name="buffer_size" value="120.0"/>
     </node>
-  </group>
+  </group> -->
 
   <!-- run the robot simulator and action interface nodes -->
   <group if="$(arg sim)">
@@ -73,7 +59,6 @@
   </group>
 
   <!-- rviz -->
-  <node name="rviz" type="rviz" pkg="rviz" args="-d $(find vsl_core)/config/config.rviz" required="true" output="screen" />
-
+  <node name="rviz" type="rviz" pkg="rviz" args="-d $(find vsl_core)/config/config.rviz" required="true" />
 
 </launch>
