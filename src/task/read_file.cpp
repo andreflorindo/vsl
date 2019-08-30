@@ -7,7 +7,7 @@
 namespace vsl_motion_planning
 {
 
-void VSLPlanner::readFileContent(CourseStruct *&course, EigenSTL::vector_Isometry3d *poses1)
+void VSLPlanner::readFileContent(CourseStruct *&course, EigenSTL::vector_Isometry3d *PosesPtr)
 {
     //     https://stackoverflow.com/questions/46663046/save-read-double-vector-from-file-c                    //<-------------  Other way
 
@@ -50,7 +50,7 @@ void VSLPlanner::readFileContent(CourseStruct *&course, EigenSTL::vector_Isometr
 
     // publishing trajectory poses for visualization
     EigenSTL::vector_Isometry3d poses;
-    poses1=&poses;
+    PosesPtr=&poses;
     poses.reserve(npoints);
 
     Eigen::Vector3d ee_z, ee_y, ee_x;
@@ -146,24 +146,24 @@ void VSLPlanner::publishPosesMarkers(const EigenSTL::vector_Isometry3d &poses)
         {
             Eigen::Isometry3d moved_along_x = pose * Eigen::Translation3d(AXIS_LINE_LENGHT, 0, 0);
             tf::pointEigenToMsg(moved_along_x.translation(), p_end);
-            x_axes.points.push_back(p_start);
-            x_axes.points.push_back(p_end);
+            x_axes.points.emplace_back(p_start);
+            x_axes.points.emplace_back(p_end);
 
             Eigen::Isometry3d moved_along_y = pose * Eigen::Translation3d(0, AXIS_LINE_LENGHT, 0);
             tf::pointEigenToMsg(moved_along_y.translation(), p_end);
-            y_axes.points.push_back(p_start);
-            y_axes.points.push_back(p_end);
+            y_axes.points.emplace_back(p_start);
+            y_axes.points.emplace_back(p_end);
 
             Eigen::Isometry3d moved_along_z = pose * Eigen::Translation3d(0, 0, AXIS_LINE_LENGHT);
             tf::pointEigenToMsg(moved_along_z.translation(), p_end);
-            z_axes.points.push_back(p_start);
-            z_axes.points.push_back(p_end);
+            z_axes.points.emplace_back(p_start);
+            z_axes.points.emplace_back(p_end);
 
             // saving previous
             prev = pose;
         }
 
-        line.points.push_back(p_start);
+        line.points.emplace_back(p_start);
     }
 
     markers_msg.markers.push_back(x_axes);
