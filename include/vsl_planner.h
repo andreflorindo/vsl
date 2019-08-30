@@ -30,34 +30,41 @@
 #include <descartes_trajectory/cart_trajectory_pt.h>
 
 
+struct CourseStruct
+{
+  std::vector<double> x;
+  std::vector<double> y;
+  std::vector<double> z;
+};
+
+
 namespace vsl_motion_planning
 {
- const std::string ROBOT_DESCRIPTION_PARAM = "robot_description";
- const std::string EXECUTE_TRAJECTORY_ACTION = "execute_trajectory"; 
- const std::string VISUALIZE_TRAJECTORY_TOPIC = "visualize_trajectory_curve";
- const double SERVER_TIMEOUT = 5.0f; // seconds
-// const double ORIENTATION_INCREMENT = 0.5f;
-// const double EPSILON = 0.0001f;
- const double AXIS_LINE_LENGHT = 0.01;
- const double AXIS_LINE_WIDTH = 0.001;
- const std::string PLANNER_ID = "RRTConnectkConfigDefault";
- const std::string HOME_POSITION_NAME = "above-table";
- //Descartes
- 
+const std::string ROBOT_DESCRIPTION_PARAM = "robot_description";
+const std::string EXECUTE_TRAJECTORY_ACTION = "execute_trajectory";
+const std::string VISUALIZE_TRAJECTORY_TOPIC = "visualize_trajectory_curve";
+const double SERVER_TIMEOUT = 5.0f; // seconds
+                                    // const double ORIENTATION_INCREMENT = 0.5f;
+                                    // const double EPSILON = 0.0001f;
+const double AXIS_LINE_LENGHT = 0.01;
+const double AXIS_LINE_WIDTH = 0.001;
+const std::string PLANNER_ID = "RRTConnectkConfigDefault";
+const std::string HOME_POSITION_NAME = "above-table";
+//Descartes
 
 struct Configuration
 {
-  std::string group_name;   
+  std::string group_name;
   std::string tip_link;
   std::string base_link;
   std::string world_frame;
-  double time_delay;              /* Time step between consecutive points in the robot path */
+  double time_delay; /* Time step between consecutive points in the robot path */
   //double foci_distance;           /* Controls the size of the curve */
-  int num_points;                 /* Number of points per curve */
+  int num_points; /* Number of points per curve */
   //int num_lemniscates;            /* Number of curves*/
   //std::vector<double> center;     /* Location of the center of all the lemniscate curves */
-  std::vector<double> seed_pose;  /* Joint values close to the desired start of the robot path */
-  double min_point_distance;      /* Minimum distance between consecutive trajectory points. */
+  std::vector<double> seed_pose; /* Joint values close to the desired start of the robot path */
+  double min_point_distance;     /* Minimum distance between consecutive trajectory points. */
   std::vector<std::string> joint_names;
 };
 
@@ -78,45 +85,37 @@ public:
 
   void initRos();
   void initDescartes();
-  void generateTrajectory(DescartesTrajectory& traj);
-//   void planPath(DescartesTrajectory& input_traj,DescartesTrajectory& output_path);
-//   void runPath(const DescartesTrajectory& path);
+  void readFileContent(CourseStruct *&course, EigenSTL::vector_Isometry3d *poses);
+  // void generateTrajectory(DescartesTrajectory& traj);
+  //   void planPath(DescartesTrajectory& input_traj,DescartesTrajectory& output_path);
+  //   void runPath(const DescartesTrajectory& path);
 
-// protected:
+   protected:
 
-//   /* Support methods
-//    *  Called from within the main application functions in order to perform convenient tasks.
-//    */
+  //   /* Support methods
+  //    *  Called from within the main application functions in order to perform convenient tasks.
+  //    */
 
-//   static bool createLemniscateCurve(//double foci_distance, double sphere_radius,
-//                                     //int num_points, int num_lemniscates,
-//                                     const Eigen::Vector3d& sphere_center,
-//                                     EigenSTL::vector_Isometry3d& poses);
+  //   static bool createLemniscateCurve(//double foci_distance, double sphere_radius,
+  //                                     //int num_points, int num_lemniscates,
+  //                                     const Eigen::Vector3d& sphere_center,
+  //                                     EigenSTL::vector_Isometry3d& poses);
 
-//   void fromDescartesToMoveitTrajectory(const DescartesTrajectory& in_traj,
-//                                               trajectory_msgs::JointTrajectory& out_traj);
+  //   void fromDescartesToMoveitTrajectory(const DescartesTrajectory& in_traj,
+  //                                               trajectory_msgs::JointTrajectory& out_traj);
 
-//   void publishPosesMarkers(const EigenSTL::vector_Isometry3d& poses);
+    void publishPosesMarkers(const EigenSTL::vector_Isometry3d &poses);
 
-
- protected:
-   Configuration config_;
-   ros::NodeHandle nh_;                        /* Object used for creating and managing ros application resources*/
-   ros::Publisher marker_publisher_;           /* Publishes visualization message to Rviz */
-   std::shared_ptr<actionlib::SimpleActionClient<moveit_msgs::ExecuteTrajectoryAction>> moveit_run_path_client_ptr_; /* Sends a robot trajectory to moveit for execution */
-   //Descartes
-   descartes_core::RobotModelPtr robot_model_ptr_; 
-   descartes_planner::SparsePlanner planner_;   
+protected:
+  Configuration config_;
+  ros::NodeHandle nh_;                                                                                              /* Object used for creating and managing ros application resources*/
+  ros::Publisher marker_publisher_;                                                                                 /* Publishes visualization message to Rviz */
+  std::shared_ptr<actionlib::SimpleActionClient<moveit_msgs::ExecuteTrajectoryAction>> moveit_run_path_client_ptr_; /* Sends a robot trajectory to moveit for execution */
+  //Descartes
+  descartes_core::RobotModelPtr robot_model_ptr_;
+  descartes_planner::SparsePlanner planner_;
 };
-}
+} 
 
-struct CourseStruct
-{
-    std::vector<double> x;
-    std::vector<double> y;
-    std::vector<double> z;
-};
-
-bool ReadFileContent(CourseStruct *&course);
 
 #endif

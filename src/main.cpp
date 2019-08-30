@@ -15,15 +15,14 @@ int main(int argc, char **argv)
     planner.initRos();
     planner.initDescartes();
 
-    //CourseStruct *course = new CourseStruct;
-    std::vector<EigenSTL::vector_Isometry3d> *course = new std::vector<EigenSTL::vector_Isometry3d>
+    CourseStruct *course = new CourseStruct;
     EigenSTL::vector_Isometry3d *poses = new EigenSTL::vector_Isometry3d;
 
-    planner.ReadFileContent(course, poses);
+    planner.readFileContent(course, poses);
 
-    std::vector<descartes_core::TrajectoryPtPtr> traj;
+    //std::vector<descartes_core::TrajectoryPtPtr> traj;
 
-    planner.generateTrajectory(poses, traj);
+    //planner.generateTrajectory(poses, traj);
 
 
 // std::vector<descartes_core::TrajectoryPtPtr> output_path;

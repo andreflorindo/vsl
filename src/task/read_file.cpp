@@ -4,8 +4,10 @@
 // If z is not given in the file, maybe add a collumn of zeros
 
 #include <vsl_planner.h>
+namespace vsl_motion_planning
+{
 
-bool ReadFileContent(CourseStruct *&course)
+void VSLPlanner::readFileContent(CourseStruct *&course, EigenSTL::vector_Isometry3d *poses1)
 {
     //     https://stackoverflow.com/questions/46663046/save-read-double-vector-from-file-c                    //<-------------  Other way
 
@@ -48,13 +50,130 @@ bool ReadFileContent(CourseStruct *&course)
 
     // publishing trajectory poses for visualization
     EigenSTL::vector_Isometry3d poses;
+    poses1=&poses;
+    poses.reserve(npoints);
+
+    Eigen::Vector3d ee_z, ee_y, ee_x;
+    Eigen::Isometry3d single_pose;
+
+    // determining orientation
+    for (unsigned int i = 0; i < npoints; i++)
+    {
+        ee_z << -course->x[i], -course->y[i], -course->z[i];
+        ee_z.normalize();
+
+        ee_x = (Eigen::Vector3d(0, 1, 0).cross(ee_z)).normalized();
+        ee_y = (ee_z.cross(ee_x)).normalized();
+
+        Eigen::Isometry3d rot;
+        rot.matrix() << ee_x(0), ee_y(0), ee_z(0), 0, ee_x(1), ee_y(1), ee_z(1), 0, ee_x(2), ee_y(2), ee_z(2), 0, 0, 0, 0, 1;
+
+        single_pose = Eigen::Translation3d(course->x[i], course->y[i], course->z[i]) * rot;
+
+        poses.emplace_back(single_pose);
+    }
+
     publishPosesMarkers(poses);
 
     ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");
     ROS_INFO_STREAM("Trajectory with " << file_nums.size() / 3 << " points was generated");
 
-    return true;
-};
+}
+
+void VSLPlanner::publishPosesMarkers(const EigenSTL::vector_Isometry3d &poses)
+{
+    // creating rviz markers
+    visualization_msgs::Marker z_axes, y_axes, x_axes, line;
+    visualization_msgs::MarkerArray markers_msg;
+
+    z_axes.type = y_axes.type = x_axes.type = visualization_msgs::Marker::LINE_LIST;
+    z_axes.ns = y_axes.ns = x_axes.ns = "axes";
+    z_axes.action = y_axes.action = x_axes.action = visualization_msgs::Marker::ADD;
+    z_axes.lifetime = y_axes.lifetime = x_axes.lifetime = ros::Duration(0);
+    z_axes.header.frame_id = y_axes.header.frame_id = x_axes.header.frame_id = config_.world_frame;
+    z_axes.scale.x = y_axes.scale.x = x_axes.scale.x = AXIS_LINE_WIDTH;
+
+    // z properties
+    z_axes.id = 0;
+    z_axes.color.r = 0;
+    z_axes.color.g = 0;
+    z_axes.color.b = 1;
+    z_axes.color.a = 1;
+
+    // y properties
+    y_axes.id = 1;
+    y_axes.color.r = 0;
+    y_axes.color.g = 1;
+    y_axes.color.b = 0;
+    y_axes.color.a = 1;
+
+    // x properties
+    x_axes.id = 2;
+    x_axes.color.r = 1;
+    x_axes.color.g = 0;
+    x_axes.color.b = 0;
+    x_axes.color.a = 1;
+
+    // line properties
+    line.type = visualization_msgs::Marker::LINE_STRIP;
+    line.ns = "line";
+    line.action = visualization_msgs::Marker::ADD;
+    line.lifetime = ros::Duration(0);
+    line.header.frame_id = config_.world_frame;
+    line.scale.x = AXIS_LINE_WIDTH;
+    line.id = 0;
+    line.color.r = 1;
+    line.color.g = 1;
+    line.color.b = 0;
+    line.color.a = 1;
+
+    // creating axes markers
+    z_axes.points.reserve(2 * poses.size());
+    y_axes.points.reserve(2 * poses.size());
+    x_axes.points.reserve(2 * poses.size());
+    line.points.reserve(poses.size());
+    geometry_msgs::Point p_start, p_end;
+    double distance = 0;
+    Eigen::Isometry3d prev = poses[0];
+    for (unsigned int i = 0; i < poses.size(); i++)
+    {
+        const Eigen::Isometry3d &pose = poses[i];
+        distance = (pose.translation() - prev.translation()).norm();
+
+        tf::pointEigenToMsg(pose.translation(), p_start);
+
+        if (distance > config_.min_point_distance)
+        {
+            Eigen::Isometry3d moved_along_x = pose * Eigen::Translation3d(AXIS_LINE_LENGHT, 0, 0);
+            tf::pointEigenToMsg(moved_along_x.translation(), p_end);
+            x_axes.points.push_back(p_start);
+            x_axes.points.push_back(p_end);
+
+            Eigen::Isometry3d moved_along_y = pose * Eigen::Translation3d(0, AXIS_LINE_LENGHT, 0);
+            tf::pointEigenToMsg(moved_along_y.translation(), p_end);
+            y_axes.points.push_back(p_start);
+            y_axes.points.push_back(p_end);
+
+            Eigen::Isometry3d moved_along_z = pose * Eigen::Translation3d(0, 0, AXIS_LINE_LENGHT);
+            tf::pointEigenToMsg(moved_along_z.translation(), p_end);
+            z_axes.points.push_back(p_start);
+            z_axes.points.push_back(p_end);
+
+            // saving previous
+            prev = pose;
+        }
+
+        line.points.push_back(p_start);
+    }
+
+    markers_msg.markers.push_back(x_axes);
+    markers_msg.markers.push_back(y_axes);
+    markers_msg.markers.push_back(z_axes);
+    markers_msg.markers.push_back(line);
+
+    marker_publisher_.publish(markers_msg);
+}
+} // namespace vsl_motion_planning
 
 // bool DemoApplication::createLemniscateCurve(
 //                                   const Eigen::Vector3d& sphere_center,
@@ -102,37 +221,7 @@ bool ReadFileContent(CourseStruct *&course)
 //   }
 
 //   Eigen::Vector3d offset(sphere_center[0],sphere_center[1],sphere_center[2]);
-//   Eigen::Vector3d unit_z,unit_y,unit_x;
-//   Eigen::Isometry3d pose;
 
-//   poses.clear();
-//   //poses.reserve(nlemns*npoints);
-//   poses.reserve(npoints);
-
-//   //for(unsigned int j = 0; j < nlemns;j++)
-//   //{
-//     for(unsigned int i = 0 ; i < npoints;i++)
-//     {
-//       // determining orientation
-//       unit_z <<-x[i], -y[i] , -z[i];
-//       unit_z.normalize();
-
-//       unit_x = (Eigen::Vector3d(0,1,0).cross( unit_z)).normalized();
-//       unit_y = (unit_z .cross(unit_x)).normalized();
-
-//       Eigen::Isometry3d rot;
-//       rot.matrix() << unit_x(0),unit_y(0),unit_z(0),0
-//          ,unit_x(1),unit_y(1),unit_z(1),0
-//          ,unit_x(2),unit_y(2),unit_z(2),0
-//          ,0,0,0,1;
-
-//       pose = Eigen::Translation3d(offset(0) + x[i],
-//                                   offset(1) + y[i],
-//                                   offset(2) + z[i]) * rot;
-
-//       poses.push_back(pose);
-//     }
-//     //std::reverse(poses.end() - npoints / 2, poses.end());
 //   //}
 //   return true;
 // }

@@ -137,9 +137,9 @@ include_directories(
 
 ## Declare a C++ library
  add_library(${PROJECT_NAME}
-   src/task/read_file.cpp
    src/task/init_ros.cpp
    src/task/init_descartes.cpp
+   src/task/read_file.cpp
  )
 
 ## Add cmake target dependencies of the library
