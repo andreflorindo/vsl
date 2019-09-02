@@ -9,7 +9,7 @@ int main(int argc, char **argv)
     spinner.start();
 
 
-        // Main program
+    // Main program
     vsl_motion_planning::VSLPlanner planner;
     
     planner.initRos();
@@ -17,19 +17,15 @@ int main(int argc, char **argv)
 
     CourseStruct *CoursePtr = new CourseStruct;
     EigenSTL::vector_Isometry3d *PosesPtr = new EigenSTL::vector_Isometry3d;
-
     planner.readFileContent(CoursePtr, PosesPtr);
 
-    //std::vector<descartes_core::TrajectoryPtPtr> traj;
+    std::vector<descartes_core::TrajectoryPtPtr> TrajPtr;
+    planner.generateTrajectory(PosesPtr, TrajPtr);
 
-    //planner.generateTrajectory(poses, traj);
+    std::vector<descartes_core::TrajectoryPtPtr> OutTrajPtr;
+    planner.planPath(TrajPtr, OutTrajPtr);
 
-
-// std::vector<descartes_core::TrajectoryPtPtr> output_path;
-  // planner.planPath(traj,output_path);
-
-  // // running robot path
-  // planner.runPath(output_path);
+    //planner.runPath(OutTrajPtr);
 
 
 

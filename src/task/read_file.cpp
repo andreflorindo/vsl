@@ -50,7 +50,6 @@ void VSLPlanner::readFileContent(CourseStruct *&course, EigenSTL::vector_Isometr
 
     // publishing trajectory poses for visualization
     EigenSTL::vector_Isometry3d poses;
-    PosesPtr=&poses;
     poses.reserve(npoints);
 
     Eigen::Vector3d ee_z, ee_y, ee_x;
@@ -72,7 +71,7 @@ void VSLPlanner::readFileContent(CourseStruct *&course, EigenSTL::vector_Isometr
 
         poses.emplace_back(single_pose);
     }
-
+    PosesPtr=&poses;
     publishPosesMarkers(poses);
 
     ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");
@@ -173,55 +172,4 @@ void VSLPlanner::publishPosesMarkers(const EigenSTL::vector_Isometry3d &poses)
 
     marker_publisher_.publish(markers_msg);
 }
-} // namespace vsl_motion_planning
-
-// bool DemoApplication::createLemniscateCurve(
-//                                   const Eigen::Vector3d& sphere_center,
-//                                   EigenSTL::vector_Isometry3d& poses)
-
-// {
-//   std::ifstream infile{"/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/simplePath.txt", std::ios::in};
-
-//   if (!infile.good())
-//   {
-//       ROS_ERROR_NAMED("vsl", "Path as not able to be found");
-//       return false;
-//   }
-
-//   std::istream_iterator<double> infile_begin{infile};
-//   std::istream_iterator<double> eof{};
-//   std::vector<double> file_nums{infile_begin, eof};
-//   std::vector<double> x, y, z;
-//   infile.close();
-
-//   int nx = 0;
-//   int ny = 0;
-//   int npoints = file_nums.size()/3;
-//   //int nlemns = num_lemniscates;
-
-//   x.reserve(npoints);
-//   y.reserve(npoints);
-//   z.reserve(npoints);
-
-//   for (int i = 0; i < file_nums.size(); i++)
-//   {
-//       if (i == nx * 3)
-//       {
-//           x.emplace_back(file_nums[i]);
-//           nx++;
-//       }
-//       else if (i == 1 + ny * 3)
-//       {
-//           y.emplace_back(file_nums[i]);
-//           ny++;
-//       }
-//       else
-//           z.emplace_back(file_nums[i]);
-
-//   }
-
-//   Eigen::Vector3d offset(sphere_center[0],sphere_center[1],sphere_center[2]);
-
-//   //}
-//   return true;
-// }
+}

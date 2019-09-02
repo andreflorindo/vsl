@@ -26,39 +26,7 @@ void insert_segment(EigenSTL::vector_Isometry3d& poses, const EigenSTL::vector_I
 
 
 
-void addVel(trajectory_msgs::JointTrajectory& traj)   //Velocity of the joints
-{
-  if (traj.points.size() < 3) return;
 
-  auto n_joints = traj.points.front().positions.size();
-
-  for (auto i = 0; i < n_joints; ++i)
-  {
-    for (auto j = 1; j < traj.points.size() - 1; j++)
-    {
-      // For each point in a given joint
-      double delta_theta = -traj.points[j - 1].positions[i] + traj.points[j + 1].positions[i];
-      double delta_time = -traj.points[j - 1].time_from_start.toSec() + traj.points[j + 1].time_from_start.toSec();
-      double v = delta_theta / delta_time;
-      traj.points[j].velocities[i] = v;
-    } 
-  }
-}
-
-
-
-///See after
-void VSLPlanner::fromDescartesToMoveitTrajectory(const DescartesTrajectory& in_traj,
-                                                      trajectory_msgs::JointTrajectory& out_traj)
-{
-//  // Fill out information about our trajectory
-  out_traj.header.stamp = ros::Time::now();
-  out_traj.header.frame_id = config_.world_frame;
-  out_traj.joint_names = config_.joint_names;
-
-  descartes_utilities::toRosJointPoints(*robot_model_ptr_, in_traj, 0.4, out_traj.points);
-  addVel(out_traj);
-}
 
 
 }

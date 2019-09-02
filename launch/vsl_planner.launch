@@ -12,7 +12,7 @@
     <!--<param name="trajectory/foci_distance" value="0.07"/>-->
     <param name="trajectory/num_points" value="200"/>
     <!--<rosparam param="trajectory/center">[0.36, 0.2, 0.1]</rosparam>-->
-    <rosparam param="trajectory/seed_pose">[0.0, -1.03, 1.57 , -0.21, 0.0, 0.0]</rosparam>
+    <rosparam param="trajectory/seed_pose">[1.57, -1.57, 1.04 , 0.0, 1.57, 0.0]</rosparam>
     <param name="visualization/min_point_distance" value="0.02"/> 
   </node>
 </launch>

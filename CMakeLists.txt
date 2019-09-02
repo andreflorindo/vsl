@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   descartes_moveit
   descartes_trajectory
   descartes_planner
+  descartes_utilities
   eigen_conversions
 )
 
@@ -120,6 +121,7 @@ catkin_package(
    descartes_moveit
    descartes_trajectory
    descartes_planner
+   descartes_utilities
    eigen_conversions
 #  DEPENDS system_lib
 )
@@ -140,6 +142,9 @@ include_directories(
    src/task/init_ros.cpp
    src/task/init_descartes.cpp
    src/task/read_file.cpp
+   src/task/generate_trajectory.cpp
+   src/task/plan_path.cpp
+   src/task/run_path.cpp
  )
 
 ## Add cmake target dependencies of the library
