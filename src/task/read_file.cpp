@@ -70,13 +70,22 @@ void VSLPlanner::readFileContent(CourseStruct *&course, EigenSTL::vector_Isometr
         single_pose = Eigen::Translation3d(course->x[i], course->y[i], course->z[i]) * rot;
 
         poses.emplace_back(single_pose);
+        
     }
-    PosesPtr=&poses;
+
+    for (int i = 0; i < npoints; i++)
+    {
+        if (i % 2 == 0)
+        {
+            std::cout << i <<"   "<< poses[i](1, 1) << std::endl;
+        }       
+    }
+
+    PosesPtr = &poses;
     publishPosesMarkers(poses);
 
     ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");
-    ROS_INFO_STREAM("Trajectory with " << file_nums.size() / 3 << " points was generated");
-
+    ROS_INFO_STREAM("Trajectory with " << npoints << " points was generated");
 }
 
 void VSLPlanner::publishPosesMarkers(const EigenSTL::vector_Isometry3d &poses)
@@ -172,4 +181,4 @@ void VSLPlanner::publishPosesMarkers(const EigenSTL::vector_Isometry3d &poses)
 
     marker_publisher_.publish(markers_msg);
 }
-}
+} // namespace vsl_motion_planning
