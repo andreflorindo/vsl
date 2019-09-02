@@ -1,0 +1,10 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: atomic_cells
+    relative_path: urdf/kr210_no_eef_cell.xacro
+  SRDF:
+    relative_path: config/kr210_no_eef_cell.srdf
+  CONFIG:
+    author_name: Rik Tonnaer
+    author_email: R.Tonnaer@tudelft.nl
+    generated_timestamp: 1506516756

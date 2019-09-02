@@ -1,0 +1,65 @@
+<launch>
+  <!-- ############################### -->
+  <!-- ##### SPECIFYING ARGUMENTS #### -->
+  <!-- ############################### -->
+  <arg name="robot_ip" default="192.168.10.101" doc="IP of the RSI interface on the controller"/>
+  <arg name="robot_port" default="49152" doc="UDP port the RSI interface on the controller is configured to use"/>
+
+  <!-- Don`t start database -->
+  <arg name="db" default="false" doc="Start the MoveIt database" />
+  
+  <!-- name of the ros_control controllers (see below) -->
+  <arg name="js_ctrlr" value="joint_state_controller" />
+  <arg name="pos_ctrlr_name" value="position_trajectory_controller" />
+
+  <!-- ####################################### -->
+  <!-- ##### LOADING PARAMETERS TO SERVER #### -->
+  <!-- ####################################### -->  
+  <!-- Non-standard joint names: -->
+  <rosparam command="load" file="$(find atomic_moveit_no_eef)/config/joint_names.yaml"/>
+
+  <!-- load the robot_description parameter before launching ROS-I nodes -->
+  <include file="$(find atomic_moveit_no_eef)/launch/planning_context.launch" >
+    <arg name="load_robot_description" value="true" />
+  </include>
+
+  <!-- other ROS-Industrial nodes may expect the 'robot_ip_address' parameter to be present -->
+  <param name="robot_ip_address" type="str" value="$(arg robot_ip)" />  
+  <!-- the hardware_interface node expects its parameters in the 'rsi' namespace -->
+  <rosparam subst_value="true">
+    rsi:
+      listen_address: 192.168.10.103
+      listen_port: 49152
+  </rosparam>
+
+  <!-- Putting /controller_joint_names on param server -->
+  <rosparam file="$(find atomic_moveit_no_eef)/config/joint_names.yaml" />
+  <!-- load the robot_description parameter before launching ROS-I nodes -->
+
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find atomic_cells)/urdf/kr210_no_eef_cell.xacro'"/>
+
+  <!-- Putting hardware controller settings on param server -->
+  <rosparam file="$(find atomic_moveit_no_eef)/config/hardware_controllers.yaml"/>
+
+  <!-- ######################### -->
+  <!-- ##### STARTING NODES #### -->
+  <!-- ######################### -->
+
+  <!-- Start Robot State Publisher -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen"/>
+  
+  <include file="$(find atomic_moveit_no_eef)/launch/move_group.launch">
+    <arg name="publish_monitored_planning_scene" value="true" />
+  </include>
+
+  <!-- Start Kuka Hardware Interface -->
+  <node name="kuka_hardware_interface" pkg="kuka_rsi_hw_interface" type="kuka_hardware_interface_node" respawn="true" output="screen"/>
+
+  <!-- Start the controller manager -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" args="$(arg pos_ctrlr_name) $(arg js_ctrlr) --shutdown-timeout 1" respawn="true" output="screen" />
+
+  <include file="$(find atomic_moveit_no_eef)/launch/moveit_rviz.launch">
+    <arg name="config" value="true"/>
+  </include>
+
+</launch>

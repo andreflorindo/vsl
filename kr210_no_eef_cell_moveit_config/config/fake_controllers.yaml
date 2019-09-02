@@ -1,0 +1,9 @@
+controller_list:
+  - name: fake_Manipulator_controller
+    joints:
+      - kr210_joint_a1
+      - kr210_joint_a2
+      - kr210_joint_a3
+      - kr210_joint_a4
+      - kr210_joint_a5
+      - kr210_joint_a6
