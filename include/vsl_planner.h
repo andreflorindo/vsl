@@ -82,16 +82,15 @@ public:
 
   void initRos();
   void initDescartes();
-  void readFileContent(CourseStruct *&CoursePtr, EigenSTL::vector_Isometry3d *PosesPtr);
-  void generateTrajectory(EigenSTL::vector_Isometry3d *PosesPtr, std::vector<descartes_core::TrajectoryPtPtr> &traj);
+  void readFileContent(CourseStruct &course, EigenSTL::vector_Isometry3d &poses);
+  void generateTrajectory(EigenSTL::vector_Isometry3d &poses, std::vector<descartes_core::TrajectoryPtPtr> &input_traj);
   void planPath(std::vector<descartes_core::TrajectoryPtPtr> &input_traj,
                 std::vector<descartes_core::TrajectoryPtPtr> &output_path);
   void runPath(const std::vector<descartes_core::TrajectoryPtPtr> &path);
 
 protected:
-  void fromDescartesToMoveitTrajectory(const std::vector<descartes_core::TrajectoryPtPtr> &in_traj,
-                                       trajectory_msgs::JointTrajectory &out_traj);
-
+  void fromDescartesToMoveitTrajectory(const std::vector<descartes_core::TrajectoryPtPtr> &input_traj,
+                                       trajectory_msgs::JointTrajectory &traj);
   void publishPosesMarkers(const EigenSTL::vector_Isometry3d &poses);
   void addVel(trajectory_msgs::JointTrajectory& traj);
 

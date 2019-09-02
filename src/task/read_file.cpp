@@ -7,7 +7,7 @@
 namespace vsl_motion_planning
 {
 
-void VSLPlanner::readFileContent(CourseStruct *&course, EigenSTL::vector_Isometry3d *PosesPtr)
+void VSLPlanner::readFileContent(CourseStruct &course, EigenSTL::vector_Isometry3d &poses)
 {
     //     https://stackoverflow.com/questions/46663046/save-read-double-vector-from-file-c                    //<-------------  Other way
 
@@ -28,60 +28,68 @@ void VSLPlanner::readFileContent(CourseStruct *&course, EigenSTL::vector_Isometr
     int ny = 0;
     int npoints = file_nums.size() / 3;
 
-    course->x.reserve(npoints);
-    course->y.reserve(npoints);
-    course->z.reserve(npoints);
+    course.x.reserve(npoints);
+    course.y.reserve(npoints);
+    course.z.reserve(npoints);
 
     for (int i = 0; i < file_nums.size(); i++)
     {
         if (i == nx * 3)
         {
-            course->x.emplace_back(file_nums[i]);
+            course.x.emplace_back(file_nums[i]);
             nx++;
         }
         else if (i == 1 + ny * 3)
         {
-            course->y.emplace_back(file_nums[i]);
+            course.y.emplace_back(file_nums[i]);
             ny++;
         }
         else
-            course->z.emplace_back(file_nums[i]);
+            course.z.emplace_back(file_nums[i]);
     }
 
     // publishing trajectory poses for visualization
-    EigenSTL::vector_Isometry3d poses;
     poses.reserve(npoints);
 
     Eigen::Vector3d ee_z, ee_y, ee_x;
     Eigen::Isometry3d single_pose;
 
     // determining orientation
+    // for (unsigned int i = 0; i < npoints; i++)
+    // {
+    //     ee_z << -course.x[i], -course.y[i], -course.z[i];
+    //     ee_z.normalize();
+
+    //     ee_x = (Eigen::Vector3d(0, 1, 0).cross(ee_z)).normalized();
+    //     ee_y = (ee_z.cross(ee_x)).normalized();
+
+    //     Eigen::Isometry3d rot;
+    //     rot.matrix() << ee_x(0), ee_y(0), ee_z(0), 0, ee_x(1), ee_y(1), ee_z(1), 0, ee_x(2), ee_y(2), ee_z(2), 0, 0, 0, 0, 1;
+
+    //     single_pose = Eigen::Translation3d(course.x[i], 0.1+course.y[i], 0.2+course.z[i]) * rot;
+
+    //     poses.emplace_back(single_pose);
+        
+    // }
+
+    //determining orientation
     for (unsigned int i = 0; i < npoints; i++)
     {
-        ee_z << -course->x[i], -course->y[i], -course->z[i];
+        ee_z << -course.x[i], -course.z[i], -course.y[i];
         ee_z.normalize();
 
         ee_x = (Eigen::Vector3d(0, 1, 0).cross(ee_z)).normalized();
         ee_y = (ee_z.cross(ee_x)).normalized();
 
         Eigen::Isometry3d rot;
-        rot.matrix() << ee_x(0), ee_y(0), ee_z(0), 0, ee_x(1), ee_y(1), ee_z(1), 0, ee_x(2), ee_y(2), ee_z(2), 0, 0, 0, 0, 1;
+        rot.matrix() << ee_x(0), ee_z(0), ee_y(0), 0, ee_x(1), ee_z(1), ee_y(1), 0, ee_x(2), ee_z(2), ee_y(2), 0, 0, 0, 0, 1;
 
-        single_pose = Eigen::Translation3d(course->x[i], course->y[i], course->z[i]) * rot;
+        single_pose = Eigen::Translation3d(course.x[i], course.z[i], course.y[i]) * rot;
 
         poses.emplace_back(single_pose);
         
     }
 
-    for (int i = 0; i < npoints; i++)
-    {
-        if (i % 2 == 0)
-        {
-            std::cout << i <<"   "<< poses[i](1, 1) << std::endl;
-        }       
-    }
-
-    PosesPtr = &poses;
     publishPosesMarkers(poses);
 
     ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");

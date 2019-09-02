@@ -9,17 +9,14 @@
 namespace vsl_motion_planning
 {
 
-void VSLPlanner::generateTrajectory(EigenSTL::vector_Isometry3d *PosesPtr, std::vector<descartes_core::TrajectoryPtPtr> &traj)
+void VSLPlanner::generateTrajectory(EigenSTL::vector_Isometry3d &poses, std::vector<descartes_core::TrajectoryPtPtr> &input_traj)
 {
     using namespace descartes_core;
     using namespace descartes_trajectory;
-    
-    EigenSTL::vector_Isometry3d poses;
-    PosesPtr=&poses;
 
     // creating descartes trajectory points
-    traj.clear();
-    traj.reserve(poses.size());
+    input_traj.clear();
+    input_traj.reserve(poses.size());
     for (unsigned int i = 0; i < poses.size(); i++)
     {
         const Eigen::Isometry3d &single_pose = poses[i];
@@ -32,7 +29,7 @@ void VSLPlanner::generateTrajectory(EigenSTL::vector_Isometry3d *PosesPtr, std::
             new descartes_trajectory::AxialSymmetricPt(single_pose, ORIENTATION_INCREMENT, descartes_trajectory::AxialSymmetricPt::FreeAxis::Z_AXIS));
 
         // saving points into trajectory
-        traj.push_back(pt);
+        input_traj.push_back(pt);
     }
 
     ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");

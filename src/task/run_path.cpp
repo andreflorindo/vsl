@@ -57,16 +57,16 @@ void VSLPlanner::runPath(const std::vector<descartes_core::TrajectoryPtPtr> &pat
 }
 
 
-void VSLPlanner::fromDescartesToMoveitTrajectory(const std::vector<descartes_core::TrajectoryPtPtr>& in_traj,
-                                                      trajectory_msgs::JointTrajectory& out_traj)
+void VSLPlanner::fromDescartesToMoveitTrajectory(const std::vector<descartes_core::TrajectoryPtPtr> &input_traj,
+                                                      trajectory_msgs::JointTrajectory &traj)
 {
 //  // Fill out information about our trajectory
-  out_traj.header.stamp = ros::Time::now();
-  out_traj.header.frame_id = config_.world_frame;
-  out_traj.joint_names = config_.joint_names;
+  traj.header.stamp = ros::Time::now();
+  traj.header.frame_id = config_.world_frame;
+  traj.joint_names = config_.joint_names;
 
-  descartes_utilities::toRosJointPoints(*robot_model_ptr_, in_traj, 0.4, out_traj.points);
-  addVel(out_traj);
+  descartes_utilities::toRosJointPoints(*robot_model_ptr_, input_traj, 0.4, traj.points);
+  addVel(traj);
 }
 
 

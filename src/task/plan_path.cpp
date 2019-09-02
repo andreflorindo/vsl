@@ -16,30 +16,30 @@ void VSLPlanner::planPath(std::vector<descartes_core::TrajectoryPtPtr>& input_tr
                           std::vector<descartes_core::TrajectoryPtPtr>& output_path)
 {
 
-  // modifying start and end points such that are close to seed_pose
-  // std::vector<double> start_pose, end_pose;
-  // if(input_traj.front()->getClosestJointPose(config_.seed_pose,*robot_model_ptr_,start_pose) &&
-  //     input_traj.back()->getClosestJointPose(config_.seed_pose,*robot_model_ptr_,end_pose))
-  // {
-  //   ROS_INFO_STREAM("Setting trajectory start and end to JointTrajectoryPts");
+  //modifying start and end points such that are close to seed_pose
+  std::vector<double> start_pose, end_pose;
+  if(input_traj.front()->getClosestJointPose(config_.seed_pose,*robot_model_ptr_,start_pose) &&
+      input_traj.back()->getClosestJointPose(config_.seed_pose,*robot_model_ptr_,end_pose))
+  {
+    ROS_INFO_STREAM("Setting trajectory start and end to JointTrajectoryPts");
 
-  //   // Creating Start JointTrajectoryPt from start joint pose
-  //   descartes_core::TrajectoryPtPtr start_joint_point = descartes_core::TrajectoryPtPtr(
-  //       new descartes_trajectory::JointTrajectoryPt(start_pose));
+    // Creating Start JointTrajectoryPt from start joint pose
+    descartes_core::TrajectoryPtPtr start_joint_point = descartes_core::TrajectoryPtPtr(
+        new descartes_trajectory::JointTrajectoryPt(start_pose));
 
-  //   // Creating End JointTrajectoryPt from end joint pose
-  //   descartes_core::TrajectoryPtPtr end_joint_point = descartes_core::TrajectoryPtPtr(
-  //       new descartes_trajectory::JointTrajectoryPt(end_pose));
+    // Creating End JointTrajectoryPt from end joint pose
+    descartes_core::TrajectoryPtPtr end_joint_point = descartes_core::TrajectoryPtPtr(
+        new descartes_trajectory::JointTrajectoryPt(end_pose));
 
-  //   // Modifying start and end of the trajectory.
-  //   input_traj[0] = start_joint_point;
-  //   input_traj[input_traj.size() - 1 ] = end_joint_point;
-  // }
-  // else
-  // {
-  //   ROS_ERROR_STREAM("Failed to find closest joint pose to seed pose at the start or end of trajectory");
-  //   exit(-1);
-  // }
+    // Modifying start and end of the trajectory.
+    input_traj[0] = start_joint_point;
+    input_traj[input_traj.size() - 1 ] = end_joint_point;
+  }
+  else
+  {
+    ROS_ERROR_STREAM("Failed to find closest joint pose to seed pose at the start or end of trajectory");
+    exit(-1);
+  }
 
   // planning robot path
   bool succeeded = planner_.planPath(input_traj);
