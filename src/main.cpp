@@ -26,6 +26,8 @@ int main(int argc, char **argv)
 
     //planner.runPath(output_traj);
 
+    //ros::Duration(60).sleep();
+
     spinner.stop();
 
     return 0;

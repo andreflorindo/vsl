@@ -54,41 +54,41 @@ void VSLPlanner::readFileContent(CourseStruct &course, EigenSTL::vector_Isometry
     Eigen::Vector3d ee_z, ee_y, ee_x;
     Eigen::Isometry3d single_pose;
 
-    // determining orientation
-    // for (unsigned int i = 0; i < npoints; i++)
-    // {
-    //     ee_z << -course.x[i], -course.y[i], -course.z[i];
-    //     ee_z.normalize();
-
-    //     ee_x = (Eigen::Vector3d(0, 1, 0).cross(ee_z)).normalized();
-    //     ee_y = (ee_z.cross(ee_x)).normalized();
-
-    //     Eigen::Isometry3d rot;
-    //     rot.matrix() << ee_x(0), ee_y(0), ee_z(0), 0, ee_x(1), ee_y(1), ee_z(1), 0, ee_x(2), ee_y(2), ee_z(2), 0, 0, 0, 0, 1;
-
-    //     single_pose = Eigen::Translation3d(course.x[i], 0.1+course.y[i], 0.2+course.z[i]) * rot;
-
-    //     poses.emplace_back(single_pose);
-        
-    // }
-
     //determining orientation
     for (unsigned int i = 0; i < npoints; i++)
     {
-        ee_z << -course.x[i], -course.z[i], -course.y[i];
+        ee_z << -course.x[i], -course.y[i], -course.z[i];
         ee_z.normalize();
 
         ee_x = (Eigen::Vector3d(0, 1, 0).cross(ee_z)).normalized();
         ee_y = (ee_z.cross(ee_x)).normalized();
 
         Eigen::Isometry3d rot;
-        rot.matrix() << ee_x(0), ee_z(0), ee_y(0), 0, ee_x(1), ee_z(1), ee_y(1), 0, ee_x(2), ee_z(2), ee_y(2), 0, 0, 0, 0, 1;
+        rot.matrix() << ee_x(0), ee_y(0), ee_z(0), 0, ee_x(1), ee_y(1), ee_z(1), 0, ee_x(2), ee_y(2), ee_z(2), 0, 0, 0, 0, 1;
 
-        single_pose = Eigen::Translation3d(course.x[i], course.z[i], course.y[i]) * rot;
+        single_pose = Eigen::Translation3d(course.x[i], 0.1+course.y[i], 0.2+course.z[i]) * rot;
 
         poses.emplace_back(single_pose);
         
     }
+
+    //determining orientation
+    // for (unsigned int i = 0; i < npoints; i++)
+    // {
+    //     ee_z << -course.x[i], -course.z[i], -course.y[i];
+    //     ee_z.normalize();
+
+    //     ee_x = (Eigen::Vector3d(0, 1, 0).cross(ee_z)).normalized();
+    //     ee_y = (ee_z.cross(ee_x)).normalized();
+
+    //     Eigen::Isometry3d rot;
+    //     rot.matrix() << ee_x(0), ee_z(0), ee_y(0), 0, ee_x(1), ee_z(1), ee_y(1), 0, ee_x(2), ee_z(2), ee_y(2), 0, 0, 0, 0, 1;
+
+    //     single_pose = Eigen::Translation3d(course.x[i], -course.z[i], course.y[i]) * rot;
+
+    //     poses.emplace_back(single_pose);
+        
+    // }
 
     publishPosesMarkers(poses);
 
