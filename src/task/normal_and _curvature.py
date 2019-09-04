@@ -5,6 +5,7 @@ import numpy as np
 import math
 import matplotlib.pyplot as pyplot
 from mpl_toolkits.mplot3d import Axes3D
+from scipy.interpolate import BSpline
 
 
 class CourseClass:
@@ -46,49 +47,77 @@ def plot_course(course):
     pyplot.show()
 
 
-def B(x, k, i, u):
-    if k == 0:
-        return 1.0 if u[i] <= x < u[i+1] else 0.0
+def bspline3D(parameter, u, course, k):
 
-    if u[i+k] == u[i]:
-        c1 = 0.0
-    else:
-        c1 = (x - u[i])/(u[i+k] - u[i]) * B(x, k-1, i, u)
+    xd = BSpline(u, course.x, k)
+    yd = BSpline(u, course.y, k)
+    zd = BSpline(u, course.z, k)
 
-    if u[i+k+1] == u[i+1]:
-        c2 = 0.0
-    else:
-        c2 = (u[i+k+1] - x)/(u[i+k+1] - u[i+1]) * B(x, k-1, i+1, u)
-    return c1 + c2
+    bspline_x = xd(parameter)
+    bspline_y = yd(parameter)
+    bspline_z = zd(parameter)
 
+    bspline_course = CourseClass(bspline_x, bspline_y, bspline_z)
 
-def bspline1D(x, u, p, k):
-    m = len(u)
-    n = m - k - 1
-    bspline = 0
-
-    for i in range(0,n):
-        add_element = p[i] * B(x, k, i, u)
-        bspline = add_element + bspline
-
-    return bspline
-
-
-def bspline3D(x, u, course, k):
-    bx = []
-    by = []
-    bz = []
- 
-    for j in range(0, len(x)):
-        xd = bspline1D(x[j], u, course.x, k)
-        yd = bspline1D(x[j], u, course.y, k)
-        zd = bspline1D(x[j], u, course.z, k)
-        bx.append(xd)
-        by.append(yd)
-        bz.append(zd)
-
-    bspline_course = CourseClass(bx, by, bz)
     return bspline_course
+
+
+def deriv_bspline3D(order, parameter, u, course, k):
+    xd = BSpline(u, course.x, k)
+    yd = BSpline(u, course.y, k)
+    zd = BSpline(u, course.z, k)
+
+    deriv_xd = xd.derivative(order)
+    deriv_yd = yd.derivative(order)
+    deriv_zd = zd.derivative(order)
+
+    deriv_bspline_x = deriv_xd(parameter)
+    deriv_bspline_y = deriv_yd(parameter)
+    deriv_bspline_z = deriv_zd(parameter)
+
+    deriv_bspline_course = CourseClass(
+        deriv_bspline_x, deriv_bspline_y, deriv_bspline_z)
+    return deriv_bspline_course
+
+
+def recognize_position(course, bspline_course):
+    position = []
+    for j in range(0,len(course.x)):
+        for i in range(0, len(bspline_course.x)):
+            if bspline_course.x[i] >= 0.996*course.x[j] and bspline_course.x[i] <= 1.004*course.x[j]:
+                position.append(i)
+                break               
+    return position
+
+def deriv_bspline_position(order,position, parameter, u, course, k):
+    xd = BSpline(u, course.x, k)
+    yd = BSpline(u, course.y, k)
+    zd = BSpline(u, course.z, k)
+
+    deriv_xd = xd.derivative(order)
+    deriv_yd = yd.derivative(order)
+    deriv_zd = zd.derivative(order)
+
+    deriv_parameter=[]
+    for i in range(0, len(position)):
+        deriv_parameter.append(parameter[position[i]])
+
+    deriv_bspline_x = deriv_xd(deriv_parameter)
+    deriv_bspline_y = deriv_yd(deriv_parameter)
+    deriv_bspline_z = deriv_zd(deriv_parameter)
+
+    deriv_bspline_course = CourseClass(
+        deriv_bspline_x, deriv_bspline_y, deriv_bspline_z)
+    return deriv_bspline_course
+
+def build_vector(deriv_bspline):
+    deriv_vector=[]
+    for i in range(0, len(deriv_bspline.x)):
+        vector_norm = math.sqrt(deriv_bspline.x[i]**2+deriv_bspline.y[i]**2+deriv_bspline.z[i]**2)
+        vector=[(deriv_bspline.x[i])/vector_norm,(deriv_bspline.y[i])/vector_norm,(deriv_bspline.z[i])/vector_norm]
+        deriv_vector.append(vector)
+    print(deriv_vector)
+    return deriv_vector
 
 
 if __name__ == "__main__":
@@ -98,18 +127,30 @@ if __name__ == "__main__":
     # k curve degree
 
     course = read_path()
-    # plot_course(course)
+    #plot_course(course)
 
-    k = len(course.x)
+    k = len(course.x)-1
 
-    u=[]
-    for i in range(0,2*k):
-         if i<k:
-             u.append(0)
-         else:
-             u.append(1)
+    u = []
+    for i in range(0, 2*k+2):
+        if i < k+1:
+            u.append(0)
+        else:
+            u.append(1)
 
     parameter = np.linspace(0, 1, num=500)
 
     bspline_course = bspline3D(parameter, u, course, k)
-    plot_course(bspline_course)
+    position = recognize_position(course, bspline_course)
+
+    deriv1_bspline_position = deriv_bspline_position(1,position, parameter, u, course, k)
+    deriv2_bspline_position = deriv_bspline_position(2,position, parameter, u, course, k)
+    tangent=build_vector(deriv1_bspline_position)
+    curvature=build_vector(deriv2_bspline_position)
+    np.savetxt("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/tangent_simplePath.txt", tangent, fmt='%.6f')
+    np.savetxt("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/curvature_simplePath.txt", curvature, fmt='%.6f')
+    
+    #plot_course(bspline_course)
+
+    #deriv_bspline_course = deriv_bspline3D(1,parameter, u, course, k)
+    # plot_course(deriv_bspline_course)

@@ -9,7 +9,8 @@ namespace vsl_motion_planning
 
 void VSLPlanner::readFileContent(CourseStruct &course, EigenSTL::vector_Isometry3d &poses)
 {
-    //     https://stackoverflow.com/questions/46663046/save-read-double-vector-from-file-c                    //<-------------  Other way
+    //Read File with 
+    readFileContent("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/simplePath.txt", course, pose)
 
     std::ifstream infile{"/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/simplePath.txt", std::ios::in};
 
@@ -95,6 +96,47 @@ void VSLPlanner::readFileContent(CourseStruct &course, EigenSTL::vector_Isometry
     ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");
     ROS_INFO_STREAM("Trajectory with " << npoints << " points was generated");
 }
+
+void VSLPlanner::readFileContent(std::string filename, CourseStruct &course, EigenSTL::vector_Isometry3d &poses)
+{
+    std::ifstream infile{"/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/simplePath.txt", std::ios::in};
+
+    if (!infile.good())
+    {
+        ROS_ERROR_STREAM("Path as not able to be found. Trajectory generation failed");
+        exit(-1);
+    }
+
+    std::istream_iterator<double> infile_begin{infile};
+    std::istream_iterator<double> eof{};
+    std::vector<double> file_nums{infile_begin, eof};
+    infile.close();
+
+    int nx = 0;
+    int ny = 0;
+    int npoints = file_nums.size() / 3;
+
+    course.x.reserve(npoints);
+    course.y.reserve(npoints);
+    course.z.reserve(npoints);
+
+    for (int i = 0; i < file_nums.size(); i++)
+    {
+        if (i == nx * 3)
+        {
+            course.x.emplace_back(file_nums[i]);
+            nx++;
+        }
+        else if (i == 1 + ny * 3)
+        {
+            course.y.emplace_back(file_nums[i]);
+            ny++;
+        }
+        else
+            course.z.emplace_back(file_nums[i]);
+    }
+}
+
 
 void VSLPlanner::publishPosesMarkers(const EigenSTL::vector_Isometry3d &poses)
 {
