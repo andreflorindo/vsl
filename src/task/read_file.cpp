@@ -7,67 +7,34 @@
 namespace vsl_motion_planning
 {
 
-void VSLPlanner::readFileContent(CourseStruct &course, EigenSTL::vector_Isometry3d &poses)
+void VSLPlanner::createCourse(CourseStruct &course, EigenSTL::vector_Isometry3d &poses)
 {
-    //Read File with 
-    readFileContent("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/simplePath.txt", course, pose)
-
-    std::ifstream infile{"/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/simplePath.txt", std::ios::in};
-
-    if (!infile.good())
-    {
-        ROS_ERROR_STREAM("Path as not able to be found. Trajectory generation failed");
-        exit(-1);
-    }
-
-    std::istream_iterator<double> infile_begin{infile};
-    std::istream_iterator<double> eof{};
-    std::vector<double> file_nums{infile_begin, eof};
-    infile.close();
-
-    int nx = 0;
-    int ny = 0;
-    int npoints = file_nums.size() / 3;
-
-    course.x.reserve(npoints);
-    course.y.reserve(npoints);
-    course.z.reserve(npoints);
-
-    for (int i = 0; i < file_nums.size(); i++)
-    {
-        if (i == nx * 3)
-        {
-            course.x.emplace_back(file_nums[i]);
-            nx++;
-        }
-        else if (i == 1 + ny * 3)
-        {
-            course.y.emplace_back(file_nums[i]);
-            ny++;
-        }
-        else
-            course.z.emplace_back(file_nums[i]);
-    }
-
-    // publishing trajectory poses for visualization
+    //Read File containing the course
+    readFileContent("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/simplePath.txt", course);
+    int npoints = course.x.size();
     poses.reserve(npoints);
 
+    //Read File with the curvature and tangent of the course
+    CourseStruct tangent;
+    CourseStruct curvature;
+    readFileContent("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/tangent_simplePath.txt", tangent);
+    readFileContent("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/curvature_simplePath.txt", curvature);
+
+    //determining orientation
     Eigen::Vector3d ee_z, ee_y, ee_x;
     Eigen::Isometry3d single_pose;
 
-    //determining orientation
     for (unsigned int i = 0; i < npoints; i++)
     {
-        ee_z << -course.x[i], -course.y[i], -course.z[i];
-        ee_z.normalize();
+        ee_z << -curvature.x[i], -curvature.y[i], -curvature.z[i];
 
-        ee_x = (Eigen::Vector3d(0, 1, 0).cross(ee_z)).normalized();
+        ee_x << -tangent.x[i], -tangent.y[i], -tangent.z[i];
         ee_y = (ee_z.cross(ee_x)).normalized();
 
         Eigen::Isometry3d rot;
         rot.matrix() << ee_x(0), ee_y(0), ee_z(0), 0, ee_x(1), ee_y(1), ee_z(1), 0, ee_x(2), ee_y(2), ee_z(2), 0, 0, 0, 0, 1;
 
-        single_pose = Eigen::Translation3d(course.x[i], 0.1+course.y[i], 0.2+course.z[i]) * rot;
+        single_pose = Eigen::Translation3d(course.x[i]+0.4, course.y[i], course.z[i]+0.8) * rot;
 
         poses.emplace_back(single_pose);
         
@@ -76,20 +43,21 @@ void VSLPlanner::readFileContent(CourseStruct &course, EigenSTL::vector_Isometry
     //determining orientation
     // for (unsigned int i = 0; i < npoints; i++)
     // {
-    //     ee_z << -course.x[i], -course.z[i], -course.y[i];
+    //     ee_z << -course.x[i], -course.y[i], -course.z[i];
     //     ee_z.normalize();
 
     //     ee_x = (Eigen::Vector3d(0, 1, 0).cross(ee_z)).normalized();
     //     ee_y = (ee_z.cross(ee_x)).normalized();
 
     //     Eigen::Isometry3d rot;
-    //     rot.matrix() << ee_x(0), ee_z(0), ee_y(0), 0, ee_x(1), ee_z(1), ee_y(1), 0, ee_x(2), ee_z(2), ee_y(2), 0, 0, 0, 0, 1;
+    //     rot.matrix() << ee_x(0), ee_y(0), ee_z(0), 0, ee_x(1), ee_y(1), ee_z(1), 0, ee_x(2), ee_y(2), ee_z(2), 0, 0, 0, 0, 1;
 
-    //     single_pose = Eigen::Translation3d(course.x[i], -course.z[i], course.y[i]) * rot;
+    //     single_pose = Eigen::Translation3d(course.x[i], course.y[i], course.z[i]) * rot;     
 
     //     poses.emplace_back(single_pose);
         
     // }
+
 
     publishPosesMarkers(poses);
 
@@ -97,9 +65,9 @@ void VSLPlanner::readFileContent(CourseStruct &course, EigenSTL::vector_Isometry
     ROS_INFO_STREAM("Trajectory with " << npoints << " points was generated");
 }
 
-void VSLPlanner::readFileContent(std::string filename, CourseStruct &course, EigenSTL::vector_Isometry3d &poses)
+void VSLPlanner::readFileContent(std::string filename, CourseStruct &course)
 {
-    std::ifstream infile{"/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/simplePath.txt", std::ios::in};
+    std::ifstream infile{filename, std::ios::in};
 
     if (!infile.good())
     {

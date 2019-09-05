@@ -23,9 +23,7 @@ void VSLPlanner::initRos()
         ph.getParam("base_link", config_.base_link) &&
         ph.getParam("world_frame", config_.world_frame) &&
         ph.getParam("trajectory/time_delay", config_.time_delay) &&
-        //ph.getParam("trajectory/foci_distance", config_.foci_distance) &&
         ph.getParam("trajectory/num_points", config_.num_points) &&
-        //ph.getParam("trajectory/center", config_.center) &&
         ph.getParam("trajectory/seed_pose", config_.seed_pose) &&
         ph.getParam("visualization/min_point_distance", config_.min_point_distance) &&
         nh.getParam("controller_joint_names", config_.joint_names))

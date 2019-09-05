@@ -1,5 +1,5 @@
 controller_list:
   - name: ""
-    action_ns: /position_trajectory_controller/follow_joint_trajectory/
+    action_ns: joint_trajectory_action
     type: FollowJointTrajectory
     joints: [kr210_joint_a1, kr210_joint_a2, kr210_joint_a3, kr210_joint_a4, kr210_joint_a5, kr210_joint_a6]

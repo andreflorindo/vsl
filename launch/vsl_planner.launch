@@ -7,11 +7,9 @@
     <param name="group_name" value="manipulator"/>
     <param name="tip_link" value="kr210_qr_tool0"/>
     <param name="base_link" value="kr210_base"/>
-    <param name="world_frame" value="table_table_top"/>
+    <param name="world_frame" value="kl2000_base_link"/> <!--table_table_top-->
     <param name="trajectory/time_delay" value="0.1"/>
-    <!--<param name="trajectory/foci_distance" value="0.07"/>-->
     <param name="trajectory/num_points" value="200"/>
-    <!--<rosparam param="trajectory/center">[0.36, 0.2, 0.1]</rosparam>-->
     <rosparam param="trajectory/seed_pose">[1.57, -1.57, 1.04 , 0.0, 1.57, 0.0]</rosparam>
     <param name="visualization/min_point_distance" value="0.02"/> 
   </node>

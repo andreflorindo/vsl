@@ -116,7 +116,6 @@ def build_vector(deriv_bspline):
         vector_norm = math.sqrt(deriv_bspline.x[i]**2+deriv_bspline.y[i]**2+deriv_bspline.z[i]**2)
         vector=[(deriv_bspline.x[i])/vector_norm,(deriv_bspline.y[i])/vector_norm,(deriv_bspline.z[i])/vector_norm]
         deriv_vector.append(vector)
-    print(deriv_vector)
     return deriv_vector
 
 
@@ -127,7 +126,7 @@ if __name__ == "__main__":
     # k curve degree
 
     course = read_path()
-    #plot_course(course)
+    plot_course(course)
 
     k = len(course.x)-1
 
@@ -146,7 +145,12 @@ if __name__ == "__main__":
     deriv1_bspline_position = deriv_bspline_position(1,position, parameter, u, course, k)
     deriv2_bspline_position = deriv_bspline_position(2,position, parameter, u, course, k)
     tangent=build_vector(deriv1_bspline_position)
-    curvature=build_vector(deriv2_bspline_position)
+    #curvature=build_vector(deriv2_bspline_position)
+    curvature=[]
+    for i in range(0,len(tangent)):
+        curvature.append([0,0,1])
+
+
     np.savetxt("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/tangent_simplePath.txt", tangent, fmt='%.6f')
     np.savetxt("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/curvature_simplePath.txt", curvature, fmt='%.6f')
     

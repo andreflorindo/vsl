@@ -2,6 +2,7 @@
 
 /* MOVE HOME
   Goal:
+  - Translate the result into a type that ROS understands
     - Move the robot to from its current location to the first point in the robot path.
     - Execute the robot path.
 */

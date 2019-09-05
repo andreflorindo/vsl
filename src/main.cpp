@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 
     CourseStruct course;
     EigenSTL::vector_Isometry3d poses;
-    planner.readFileContent(course, poses);
+    planner.createCourse(course, poses);
 
     std::vector<descartes_core::TrajectoryPtPtr> input_traj;
     planner.generateTrajectory(poses, input_traj);
@@ -24,7 +24,7 @@ int main(int argc, char **argv)
     std::vector<descartes_core::TrajectoryPtPtr> output_traj;
     planner.planPath(input_traj, output_traj);
 
-    //planner.runPath(output_traj);
+    planner.runPath(output_traj);
 
     //ros::Duration(60).sleep();
 

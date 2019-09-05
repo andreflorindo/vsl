@@ -4,5 +4,5 @@
   <param name="moveit_controller_manager"
          value="$(arg moveit_controller_manager)"/>
 
-  <rosparam file="$(find atomic_moveit_no_eef)/config/controllers.yaml"/>
+  <rosparam file="$(find vsl_core)/kr210_no_eef_cell_moveit_config/config/controllers.yaml"/>
 </launch>
