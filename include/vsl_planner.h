@@ -57,7 +57,7 @@ struct Configuration
   std::string base_link;
   std::string world_frame;
   double time_delay;                  /* Time step between consecutive points in the robot path */
-  int num_points;                   /* Number of points per curve */
+  //int num_points;                   /* Number of points per curve */
   std::vector<double> seed_pose;    /* Joint values close to the desired start of the robot path */
   double min_point_distance;        /* Minimum distance between consecutive trajectory points. */
   std::vector<std::string> joint_names;

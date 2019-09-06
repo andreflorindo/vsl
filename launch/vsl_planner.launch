@@ -9,7 +9,7 @@
     <param name="base_link" value="kr210_base"/>
     <param name="world_frame" value="kl2000_base_link"/> <!--table_table_top-->
     <param name="trajectory/time_delay" value="0.1"/>
-    <param name="trajectory/num_points" value="200"/>
+    <!--<param name="trajectory/num_points" value="200"/>-->
     <rosparam param="trajectory/seed_pose">[1.57, -1.57, 1.04 , 0.0, 1.57, 0.0]</rosparam>
     <param name="visualization/min_point_distance" value="0.02"/> 
   </node>
