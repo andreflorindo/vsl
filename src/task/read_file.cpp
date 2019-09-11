@@ -33,8 +33,11 @@ void VSLPlanner::createCourse(CourseStruct &course, EigenSTL::vector_Isometry3d 
 
         Eigen::Isometry3d rot;
         rot.matrix() << ee_x(0), ee_y(0), ee_z(0), 0, ee_x(1), ee_y(1), ee_z(1), 0, ee_x(2), ee_y(2), ee_z(2), 0, 0, 0, 0, 1;
+        //single_pose = Eigen::Translation3d(course.x[i]-0.8, course.y[i]+1.6, course.z[i]+0.8) * rot; //-0.8 1.6 0.8
 
-        single_pose = Eigen::Translation3d(course.x[i]-0.8, course.y[i]+1.6, course.z[i]+0.8) * rot;
+        Eigen::Isometry3d rot_start_table;
+        rot_start_table.matrix() << -1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0 ,0 ,0, 1;
+        single_pose = rot_start_table*(Eigen::Translation3d(course.x[i], course.y[i]-1.2-0.6, course.z[i]+0.78+0.002)) * rot; 
 
         poses.emplace_back(single_pose);
         
