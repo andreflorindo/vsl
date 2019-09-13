@@ -57,7 +57,7 @@
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />
 
     <include file="$(find industrial_robot_simulator)/launch/robot_interface_simulator.launch" />
-    <rosparam param="initial_joint_state">[0.0, -1.03, 0.91 , -0.21, 0.0, 0.0]</rosparam>
+    <rosparam param="initial_joint_state">[0.0, -1.57, 1.57, 0.0, 0.0, 0.0]</rosparam>
   </group>
 
   <!-- rviz -->
