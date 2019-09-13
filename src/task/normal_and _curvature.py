@@ -83,10 +83,15 @@ def deriv_bspline3D(order, parameter, u, course, k):
 def recognize_position(course, bspline_course):
     position = []
     for j in range(0,len(course.x)):
+        percentage = 0.2
         for i in range(0, len(bspline_course.x)):
-            if bspline_course.x[i] >= 0.996*course.x[j] and bspline_course.x[i] <= 1.004*course.x[j]:
-                position.append(i)
-                break               
+            if bspline_course.x[i] >= (1-percentage)*course.x[j] and bspline_course.x[i] <= (1+percentage)*course.x[j]:
+                if bspline_course.x[i]>course.x[j]:
+                    percentage= bspline_course.x[i]/course.x[j]-1
+                else:
+                    percentage= 1-bspline_course.x[i]/course.x[j]
+                k = i
+        position.append(k)            
     return position
 
 def deriv_bspline_position(order,position, parameter, u, course, k):
@@ -166,7 +171,7 @@ if __name__ == "__main__":
     np.savetxt("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/normal_simplePath.txt", normal, fmt='%.6f')
     np.savetxt("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/binormal_simplePath.txt", binormal, fmt='%.6f')
 
-    #plot_course(bspline_course)
+    plot_course(bspline_course)
 
     #deriv_bspline_course = deriv_bspline3D(1,parameter, u, course, k)
     # plot_course(deriv_bspline_course)
