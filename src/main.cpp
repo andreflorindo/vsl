@@ -5,7 +5,7 @@
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "main");
-    ros::AsyncSpinner spinner(2);
+    ros::AsyncSpinner spinner(1);
     spinner.start();
 
     // Main program
