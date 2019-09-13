@@ -126,7 +126,7 @@ if __name__ == "__main__":
     # k curve degree
 
     course = read_path()
-    plot_course(course)
+    #plot_course(course)
 
     k = len(course.x)-1
 
@@ -142,18 +142,30 @@ if __name__ == "__main__":
     bspline_course = bspline3D(parameter, u, course, k)
     position = recognize_position(course, bspline_course)
 
-    deriv1_bspline_position = deriv_bspline_position(1,position, parameter, u, course, k)
-    deriv2_bspline_position = deriv_bspline_position(2,position, parameter, u, course, k)
+    deriv1_bspline_position = deriv_bspline_position(1, position, parameter, u, course, k)
+    deriv2_bspline_position = deriv_bspline_position(2, position, parameter, u, course, k)
     tangent=build_vector(deriv1_bspline_position)
-    #curvature=build_vector(deriv2_bspline_position)
-    curvature=[]
-    for i in range(0,len(tangent)):
-        curvature.append([0,0,1])
+    normal=build_vector(deriv2_bspline_position)
 
+    binormal=[]
+    for i in range(0,len(tangent)):
+         binormal_vector = np.cross(tangent[i], normal[i])
+         binormal_norm = math.sqrt(binormal_vector[0]**2+binormal_vector[1]**2+binormal_vector[2]**2)
+         if binormal_vector[2]<0:
+             binormal_vector[0]=-binormal_vector[0]
+             binormal_vector[1]=-binormal_vector[1]
+             binormal_vector[2]=-binormal_vector[2]
+         binormal.append(binormal_vector/binormal_norm)
+
+
+    # binormal=[]
+    # for i in range(0,len(tangent)):
+    #     binormal.append([0,0,1])
 
     np.savetxt("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/tangent_simplePath.txt", tangent, fmt='%.6f')
-    np.savetxt("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/curvature_simplePath.txt", curvature, fmt='%.6f')
-    
+    np.savetxt("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/normal_simplePath.txt", normal, fmt='%.6f')
+    np.savetxt("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/binormal_simplePath.txt", binormal, fmt='%.6f')
+
     #plot_course(bspline_course)
 
     #deriv_bspline_course = deriv_bspline3D(1,parameter, u, course, k)

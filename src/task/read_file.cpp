@@ -14,11 +14,11 @@ void VSLPlanner::createCourse(CourseStruct &course, EigenSTL::vector_Isometry3d 
     int npoints = course.x.size();
     poses.reserve(npoints);
 
-    //Read File with the curvature and tangent of the course
+    //Read File with the binormal and tangent of the course
     CourseStruct tangent;
-    CourseStruct curvature;
+    CourseStruct binormal;
     readFileContent("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/tangent_simplePath.txt", tangent);
-    readFileContent("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/curvature_simplePath.txt", curvature);
+    readFileContent("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/binormal_simplePath.txt", binormal);
 
     //determining orientation
     Eigen::Vector3d ee_z, ee_y, ee_x;
@@ -26,7 +26,7 @@ void VSLPlanner::createCourse(CourseStruct &course, EigenSTL::vector_Isometry3d 
 
     for (unsigned int i = 0; i < npoints; i++)
     {
-        ee_z << -curvature.x[i], -curvature.y[i], -curvature.z[i];
+        ee_z << -binormal.x[i], -binormal.y[i], -binormal.z[i];
 
         ee_x << -tangent.x[i], -tangent.y[i], -tangent.z[i];
         ee_y = (ee_z.cross(ee_x)).normalized();
