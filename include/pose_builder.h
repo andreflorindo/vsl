@@ -14,6 +14,7 @@
 #include <iterator>
 #include <vector>
 #include <eigen_conversions/eigen_msg.h>
+#include <eigen_stl_containers/eigen_stl_vector_container.h>
 
 // MoveIt
 #include <visualization_msgs/MarkerArray.h>

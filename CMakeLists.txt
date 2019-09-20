@@ -17,7 +17,6 @@ find_package(catkin REQUIRED COMPONENTS
   descartes_planner
   descartes_utilities
   eigen_conversions
-  geometry_msgs
   message_generation
 )
 
@@ -78,6 +77,8 @@ find_package(Boost REQUIRED COMPONENTS system)
  generate_messages(
    DEPENDENCIES
    geometry_msgs # Or other packages containing msgs
+   visualization_msgs
+   std_msgs
  )
 
 ################################################
@@ -125,7 +126,7 @@ catkin_package(
    descartes_utilities
    eigen_conversions
    message_runtime
-   geometry_msgs
+
 #  DEPENDS system_lib
 )
 
