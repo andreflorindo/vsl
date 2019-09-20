@@ -17,6 +17,8 @@ find_package(catkin REQUIRED COMPONENTS
   descartes_planner
   descartes_utilities
   eigen_conversions
+  geometry_msgs
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -60,11 +62,10 @@ find_package(Boost REQUIRED COMPONENTS system)
 # )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+ add_service_files(
+   FILES
+   PoseBuilder.srv
+ )
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -74,10 +75,10 @@ find_package(Boost REQUIRED COMPONENTS system)
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+ generate_messages(
+   DEPENDENCIES
+   geometry_msgs # Or other packages containing msgs
+ )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -123,6 +124,8 @@ catkin_package(
    descartes_planner
    descartes_utilities
    eigen_conversions
+   message_runtime
+   geometry_msgs
 #  DEPENDS system_lib
 )
 
@@ -141,7 +144,6 @@ include_directories(
  add_library(${PROJECT_NAME}
    src/task/init_ros.cpp
    src/task/init_descartes.cpp
-   src/task/read_file.cpp
    src/task/generate_trajectory.cpp
    src/task/plan_path.cpp
    src/task/run_path.cpp
@@ -155,7 +157,8 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(main src/main.cpp)
+add_executable(vsl_planner_descartes src/main.cpp)
+add_executable(pose_builder src/pose_builder.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -166,10 +169,12 @@ add_executable(main src/main.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(main ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(vsl_planner_descartes ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(pose_builder ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(main ${PROJECT_NAME} ${catkin_LIBRARIES})
+target_link_libraries(vsl_planner_descartes ${PROJECT_NAME} ${catkin_LIBRARIES})
+target_link_libraries(pose_builder ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 #############
 ## Install ##

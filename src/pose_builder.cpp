@@ -3,30 +3,55 @@
 // Add vector<CourseStruct> in case there are more courses
 // If z is not given in the file, maybe add a collumn of zeros
 
-#include <vsl_planner.h>
+#include <pose_builder.h>
+
 namespace vsl_motion_planning
 {
 
-void VSLPlanner::createCourse(CourseStruct &course, EigenSTL::vector_Isometry3d &poses)
-{
+PoseBuilder::PoseBuilder() {}
+PoseBuilder::~PoseBuilder() {}
 
+void PoseBuilder::init_Server()
+{
     ros::NodeHandle nh;
     ros::NodeHandle ph("~");
 
+    if (ph.getParam("world_frame", config_.world_frame) &&
+        ph.getParam("visualization/min_point_distance", config_.min_point_distance))
+    {
+        ROS_INFO_STREAM("Loaded Server parameters");
+    }
+    else
+    {
+        ROS_ERROR_STREAM("Failed to load Server parameters");
+        exit(-1);
+    }
+
+    ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");
+}
+
+void PoseBuilder::createCourse()
+{
     //Read File containing the course
+    CourseStruct course;
+    //std::shared_ptr<CourseStruct> course = std::make_shared<CourseStruct>();
     readFileContent("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/simplePath.txt", course);
     int npoints = course.x.size();
-    poses.reserve(npoints);
 
-    //Read File with the binormal and tangent of the course
+    //Read Files with the binormal and tangent of the course
     CourseStruct tangent;
     CourseStruct binormal;
     readFileContent("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/tangent_simplePath.txt", tangent);
     readFileContent("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/binormal_simplePath.txt", binormal);
 
-    //determining orientation
+    //Initializate pose message
+    course_poses.poses.reserve(npoints);                                //  <---------------
+    course_poses.header.frame_id = config_.world_frame;
+
+    //determining orientation and calculate pose
     Eigen::Vector3d ee_z, ee_y, ee_x;
     Eigen::Isometry3d single_pose;
+    geometry_msgs::Pose single_pose_msg;
 
     for (unsigned int i = 0; i < npoints; i++)
     {
@@ -40,20 +65,21 @@ void VSLPlanner::createCourse(CourseStruct &course, EigenSTL::vector_Isometry3d 
         //single_pose = Eigen::Translation3d(course.x[i]-0.8, course.y[i]+1.6, course.z[i]+0.8) * rot; //-0.8 1.6 0.8
 
         Eigen::Isometry3d rot_start_table;
-        rot_start_table.matrix() << -1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0 ,0 ,0, 1;
-        single_pose = rot_start_table*(Eigen::Translation3d(course.x[i], course.y[i]-1.2-0.6, course.z[i]+0.78+0.002)) * rot; 
+        rot_start_table.matrix() << -1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1;
+        single_pose = rot_start_table * (Eigen::Translation3d(course.x[i], course.y[i] - 1.2 - 0.6, course.z[i] + 0.78 + 0.002)) * rot;
 
-        poses.emplace_back(single_pose);
-        
+        tf::poseEigenToMsg(single_pose, single_pose_msg)
+
+        course_poses.poses.emplace_back(single_pose_msg);
     }
 
-    publishPosesMarkers(poses);
+    publishPosesMarkers(course_poses, npoints);
 
     ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");
     ROS_INFO_STREAM("Trajectory with " << npoints << " points was generated");
 }
 
-void VSLPlanner::readFileContent(std::string filename, CourseStruct &course)
+void PoseBuilder::readFileContent(std::string &filename, CourseStruct &course)
 {
     std::ifstream infile{filename, std::ios::in};
 
@@ -93,12 +119,10 @@ void VSLPlanner::readFileContent(std::string filename, CourseStruct &course)
     }
 }
 
-
-void VSLPlanner::publishPosesMarkers(const EigenSTL::vector_Isometry3d &poses)
+void PoseBuilder::publishPosesMarkers(const geometry_msgs::PoseArray &course_poses, const int &npoints)
 {
     // creating rviz markers
     visualization_msgs::Marker z_axes, y_axes, x_axes, line;
-    visualization_msgs::MarkerArray markers_msg;
 
     z_axes.type = y_axes.type = x_axes.type = visualization_msgs::Marker::LINE_LIST;
     z_axes.ns = y_axes.ns = x_axes.ns = "axes";
@@ -142,14 +166,26 @@ void VSLPlanner::publishPosesMarkers(const EigenSTL::vector_Isometry3d &poses)
     line.color.a = 1;
 
     // creating axes markers
-    z_axes.points.reserve(2 * poses.size());
-    y_axes.points.reserve(2 * poses.size());
-    x_axes.points.reserve(2 * poses.size());
-    line.points.reserve(poses.size());
+
+    z_axes.points.reserve(2 * npoints);
+    y_axes.points.reserve(2 * npoints);
+    x_axes.points.reserve(2 * npoints);
+    line.points.reserve(npoints);
     geometry_msgs::Point p_start, p_end;
     double distance = 0;
+
+    EigenSTL::vector_Isometry3d poses;
+    Eigen::Isometry3d single_pose;
+    poses.reserve(npoints);
+
+    for (unsigned int i = 0; i < npoints; i++)
+    {
+        tf::poseMsgToEigen(course_poses.poses[i], single_pose);
+        poses.emplace_back(single_pose);
+    }
+
     Eigen::Isometry3d prev = poses[0];
-    for (unsigned int i = 0; i < poses.size(); i++)
+    for (unsigned int i = 0; i < npoints; i++)
     {
         const Eigen::Isometry3d &pose = poses[i];
         distance = (pose.translation() - prev.translation()).norm();
@@ -185,6 +221,34 @@ void VSLPlanner::publishPosesMarkers(const EigenSTL::vector_Isometry3d &poses)
     markers_msg.markers.push_back(z_axes);
     markers_msg.markers.push_back(line);
 
-    marker_publisher_.publish(markers_msg);
+
+        // creating publisher for trajectory visualization
+            //marker_publisher_.publish(markers_msg);
+    // marker_publisher_ = nh_.advertise<visualization_msgs::MarkerArray>(VISUALIZE_TRAJECTORY_TOPIC, 1, true);
 }
-} // namespace vsl_motion_planning
+
+bool PoseBuilder::serviceCallback(vsl_core::PoseBuilder::Request &request, vsl_core::PoseBuilder::Response &response)
+{
+    response.single_course_poses = course_poses;                                            //  <---------------
+    response.single_course_marker = markers_msg;                                           //  <---------------
+
+    return true
+}
+
+}
+
+int main(int argc, char **argv)
+{
+    ros::init(argc, argv, "pose_builder");
+    ros::AsyncSpinner spinner(1);
+    spinner.start();
+
+    vsl_motion_planning::PoseBuilder posebuilder;
+
+    posebuilder.init_Server();
+
+    posebuilder.createCourse();
+
+    pose_builder_server_ = nh.advertiseService("single_course", &posebuilder.serviceCallback);                   //  <---------------
+
+}

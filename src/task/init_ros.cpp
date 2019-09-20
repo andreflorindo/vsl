@@ -36,9 +36,6 @@ void VSLPlanner::initRos()
         exit(-1);
     }
 
-    // creating publisher for trajectory visualization
-    marker_publisher_ = nh_.advertise<visualization_msgs::MarkerArray>(VISUALIZE_TRAJECTORY_TOPIC, 1, true);
-
     typedef actionlib::SimpleActionClient<moveit_msgs::ExecuteTrajectoryAction> client_type;
     moveit_run_path_client_ptr_ = std::make_shared<client_type>(EXECUTE_TRAJECTORY_ACTION, true);
 

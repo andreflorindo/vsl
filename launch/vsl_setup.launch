@@ -16,9 +16,9 @@
 
   <!-- Load the URDF, SRDF and other .yaml configuration files on the param server -->
   <!--<include file="$(find vsl_core)/kr210_no_eef_cell_moveit_config/launch/planning_context.launch">-->
-  <include file="$(find kr210_pen_moveit_config)/launch/planning_context.launch">
+  <!-- <include file="$(find kr210_pen_moveit_config)/launch/planning_context.launch">
     <arg name="load_robot_description" value="true"/>
-  </include>
+  </include> -->
 
   <!-- Run the main MoveIt executable without trajectory execution (we do not have controllers configured by default) -->
   <!--<include file="$(find vsl_core)/kr210_no_eef_cell_moveit_config/launch/move_group.launch">-->
