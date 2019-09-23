@@ -7,7 +7,8 @@
 #include <ros/ros.h>
 //#include <control_msgs/FollowJointTrajectoryAction.h>
 #include <vsl_core/PoseBuilder.h>
-#include <pose_builder.h>
+#include <pose_builder_server.h>
+#include <course_display_topic.h>
 
 // C
 #include <iostream>
@@ -32,7 +33,6 @@ namespace vsl_motion_planning
 {
 const std::string ROBOT_DESCRIPTION_PARAM = "robot_description";
 const std::string EXECUTE_TRAJECTORY_ACTION = "execute_trajectory";
-const std::string VISUALIZE_TRAJECTORY_TOPIC = "visualize_trajectory_curve";
 const double SERVER_TIMEOUT = 5.0f; // seconds
 const double ORIENTATION_INCREMENT = 0.5f;
 const std::string PLANNER_ID = "RRTConnectkConfigDefault";

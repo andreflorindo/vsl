@@ -3,7 +3,11 @@
   <param name="ikfast_base_frame" type="string" value="kr210_base_link" />
   <param name="ikfast_tool_frame" type="string" value="penholder_tool_tip" />      <!--kr210_qr_tool0-->
 
-    <node name="pose_builder" pkg="vsl_core" type="pose_builder" output="screen">
+  <node name="pose_builder" pkg="vsl_core" type="pose_builder" output="screen">
+    <param name="world_frame" value="kl2000_base_link"/>  <!--table_table_top-->
+  </node>
+  
+  <node name="course_display" pkg="vsl_core" type="course_display" output="screen">
     <param name="world_frame" value="kl2000_base_link"/>  <!--table_table_top-->
     <param name="visualization/min_point_distance" value="0.02"/> 
   </node>

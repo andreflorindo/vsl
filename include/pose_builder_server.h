@@ -1,7 +1,7 @@
 /* Author: Andre Florindo*/
 
-#ifndef POSE_BUILDER_H
-#define POSE_BUILDER_H
+#ifndef POSE_BUILDER_SERVER_H
+#define POSE_BUILDER_SERVER_H
 
 // ROS
 #include <ros/ros.h>
@@ -16,9 +16,6 @@
 #include <eigen_conversions/eigen_msg.h>
 #include <eigen_stl_containers/eigen_stl_vector_container.h>
 
-// MoveIt
-#include <visualization_msgs/MarkerArray.h>
-
 struct CourseStruct
 {
   std::vector<double> x;
@@ -28,13 +25,10 @@ struct CourseStruct
 
 namespace vsl_motion_planning
 {
-const double AXIS_LINE_LENGHT = 0.01;
-const double AXIS_LINE_WIDTH = 0.01;
 
 struct PoseBuilderConfiguration
 {
     std::string world_frame;
-    double min_point_distance;     /* Minimum distance between consecutive trajectory points. */
 };
 
 class PoseBuilder
@@ -44,7 +38,6 @@ public:
   virtual ~PoseBuilder();
   void createCourse();
   geometry_msgs::PoseArray course_poses;
-  visualization_msgs::MarkerArray markers_msg;
 
   void initServer();
   bool serviceCallback(vsl_core::PoseBuilder::Request &request, vsl_core::PoseBuilder::Response &response);

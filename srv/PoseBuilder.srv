@@ -4,4 +4,3 @@ int16 num_course
 ---
 #response
 geometry_msgs/PoseArray single_course_poses
-visualization_msgs/MarkerArray single_course_marker

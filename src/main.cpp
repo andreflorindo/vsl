@@ -12,12 +12,11 @@ int main(int argc, char **argv)
     vsl_motion_planning::VSLPlanner planner;
 
     planner.initRos();
-    planner.initDescartes();
 
     EigenSTL::vector_Isometry3d poses;
     planner.getCourse(poses);
 
-    ros::Duration(60).sleep();
+    planner.initDescartes();
     
     std::vector<descartes_core::TrajectoryPtPtr> input_traj;
     planner.generateTrajectory(poses, input_traj);

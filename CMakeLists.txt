@@ -77,7 +77,6 @@ find_package(Boost REQUIRED COMPONENTS system)
  generate_messages(
    DEPENDENCIES
    geometry_msgs # Or other packages containing msgs
-   visualization_msgs
    std_msgs
  )
 
@@ -161,6 +160,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(vsl_planner_descartes src/main.cpp)
 add_executable(pose_builder src/pose_builder.cpp)
+add_executable(course_display src/course_display.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -171,12 +171,14 @@ add_executable(pose_builder src/pose_builder.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(vsl_planner_descartes ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(pose_builder ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(vsl_planner_descartes vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(pose_builder vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(course_display vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(vsl_planner_descartes ${PROJECT_NAME} ${catkin_LIBRARIES})
 target_link_libraries(pose_builder ${PROJECT_NAME} ${catkin_LIBRARIES})
+target_link_libraries(course_display ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 #############
 ## Install ##

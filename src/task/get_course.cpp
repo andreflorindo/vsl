@@ -16,11 +16,7 @@ bool VSLPlanner::getCourse(EigenSTL::vector_Isometry3d &poses)
     }
 
     ROS_INFO_STREAM("Service localized ");
-
-    marker_publisher_ = nh_.advertise<visualization_msgs::MarkerArray>(VISUALIZE_TRAJECTORY_TOPIC, 1, true);
-
-    marker_publisher_.publish(srv.response.single_course_marker);
-
+    
     Eigen::Isometry3d single_pose;
     poses.reserve(srv.response.single_course_poses.poses.size());
 
