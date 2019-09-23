@@ -18,6 +18,8 @@ find_package(catkin REQUIRED COMPONENTS
   descartes_utilities
   eigen_conversions
   message_generation
+  geometry_msgs
+  std_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -125,6 +127,7 @@ catkin_package(
    descartes_utilities
    eigen_conversions
    message_runtime
+   
 
 #  DEPENDS system_lib
 )
