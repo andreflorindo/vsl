@@ -59,6 +59,7 @@ public:
 
     void initRos();
     void initDescartes();
+    bool getCourse(EigenSTL::vector_Isometry3d &poses);
     void generateTrajectory(EigenSTL::vector_Isometry3d &poses, std::vector<descartes_core::TrajectoryPtPtr> &input_traj);
     void planPath(std::vector<descartes_core::TrajectoryPtPtr> &input_traj,
                   std::vector<descartes_core::TrajectoryPtPtr> &output_path);
@@ -74,10 +75,12 @@ protected:
     ros::NodeHandle nh_;
     std::shared_ptr<actionlib::SimpleActionClient<moveit_msgs::ExecuteTrajectoryAction>> moveit_run_path_client_ptr_; /* Sends a robot trajectory to moveit for execution */
     ros::ServiceClient pose_builder_client_;
+    ros::Publisher marker_publisher_;  
 
     //Descartes
     descartes_core::RobotModelPtr robot_model_ptr_;
     descartes_planner::SparsePlanner planner_;
+
 };
 
 } // namespace vsl_motion_planning

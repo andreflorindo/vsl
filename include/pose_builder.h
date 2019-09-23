@@ -46,14 +46,18 @@ public:
   geometry_msgs::PoseArray course_poses;
   visualization_msgs::MarkerArray markers_msg;
 
+  void initServer();
+  bool serviceCallback(vsl_core::PoseBuilder::Request &request, vsl_core::PoseBuilder::Response &response);
+
 protected:
-  void readFileContent(std::string &filename, CourseStruct &course);
-  void publishPosesMarkers(const EigenSTL::vector_Isometry3d &poses, const int &npoints);
+  void readFileContent(std::string filename, CourseStruct &course);
+  void publishPosesMarkers(const geometry_msgs::PoseArray &course_poses, const int& npoints);
+  
 
 protected:
   PoseBuilderConfiguration config_;
-  ros::NodeHandle nh_;                                                                                                                                                                           
-  ros::ServiceServer pose_builder_server_;
+  ros::NodeHandle nh_;
+  ros::ServiceServer pose_builder_server_;                                                                                                                                                                        
 
 };
 

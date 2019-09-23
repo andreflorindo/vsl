@@ -148,6 +148,7 @@ include_directories(
    src/task/generate_trajectory.cpp
    src/task/plan_path.cpp
    src/task/run_path.cpp
+   src/task/get_course.cpp
  )
 
 ## Add cmake target dependencies of the library

@@ -11,7 +11,7 @@ namespace vsl_motion_planning
 PoseBuilder::PoseBuilder() {}
 PoseBuilder::~PoseBuilder() {}
 
-void PoseBuilder::init_Server()
+void PoseBuilder::initServer()
 {
     ros::NodeHandle nh;
     ros::NodeHandle ph("~");
@@ -68,18 +68,19 @@ void PoseBuilder::createCourse()
         rot_start_table.matrix() << -1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1;
         single_pose = rot_start_table * (Eigen::Translation3d(course.x[i], course.y[i] - 1.2 - 0.6, course.z[i] + 0.78 + 0.002)) * rot;
 
-        tf::poseEigenToMsg(single_pose, single_pose_msg)
+        tf::poseEigenToMsg(single_pose, single_pose_msg);
 
         course_poses.poses.emplace_back(single_pose_msg);
     }
 
     publishPosesMarkers(course_poses, npoints);
+    pose_builder_server_ = nh_.advertiseService("single_course", &PoseBuilder::serviceCallback, this);                   //  <---------------
 
     ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");
     ROS_INFO_STREAM("Trajectory with " << npoints << " points was generated");
 }
 
-void PoseBuilder::readFileContent(std::string &filename, CourseStruct &course)
+void PoseBuilder::readFileContent(std::string filename, CourseStruct &course)
 {
     std::ifstream infile{filename, std::ios::in};
 
@@ -119,7 +120,7 @@ void PoseBuilder::readFileContent(std::string &filename, CourseStruct &course)
     }
 }
 
-void PoseBuilder::publishPosesMarkers(const geometry_msgs::PoseArray &course_poses, const int &npoints)
+void PoseBuilder::publishPosesMarkers(const geometry_msgs::PoseArray &course_poses, const int& npoints)
 {
     // creating rviz markers
     visualization_msgs::Marker z_axes, y_axes, x_axes, line;
@@ -232,7 +233,7 @@ bool PoseBuilder::serviceCallback(vsl_core::PoseBuilder::Request &request, vsl_c
     response.single_course_poses = course_poses;                                            //  <---------------
     response.single_course_marker = markers_msg;                                           //  <---------------
 
-    return true
+    return true;
 }
 
 }
@@ -245,10 +246,10 @@ int main(int argc, char **argv)
 
     vsl_motion_planning::PoseBuilder posebuilder;
 
-    posebuilder.init_Server();
+    posebuilder.initServer();
 
     posebuilder.createCourse();
 
-    pose_builder_server_ = nh.advertiseService("single_course", &posebuilder.serviceCallback);                   //  <---------------
+    ros::Duration(30).sleep();
 
 }
