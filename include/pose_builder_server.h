@@ -44,7 +44,6 @@ public:
 
 protected:
   void readFileContent(std::string filename, CourseStruct &course);
-  void publishPosesMarkers(const geometry_msgs::PoseArray &course_poses, const int& npoints);
   
 
 protected:
