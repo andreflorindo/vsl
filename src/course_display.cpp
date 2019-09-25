@@ -52,7 +52,7 @@ void CourseDisplay::publishPosesMarkers(const geometry_msgs::PoseArray &course_p
 {
     // creating rviz markers
     visualization_msgs::Marker z_axes, y_axes, x_axes, line;
-
+p
     z_axes.type = y_axes.type = x_axes.type = visualization_msgs::Marker::LINE_LIST;
     z_axes.ns = y_axes.ns = x_axes.ns = "axes";
     z_axes.action = y_axes.action = x_axes.action = visualization_msgs::Marker::ADD;
