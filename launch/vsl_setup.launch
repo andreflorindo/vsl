@@ -40,7 +40,7 @@
   <!-- run the "real robot" interface nodes-->
   <!--   - this typically includes: robot_state, motion_interface, and joint_trajectory_action nodes -->
   <!--   - replace these calls with appropriate robot-specific calls or launch files -->
-  <group unless="$(arg sim)">
+  <!-- <group unless="$(arg sim)"> -->
     <!-- <remap from="/follow_joint_trajectory/status" to="/joint_trajectory_action/status" />
     <remap from="/follow_joint_trajectory/feedback" to="/joint_trajectory_action/feedback" />
     <remap from="/follow_joint_trajectory/result" to="/joint_trajectory_action/result" />
@@ -59,8 +59,8 @@
     <node pkg="tf2_ros" type="buffer_server" name="tf2_buffer_server" output="screen">
       <param name="buffer_size" value="120.0"/>
     </node> -->
-    <include file="$(find kr210_pen_controller)/launch/kr210_pen_controller_bringup.launch">
-  </group>
+    <!-- <include file="$(find kr210_pen_controller)/launch/kr210_pen_controller_bringup.launch">
+  </group> -->
 
   <!-- run the robot simulator and action interface nodes -->
   <group if="$(arg sim)">
