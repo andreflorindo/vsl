@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <launch>
 
-  <arg name="sim" default="true" />   <!--Simulation-->
+  <arg name="sim" default="true" />    <!--Simulation-->
   <arg name="robot_ip" unless="$(arg sim)" />
   <arg name="min_payload" default="0.0" />
   <arg name="max_payload" default="210.0" />
@@ -23,7 +23,7 @@
   <!-- Run the main MoveIt executable without trajectory execution (we do not have controllers configured by default) -->
   <!--<include file="$(find vsl_core)/kr210_no_eef_cell_moveit_config/launch/move_group.launch">-->
   <include file="$(find kr210_pen_moveit_config)/launch/move_group.launch">
-    <arg name="allow_trajectory_execution" value="true"/>  
+    <arg name="allow_trajectory_execution" value="true"/>
     <arg name="fake_execution" value="false"/>
     <arg name="info" value="true"/>
     <arg name="debug" value="$(arg debug)"/>
@@ -37,20 +37,30 @@
   'kr210_joint_a5',
   'kr210_joint_a6']</rosparam>
 
-  <!-- run the "real robot" interface nodes
+  <!-- run the "real robot" interface nodes-->
+  <!--   - this typically includes: robot_state, motion_interface, and joint_trajectory_action nodes -->
+  <!--   - replace these calls with appropriate robot-specific calls or launch files -->
   <group unless="$(arg sim)">
-    <remap from="/follow_joint_trajectory/status" to="/joint_trajectory_action/status" />
+    <!-- <remap from="/follow_joint_trajectory/status" to="/joint_trajectory_action/status" />
     <remap from="/follow_joint_trajectory/feedback" to="/joint_trajectory_action/feedback" />
     <remap from="/follow_joint_trajectory/result" to="/joint_trajectory_action/result" />
     <remap from="/follow_joint_trajectory/goal" to="/joint_trajectory_action/goal" />
     <remap from="/follow_joint_trajectory/cancel" to="/joint_trajectory_action/cancel" />
 
+    <include file="$(find ur_modern_driver)/launch/ur_common.launch">
+      <arg name="prefix" value="$(arg prefix)" />
+      <arg name="robot_ip" value="$(arg robot_ip)" />
+      <arg name="min_payload" value="$(arg min_payload)" />
+      <arg name="max_payload" value="$(arg max_payload)" />
+    </include>
+
     <param name="move_group/trajectory_execution/execution_duration_monitoring" value="false"/>
 
     <node pkg="tf2_ros" type="buffer_server" name="tf2_buffer_server" output="screen">
       <param name="buffer_size" value="120.0"/>
-    </node>
-  </group> -->
+    </node> -->
+    <include file="$(find kr210_pen_controller)/launch/kr210_pen_controller_bringup.launch">
+  </group>
 
   <!-- run the robot simulator and action interface nodes -->
   <group if="$(arg sim)">

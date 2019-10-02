@@ -17,7 +17,7 @@ int main(int argc, char **argv)
     planner.getCourse(poses);
 
     planner.initDescartes();
-    
+
     std::vector<descartes_core::TrajectoryPtPtr> input_traj;
     planner.generateTrajectory(poses, input_traj);
 

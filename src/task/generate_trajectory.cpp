@@ -35,4 +35,4 @@ void VSLPlanner::generateTrajectory(EigenSTL::vector_Isometry3d &poses, std::vec
     ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");
 }
 
-}
+} // namespace vsl_motion_planning

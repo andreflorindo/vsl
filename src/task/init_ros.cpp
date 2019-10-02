@@ -22,10 +22,8 @@ void VSLPlanner::initRos()
         ph.getParam("tip_link", config_.tip_link) &&
         ph.getParam("base_link", config_.base_link) &&
         ph.getParam("world_frame", config_.world_frame) &&
-        ph.getParam("trajectory/time_delay", config_.time_delay) &&
-        //ph.getParam("trajectory/num_points", config_.num_points) &&
+        //ph.getParam("trajectory/time_delay", config_.time_delay) &&
         ph.getParam("trajectory/seed_pose", config_.seed_pose) &&
-        ph.getParam("visualization/min_point_distance", config_.min_point_distance) &&
         nh.getParam("controller_joint_names", config_.joint_names))
     {
         ROS_INFO_STREAM("Loaded application parameters");
@@ -53,4 +51,4 @@ void VSLPlanner::initRos()
     ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");
 }
 
-}
+} // namespace vsl_motion_planning

@@ -5,24 +5,20 @@
 
 // ROS
 #include <ros/ros.h>
-//#include <control_msgs/FollowJointTrajectoryAction.h>
-#include <vsl_core/PoseBuilder.h>
 #include <pose_builder_server.h>
 #include <course_display_topic.h>
 
-// C
-#include <iostream>
+// Eigen library
 #include <eigen_conversions/eigen_msg.h>
 
 // Action-Server
 #include <actionlib/client/simple_action_client.h>
 
 // MoveIt
-#include <moveit_msgs/ExecuteTrajectoryAction.h>
+#include <moveit_msgs/ExecuteTrajectoryAction.h>    //or #include <control_msgs/FollowJointTrajectoryAction.h>
 #include <moveit/move_group_interface/move_group_interface.h>
-#include <visualization_msgs/MarkerArray.h>
 
-//Descartes
+// Descartes
 #include <descartes_utilities/ros_conversions.h>
 #include <descartes_moveit/ikfast_moveit_state_adapter.h>
 #include <descartes_planner/sparse_planner.h>
@@ -44,10 +40,8 @@ struct VSLPlannerConfiguration
     std::string tip_link;
     std::string base_link;
     std::string world_frame;
-    double time_delay; /* Time step between consecutive points in the robot path */
-    //int num_points;                   /* Number of points per curve */
+    // double time_delay; /* Time step between consecutive points in the robot path */
     std::vector<double> seed_pose; /* Joint values close to the desired start of the robot path */
-    double min_point_distance;     /* Minimum distance between consecutive trajectory points. */
     std::vector<std::string> joint_names;
 };
 

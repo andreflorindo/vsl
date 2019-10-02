@@ -4,11 +4,13 @@
 
 // ROS
 #include <ros/ros.h>
-#include <vsl_core/PoseBuilder.h>
+#include <pose_builder_server.h>
 
-// Others
-#include <eigen_conversions/eigen_msg.h>
+// Marker msgs
 #include <visualization_msgs/MarkerArray.h>
+
+// Eigen library
+#include <eigen_conversions/eigen_msg.h>
 #include <eigen_stl_containers/eigen_stl_vector_container.h>
 
 namespace vsl_motion_planning

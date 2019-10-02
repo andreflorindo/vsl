@@ -32,7 +32,7 @@ void CourseDisplay::initTopic()
 
 void CourseDisplay::getPoseArray(geometry_msgs::PoseArray &course_poses)
 {
-    pose_builder_client_ = nh_.serviceClient<vsl_core::PoseBuilder>("single_course");
+    pose_builder_client_ = nh_.serviceClient<vsl_core::PoseBuilder>(POSE_BUILDER_SERVICE);
     vsl_core::PoseBuilder srv;
     // srv.request.num_layer = num_layer;
     // srv.request.num_course = num_course;
@@ -52,7 +52,6 @@ void CourseDisplay::publishPosesMarkers(const geometry_msgs::PoseArray &course_p
 {
     // creating rviz markers
     visualization_msgs::Marker z_axes, y_axes, x_axes, line;
-p
     z_axes.type = y_axes.type = x_axes.type = visualization_msgs::Marker::LINE_LIST;
     z_axes.ns = y_axes.ns = x_axes.ns = "axes";
     z_axes.action = y_axes.action = x_axes.action = visualization_msgs::Marker::ADD;

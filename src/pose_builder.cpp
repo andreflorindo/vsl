@@ -71,7 +71,7 @@ void PoseBuilder::createCourse()
 
         course_poses.poses.emplace_back(single_pose_msg);
     }
-    pose_builder_server_ = nh_.advertiseService("single_course", &PoseBuilder::serviceCallback, this); //  <---------------
+    pose_builder_server_ = nh_.advertiseService(POSE_BUILDER_SERVICE, &PoseBuilder::serviceCallback, this); //  <---------------
 
     ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");
     ROS_INFO_STREAM("Trajectory with " << npoints << " points was generated");

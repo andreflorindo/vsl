@@ -7,12 +7,14 @@
 #include <ros/ros.h>
 #include <vsl_core/PoseBuilder.h>
 
-// C
+// C++
 #include <iostream>
 #include <algorithm>
 #include <fstream>
 #include <iterator>
 #include <vector>
+
+// Eigen library
 #include <eigen_conversions/eigen_msg.h>
 #include <eigen_stl_containers/eigen_stl_vector_container.h>
 
@@ -25,6 +27,8 @@ struct CourseStruct
 
 namespace vsl_motion_planning
 {
+
+const std::string POSE_BUILDER_SERVICE = "single_course";
 
 struct PoseBuilderConfiguration
 {

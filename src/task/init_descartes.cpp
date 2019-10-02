@@ -41,7 +41,7 @@ void VSLPlanner::initDescartes()
         exit(-1);
     }
 
-    // moving above-table
+    // moving to "above-table" configuration
 
     moveit::planning_interface::MoveGroupInterface move_group(config_.group_name);
     move_group.setPlannerId(PLANNER_ID); //RRTConnect
@@ -66,7 +66,5 @@ void VSLPlanner::initDescartes()
 
     ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");
 }
-
-
 
 } // namespace vsl_motion_planning
