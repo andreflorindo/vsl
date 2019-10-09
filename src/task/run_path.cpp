@@ -88,4 +88,15 @@ void VSLPlanner::addVel(trajectory_msgs::JointTrajectory &traj) //Velocity of th
   }
 }
 
+// void VSLPlanner::getJacobian()
+// {
+//   Eigen::Vector3d reference_point_position(0.0, 0.0, 0.0);
+//   Eigen::MatrixXd jacobian;
+
+//   robot_model_ptr_->getJacobian(reference_point_position, jacobian);
+
+//   ROS_INFO_STREAM("Jacobian: \n"
+//                   << jacobian << "\n");
+// }
+
 } // namespace vsl_motion_planning
