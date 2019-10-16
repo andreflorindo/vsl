@@ -42,6 +42,7 @@ public:
   virtual ~PoseBuilder();
   void createCourse();
   geometry_msgs::PoseArray course_poses;
+  
 
   void initServer();
   bool serviceCallback(vsl_core::PoseBuilder::Request &request, vsl_core::PoseBuilder::Response &response);

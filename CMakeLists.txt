@@ -164,6 +164,7 @@ include_directories(
 add_executable(vsl_planner_descartes src/main.cpp)
 add_executable(pose_builder src/pose_builder.cpp)
 add_executable(course_display src/course_display.cpp)
+add_executable(cartesian_publisher src/cartesian_publisher.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -177,11 +178,13 @@ add_executable(course_display src/course_display.cpp)
 add_dependencies(vsl_planner_descartes vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(pose_builder vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(course_display vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(cartesian_publisher vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(vsl_planner_descartes ${PROJECT_NAME} ${catkin_LIBRARIES})
 target_link_libraries(pose_builder ${PROJECT_NAME} ${catkin_LIBRARIES})
 target_link_libraries(course_display ${PROJECT_NAME} ${catkin_LIBRARIES})
+target_link_libraries(cartesian_publisher ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 #############
 ## Install ##

@@ -5,6 +5,7 @@ namespace vsl_motion_planning
 bool VSLPlanner::getCourse(EigenSTL::vector_Isometry3d &poses)
 {
     // Initialize Service client
+    ros::service::waitForService(POSE_BUILDER_SERVICE);
     pose_builder_client_ = nh_.serviceClient<vsl_core::PoseBuilder>(POSE_BUILDER_SERVICE);
     vsl_core::PoseBuilder srv;
     // srv.request.num_layer = num_layer;

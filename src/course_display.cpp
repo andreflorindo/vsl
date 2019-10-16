@@ -27,11 +27,14 @@ void CourseDisplay::initTopic()
         exit(-1);
     }
 
+    marker_publisher_ = nh_.advertise<visualization_msgs::MarkerArray>(VISUALIZE_TRAJECTORY_TOPIC, 1, true);
+
     ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");
 }
 
 void CourseDisplay::getPoseArray(geometry_msgs::PoseArray &course_poses)
 {
+    
     pose_builder_client_ = nh_.serviceClient<vsl_core::PoseBuilder>(POSE_BUILDER_SERVICE);
     vsl_core::PoseBuilder srv;
     // srv.request.num_layer = num_layer;
@@ -151,7 +154,6 @@ void CourseDisplay::publishPosesMarkers(const geometry_msgs::PoseArray &course_p
     markers_msg.markers.push_back(z_axes);
     markers_msg.markers.push_back(line);
 
-    marker_publisher_ = nh_.advertise<visualization_msgs::MarkerArray>(VISUALIZE_TRAJECTORY_TOPIC, 1, true);
     marker_publisher_.publish(markers_msg);
 }
 

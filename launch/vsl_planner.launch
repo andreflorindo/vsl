@@ -12,6 +12,11 @@
     <param name="visualization/min_point_distance" value="0.02"/> 
   </node>
 
+  <node name="cartesian_publisher" pkg="vsl_core" type="cartesian_publisher" output="screen">
+    <param name="tip_link" value="penholder_tool_tip"/>    <!--kr210_qr_tool0-->
+    <param name="base_link" value="kr210_base"/>
+  </node>
+
   <node name="vsl_planner_descartes" pkg="vsl_core" type="vsl_planner_descartes" output="screen">
     <param name="group_name" value="manipulator"/>
     <param name="tip_link" value="penholder_tool_tip"/>    <!--kr210_qr_tool0-->
