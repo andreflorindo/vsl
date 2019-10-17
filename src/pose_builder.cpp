@@ -18,15 +18,15 @@ void PoseBuilder::initServer()
 
     if (ph.getParam("world_frame", config_.world_frame))
     {
-        ROS_INFO_STREAM("Loaded Server parameters");
+        ROS_INFO_STREAM("pose_builder: Loaded Server parameters");
     }
     else
     {
-        ROS_ERROR_STREAM("Failed to load Server parameters");
+        ROS_ERROR_STREAM("pose_builder: Failed to load Server parameters");
         exit(-1);
     }
 
-    ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");
+    ROS_INFO_STREAM("pose_builder: Task '" << __FUNCTION__ << "' completed");
 }
 
 void PoseBuilder::createCourse()
@@ -73,8 +73,8 @@ void PoseBuilder::createCourse()
     }
     pose_builder_server_ = nh_.advertiseService(POSE_BUILDER_SERVICE, &PoseBuilder::serviceCallback, this); //  <---------------
 
-    ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");
-    ROS_INFO_STREAM("Trajectory with " << npoints << " points was generated");
+    ROS_INFO_STREAM("pose_builder: Task '" << __FUNCTION__ << "' completed");
+    ROS_INFO_STREAM("pose_builder: Trajectory with " << npoints << " points was generated");
 }
 
 void PoseBuilder::readFileContent(std::string filename, CourseStruct &course)
@@ -83,7 +83,7 @@ void PoseBuilder::readFileContent(std::string filename, CourseStruct &course)
 
     if (!infile.good())
     {
-        ROS_ERROR_STREAM("Path as not able to be found. Trajectory generation failed");
+        ROS_ERROR_STREAM("pose_builder: Path as not able to be found. Trajectory generation failed");
         exit(-1);
     }
 

@@ -19,17 +19,17 @@ void CourseDisplay::initTopic()
     if (ph.getParam("world_frame", config_.world_frame) &&
         ph.getParam("visualization/min_point_distance", config_.min_point_distance))
     {
-        ROS_INFO_STREAM("Loaded Topic parameters");
+        ROS_INFO_STREAM("course_display: Loaded Topic parameters");
     }
     else
     {
-        ROS_ERROR_STREAM("Failed to load Topic parameters");
+        ROS_ERROR_STREAM("course_display: Failed to load Topic parameters");
         exit(-1);
     }
 
     marker_publisher_ = nh_.advertise<visualization_msgs::MarkerArray>(VISUALIZE_TRAJECTORY_TOPIC, 1, true);
 
-    ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");
+    ROS_INFO_STREAM("course_display: Task '" << __FUNCTION__ << "' completed");
 }
 
 void CourseDisplay::getPoseArray(geometry_msgs::PoseArray &course_poses)
@@ -42,11 +42,11 @@ void CourseDisplay::getPoseArray(geometry_msgs::PoseArray &course_poses)
     // ROS_INFO_STREAM("Requesting pose in base frame: " << num_layer);
     if (!pose_builder_client_.call(srv))
     {
-        ROS_ERROR("Could not localize service");
+        ROS_ERROR("course_display: Could not localize service Posebuilder");
         exit(-1);
     }
 
-    ROS_INFO_STREAM("Service localized by Topic");
+    ROS_INFO_STREAM("course_display: Service Posebuilder localized");
 
     course_poses = srv.response.single_course_poses;
 }
