@@ -1,14 +1,14 @@
 /* Author: Andre Florindo*/
 
-#include <cartesian_publisher.h>
+#include <ee_cartesian_pose_publisher.h>
 
 namespace vsl_motion_planning
 {
 
-CartesianPublisher::CartesianPublisher() {}
-CartesianPublisher::~CartesianPublisher() {}
+CartesianPosePublisher::CartesianPosePublisher() {}
+CartesianPosePublisher::~CartesianPosePublisher() {}
 
-void CartesianPublisher::initTopic()
+void CartesianPosePublisher::initTopic()
 {
     ros::NodeHandle nh;
     ros::NodeHandle ph("~");
@@ -16,20 +16,20 @@ void CartesianPublisher::initTopic()
     if (ph.getParam("tip_link", config_.tip_link) &&
         ph.getParam("base_link", config_.base_link))
     {
-        ROS_INFO_STREAM("cartesian_publisher: Loaded Topic parameters");
+        ROS_INFO_STREAM("ee_cartesian_pose_publisher: Loaded Topic parameters");
     }
     else
     {
-        ROS_ERROR_STREAM("cartesian_publisher: Failed to load Topic parameters");
+        ROS_ERROR_STREAM("ee_cartesian_pose_publisher: Failed to load Topic parameters");
         exit(-1);
     }
 
-    cartesian_publisher_ = nh_.advertise<geometry_msgs::TransformStamped>(CARTESIAN_TOPIC, 1, true);
+    cartesian_pose_publisher_ = nh.advertise<geometry_msgs::TransformStamped>(EE_POSE_TOPIC, 1, true);
 
-    ROS_INFO_STREAM("cartesian_publisher: Task '" << __FUNCTION__ << "' completed");
+    ROS_INFO_STREAM("ee_cartesian_pose_publisher: Task '" << __FUNCTION__ << "' completed");
 }
 
-void CartesianPublisher::startListener()
+void CartesianPosePublisher::startListener()
 {
     tf::TransformListener listener;
     ros::Rate rate(10.0);
@@ -52,23 +52,23 @@ void CartesianPublisher::startListener()
         }
 
         tf::transformStampedTFToMsg(transform, ee_cartesian_pose_msg);
-        cartesian_publisher_.publish(ee_cartesian_pose_msg);
+        cartesian_pose_publisher_.publish(ee_cartesian_pose_msg);
     }
 
-    ROS_INFO_STREAM("cartesian_publisher: Task '" << __FUNCTION__ << "' completed");
+    ROS_INFO_STREAM("ee_cartesian_pose_publisher: Task '" << __FUNCTION__ << "' completed");
 }
 
 } // namespace vsl_motion_planning
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "pose_builder");
+    ros::init(argc, argv, "ee_cartesian_pose_publisher");
 
-    vsl_motion_planning::CartesianPublisher cartesian_publisher;
+    vsl_motion_planning::CartesianPosePublisher ee_cartesian_pose_publisher;
 
-    cartesian_publisher.initTopic();
+    ee_cartesian_pose_publisher.initTopic();
 
-    cartesian_publisher.startListener();
+    ee_cartesian_pose_publisher.startListener();
 
     ros::spin();
 }

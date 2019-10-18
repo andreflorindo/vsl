@@ -12,7 +12,12 @@
     <param name="visualization/min_point_distance" value="0.02"/> 
   </node>
 
-  <node name="cartesian_publisher" pkg="vsl_core" type="cartesian_publisher" output="screen">
+  <node name="ee_cartesian_pose_publisher" pkg="vsl_core" type="ee_cartesian_pose_publisher" output="screen">
+    <param name="tip_link" value="penholder_tool_tip"/>    <!--kr210_qr_tool0-->
+    <param name="base_link" value="kr210_base_link"/>
+  </node>
+
+  <node name="ee_velocity_publisher" pkg="vsl_core" type="ee_velocity_publisher" output="screen">
     <param name="tip_link" value="penholder_tool_tip"/>    <!--kr210_qr_tool0-->
     <param name="base_link" value="kr210_base_link"/>
   </node>
@@ -26,4 +31,7 @@
     <rosparam param="trajectory/seed_pose">[1.57, -1.57, 1.04 , 0.0, 1.57, 0.0]</rosparam>
     <param name="visualization/min_point_distance" value="0.02"/> 
   </node>
+
+  
+
 </launch>

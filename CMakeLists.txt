@@ -20,6 +20,7 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
   geometry_msgs
   std_msgs
+  trajectory_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -56,11 +57,10 @@ find_package(Boost REQUIRED COMPONENTS system)
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+ add_message_files(
+   FILES
+   JointRequest.msg
+ )
 
 ## Generate services in the 'srv' folder
  add_service_files(
@@ -164,7 +164,8 @@ include_directories(
 add_executable(vsl_planner_descartes src/main.cpp)
 add_executable(pose_builder src/pose_builder.cpp)
 add_executable(course_display src/course_display.cpp)
-add_executable(cartesian_publisher src/cartesian_publisher.cpp)
+add_executable(ee_cartesian_pose_publisher src/ee_cartesian_pose_publisher.cpp)
+add_executable(ee_velocity_publisher src/ee_velocity_publisher.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -178,13 +179,15 @@ add_executable(cartesian_publisher src/cartesian_publisher.cpp)
 add_dependencies(vsl_planner_descartes vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(pose_builder vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(course_display vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(cartesian_publisher vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(ee_cartesian_pose_publisher vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(ee_velocity_publisher vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(vsl_planner_descartes ${PROJECT_NAME} ${catkin_LIBRARIES})
 target_link_libraries(pose_builder ${PROJECT_NAME} ${catkin_LIBRARIES})
 target_link_libraries(course_display ${PROJECT_NAME} ${catkin_LIBRARIES})
-target_link_libraries(cartesian_publisher ${PROJECT_NAME} ${catkin_LIBRARIES})
+target_link_libraries(ee_cartesian_pose_publisher ${PROJECT_NAME} ${catkin_LIBRARIES})
+target_link_libraries(ee_velocity_publisher ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 #############
 ## Install ##

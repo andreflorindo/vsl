@@ -7,6 +7,8 @@
 #include <ros/ros.h>
 #include <pose_builder_server.h>
 #include <course_display_topic.h>
+#include <ee_cartesian_pose_publisher.h>
+#include <ee_velocity_publisher.h>
 
 // Eigen library
 #include <eigen_conversions/eigen_msg.h>
@@ -34,6 +36,7 @@ const double SERVER_TIMEOUT = 5.0f; // seconds
 const double ORIENTATION_INCREMENT = 0.5f;
 const std::string PLANNER_ID = "RRTConnectkConfigDefault";
 const std::string HOME_POSITION_NAME = "above-table";
+const std::string JOINT_POSE_TOPIC = "joint_pose";
 
 struct VSLPlannerConfiguration
 {
@@ -71,7 +74,7 @@ protected:
     ros::NodeHandle nh_;
     std::shared_ptr<actionlib::SimpleActionClient<moveit_msgs::ExecuteTrajectoryAction>> moveit_run_path_client_ptr_; /* Sends a robot trajectory to moveit for execution */
     ros::ServiceClient pose_builder_client_;
-    ros::Publisher marker_publisher_;  
+    ros::Publisher joint_pose_publisher_; 
 
     //Descartes
     descartes_core::RobotModelPtr robot_model_ptr_;

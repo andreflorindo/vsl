@@ -27,7 +27,7 @@ void CourseDisplay::initTopic()
         exit(-1);
     }
 
-    marker_publisher_ = nh_.advertise<visualization_msgs::MarkerArray>(VISUALIZE_TRAJECTORY_TOPIC, 1, true);
+    marker_publisher_ = nh.advertise<visualization_msgs::MarkerArray>(VISUALIZE_TRAJECTORY_TOPIC, 1, true);
 
     ROS_INFO_STREAM("course_display: Task '" << __FUNCTION__ << "' completed");
 }
