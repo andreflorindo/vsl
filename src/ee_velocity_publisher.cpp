@@ -50,7 +50,8 @@ void CartesianVelocityPublisher::subscriberCallback(const trajectory_msgs::Joint
 
 void CartesianVelocityPublisher::publishJointRequest()
 {
-    //int num_joints = joint_path_.points[0].positions.size();
+    ROS_INFO_STREAM("Mayday! Mayday! The code is falling apart!");
+    int num_joints = joint_path_.points[0].positions.size();
     // int num_points = joint_path_.points.size();
 
     // std::vector<std::vector<double>> buffer_position;
@@ -61,17 +62,15 @@ void CartesianVelocityPublisher::publishJointRequest()
     // buffer_velocity.resize(num_joints, std::vector<double>(num_points));
     // buffer_acceleration.resize(num_joints, std::vector<double>(num_points));
 
-    // vutput="screen">
-
-    // futput="screen">
-    // {utput="screen">
-    //  utput="screen">++)
-    //  utput="screen">
-    //  utput="screen">_path_.points[j].positions[i];
-    //  utput="screen">_path_.points[j].velocities[i];
-    //  utput="screen">oint_path_.points[j].acceleration[i];
-    //  utput="screen">
-    // }utput="screen">
+    // for (int j = 0; j < num_points; j++)
+    // {
+    //     for(int i = 0; i < num_joints; j++)
+    //     {
+    //         buffer_position[j][i] = joint_path_.points[j].positions[i];
+    //         buffer_velocity[j][i] = joint_path_.points[j].velocities[i];
+    //         buffer_acceleration[j][i] = joint_path_.points[j].accelerations[i];
+    //     }
+    // }
 
     // for (int j = 0; j < num_points; j++)
     // {
