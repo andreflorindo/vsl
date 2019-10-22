@@ -24,68 +24,75 @@ void CartesianVelocityPublisher::initTopic()
         exit(-1);
     }
 
-    boost::shared_ptr<trajectory_msgs::JointTrajectory const> sharedPtr;
+    joint_path_subscriber_ = nh.subscribe("joint_path_command", 1000, &CartesianVelocityPublisher::subscriberCallback, this);
 
-    sharedPtr = ros::topic::waitForMessage<trajectory_msgs::JointTrajectory>("joint_path_command", nh_);
-    if (sharedPtr == NULL)
-    {
-        ROS_ERROR_STREAM("ee_velocity_publisher: Failed to find topic joint_path_command");
-        exit(-1);
-    }
-    else
-    {
-        joint_path_subscriber_ = nh.subscribe("joint_path_command", 1, &CartesianVelocityPublisher::subscriberCallback, this);
-    }
-
-
-    joint_request_publisher_ = nh.advertise<vsl_core::JointRequest>(EE_VELOCITY_TOPIC, 1, true);
+    joint_request_publisher_ = nh.advertise<vsl_core::JointRequest>("joint_request", 1000, true);
 
     ROS_INFO_STREAM("ee_velocity_publisher: Task '" << __FUNCTION__ << "' completed");
 }
 
 void CartesianVelocityPublisher::subscriberCallback(const trajectory_msgs::JointTrajectory &msg)
 {
+    seq++;
+    time_point = ros::Time::now();
     joint_path_ = msg;
+    ROS_INFO("ee_velocity_publisher: Joint trajectory %d received", seq);
+    publishJointRequest();
 }
 
 void CartesianVelocityPublisher::publishJointRequest()
 {
-    ROS_INFO_STREAM("Mayday! Mayday! The code is falling apart!");
+    std::vector<std::vector<double>> buffer_position;
+    std::vector<std::vector<double>> buffer_velocity;
+    std::vector<std::vector<double>> buffer_acceleration;
+    std::vector<std::vector<double>> buffer_jerk;
+    std::vector<double> buffer_time;
+    
+    vsl_core::JointRequest joint_request;
+
     int num_joints = joint_path_.points[0].positions.size();
-    // int num_points = joint_path_.points.size();
+    int num_points = joint_path_.points.size();
 
-    // std::vector<std::vector<double>> buffer_position;
-    // std::vector<std::vector<double>> buffer_velocity;
-    // std::vector<std::vector<double>> buffer_acceleration;
+    buffer_position.resize(num_points, std::vector<double>(num_joints));
+    buffer_velocity.resize(num_points, std::vector<double>(num_joints));
+    buffer_acceleration.resize(num_points, std::vector<double>(num_joints));
+    buffer_jerk.resize(num_points, std::vector<double>(num_joints));
+    buffer_time.resize(num_points - 1);
 
-    // buffer_position.resize(num_joints, std::vector<double>(num_points));
-    // buffer_velocity.resize(num_joints, std::vector<double>(num_points));
-    // buffer_acceleration.resize(num_joints, std::vector<double>(num_points));
+    for (int j = 0; j < num_points - 1; j++)
+    {
+        buffer_time[j] = joint_path_.points[j + 1].time_from_start.toSec() - joint_path_.points[j].time_from_start.toSec();
+    }
 
-    // for (int j = 0; j < num_points; j++)
-    // {
-    //     for(int i = 0; i < num_joints; j++)
-    //     {
-    //         buffer_position[j][i] = joint_path_.points[j].positions[i];
-    //         buffer_velocity[j][i] = joint_path_.points[j].velocities[i];
-    //         buffer_acceleration[j][i] = joint_path_.points[j].accelerations[i];
-    //     }
-    // }
+    for (int j = 0; j < num_points; j++)
+    {
+        for (int i = 0; i < num_joints; i++)
+        {
+            buffer_position[j][i] = joint_path_.points[j].positions[i];
+            buffer_velocity[j][i] = joint_path_.points[j].velocities[i];
+            buffer_acceleration[j][i] = joint_path_.points[j].accelerations[i];
+            buffer_jerk[j][i] = 0.0f;
+        }
+    }
 
-    // for (int j = 0; j < num_points; j++)
-    // {
-    //     ros::Time time(joint_path_.points[j].time_from_start.toSec());
-    //     joint_request.header.seq = j;
-    //     joint_request.header.stamp = time;
-    //     joint_request.name = joint_path_.joint_names;
-    //     joint_request.position = buffer_position[j];
-    //     joint_request.velocity = buffer_velocity[j];
-    //     joint_request.acceleration = buffer_acceleration[j];
+    for (int j = 0; j < num_points; j++)
+    {
+        if (j != 0)
+            time_point = joint_request.header.stamp + ros::Duration(buffer_time[j - 1]);
 
-    //     joint_request_publisher_.publish(joint_request);
-    // }
+        joint_request.header.seq = total_num_points;
+        joint_request.header.stamp = time_point;
+        joint_request.name = joint_path_.joint_names;
+        joint_request.position = buffer_position[j];
+        joint_request.velocity = buffer_velocity[j];
+        joint_request.acceleration = buffer_acceleration[j];
+        joint_request.jerk = buffer_jerk[j];
 
-    // ROS_INFO_STREAM("ee_velocity_publisher: Task '" << __FUNCTION__ << "' completed");
+        joint_request_publisher_.publish(joint_request);
+        total_num_points++;
+    }
+
+    ROS_INFO_STREAM("ee_velocity_publisher: Task '" << __FUNCTION__ << "' completed");
 }
 
 } // namespace vsl_motion_planning
@@ -97,8 +104,6 @@ int main(int argc, char **argv)
     vsl_motion_planning::CartesianVelocityPublisher ee_velocity_publisher;
 
     ee_velocity_publisher.initTopic();
-
-    ee_velocity_publisher.publishJointRequest();
 
     ros::spin();
 }

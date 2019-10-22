@@ -12,7 +12,7 @@
 namespace vsl_motion_planning
 {
 
-const std::string EE_VELOCITY_TOPIC = "ee_velocity";
+//const std::string EE_VELOCITY_TOPIC = "ee_velocity";
 
 struct CartesianVelocityPublisherConfiguration
 {
@@ -28,9 +28,13 @@ public:
 
     void initTopic();
     void subscriberCallback(const trajectory_msgs::JointTrajectory &msg);
+    void checkForPublisher();
     void publishJointRequest();
 
     trajectory_msgs::JointTrajectory joint_path_;
+    int total_num_points = 0;
+    int seq = 0;
+    ros::Time time_point;
 
 protected:
     CartesianVelocityPublisherConfiguration config_;

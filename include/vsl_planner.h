@@ -67,6 +67,7 @@ protected:
     void fromDescartesToMoveitTrajectory(const std::vector<descartes_core::TrajectoryPtPtr> &input_traj,
                                          trajectory_msgs::JointTrajectory &traj);
     void addVel(trajectory_msgs::JointTrajectory &traj);
+    void addAcc(trajectory_msgs::JointTrajectory &traj);
     void computeToolVel();
 
 protected:

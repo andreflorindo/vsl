@@ -90,7 +90,8 @@
         "vec4ui": "cpp",
         "vec4us": "cpp",
         "plane": "cpp",
-        "polytope": "cpp"
+        "polytope": "cpp",
+        "export": "cpp"
     },
     "ros.distro": "melodic",
     "python.autoComplete.extraPaths": [

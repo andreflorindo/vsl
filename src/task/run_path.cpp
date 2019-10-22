@@ -108,6 +108,7 @@ void VSLPlanner::fromDescartesToMoveitTrajectory(const std::vector<descartes_cor
 
   descartes_utilities::toRosJointPoints(*robot_model_ptr_, input_traj, 0.4, traj.points);
   addVel(traj);
+  // addAcc(traj);
 }
 
 void VSLPlanner::addVel(trajectory_msgs::JointTrajectory &traj) //Velocity of the joints
@@ -119,10 +120,12 @@ void VSLPlanner::addVel(trajectory_msgs::JointTrajectory &traj) //Velocity of th
 
   for (auto i = 0; i < n_joints; ++i)
   {
+    traj.points[0].velocities[i] = 0.0f;
+    traj.points[traj.points.size()-1].velocities[i] = 0.0f;
     for (auto j = 1; j < traj.points.size() - 1; j++)
     {
       // For each point in a given joint
-      //Finite difference, first order, central
+      //Finite difference, first order, central. Gives the average velocity, not conservative
       double delta_theta = -traj.points[j - 1].positions[i] + traj.points[j + 1].positions[i];
       double delta_time = -traj.points[j - 1].time_from_start.toSec() + traj.points[j + 1].time_from_start.toSec();
       double v = delta_theta / delta_time;
@@ -131,6 +134,81 @@ void VSLPlanner::addVel(trajectory_msgs::JointTrajectory &traj) //Velocity of th
 
   }
 }
+
+// void VSLPlanner::addAcc(trajectory_msgs::JointTrajectory &traj) //Velocity of the joints
+// {
+//   if (traj.points.size() < 3)
+//     return;
+
+//   auto n_joints = traj.points.front().positions.size();
+
+//   for (auto i = 0; i < n_joints; ++i)
+//   {
+
+//     for (auto j = 1; j < traj.points.size(); j++)
+//     {
+//       // For each point in a given joint
+//       //Finite difference, first order, central. Gives the average velocity, not conservative
+//       double delta_velocity = -traj.points[j - 1].velocities[i] + traj.points[j + 1].velocities[i];
+//       double delta_time = -traj.points[j - 1].time_from_start.toSec() + traj.points[j + 1].time_from_start.toSec();
+//       double a = delta_velocity / delta_time;
+//       traj.points[j].accelerations[i] = a;
+//     }
+
+//   }
+// }
+
+
+// void VSLPlanner::addVel(trajectory_msgs::JointTrajectory &traj) //Velocity of the joints
+// {
+//   if (traj.points.size() < 3)
+//     return;
+
+//   auto n_joints = traj.points.front().positions.size();
+
+//   for (auto i = 0; i < n_joints; ++i)
+//   {
+//     traj.points[0].velocities[i] = 0.0f;
+//     //traj.points[traj.points.size()-1].velocities[i] = 0.0f;
+
+//     for (auto j = 1; j < traj.points.size(); j++)
+//     {
+//       // For each point in a given joint
+//       //Finite difference, first order, regressive
+//       double delta_theta = traj.points[j].positions[i] - traj.points[j - 1].positions[i];
+//       double delta_time = traj.points[j].time_from_start.toSec() - traj.points[j - 1].time_from_start.toSec();
+//       double v = delta_theta / delta_time;
+//       traj.points[j].velocities[i] = v;
+//     }
+
+//   }
+// }
+
+// void VSLPlanner::addAcc(trajectory_msgs::JointTrajectory &traj) //Velocity of the joints
+// {
+//   if (traj.points.size() < 3)
+//     return;
+
+//   auto n_joints = traj.points.front().positions.size();
+
+//   for (auto i = 0; i < n_joints; ++i)
+//   {
+//     traj.points[0].accelerations[i] = 0.0f;
+//     //traj.points[traj.points.size()-1].velocities[i] = 0.0f;
+
+//     for (auto j = 1; j < traj.points.size(); j++)
+//     {
+//       // For each point in a given joint
+//       //Finite difference, first order, regressive
+//       double delta_velocity = traj.points[j].velocities[i] - traj.points[j - 1].velocities[i];
+//       double delta_time = traj.points[j].time_from_start.toSec() - traj.points[j - 1].time_from_start.toSec();
+//       double a = delta_velocity / delta_time;
+//       traj.points[j].accelerations[i] = a;
+//     }
+
+//   }
+// }
+
 
 // void VSLPlanner::getJacobian()
 // {
