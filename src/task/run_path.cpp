@@ -27,6 +27,7 @@ void VSLPlanner::runPath(const std::vector<descartes_core::TrajectoryPtPtr> &pat
   // moving arm to joint goal by using another planner, for example RRT
   move_group.setJointValueTarget(start_pose);
   move_group.setPlanningTime(10.0f);
+  move_group.setMaxVelocityScalingFactor(MAX_VELOCITY_SCALING);
   moveit_msgs::MoveItErrorCodes result = move_group.move();
   if (result.val != result.SUCCESS)
   {
@@ -37,49 +38,7 @@ void VSLPlanner::runPath(const std::vector<descartes_core::TrajectoryPtPtr> &pat
   // creating Moveit trajectory from Descartes Trajectory
   moveit_msgs::RobotTrajectory moveit_traj;
   fromDescartesToMoveitTrajectory(path, moveit_traj.joint_trajectory);
-
-  /////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////
-
-  sensor_msgs::JointState joint_pose;
-
-  int num_joints = moveit_traj.joint_trajectory.points[0].positions.size();
-  int num_points = moveit_traj.joint_trajectory.points.size();
-
-  std::vector<std::vector<double>> buffer_position;
-  std::vector<std::vector<double>> buffer_velocity;
-
-  buffer_position.resize(num_joints, std::vector<double>(num_points));
-  buffer_velocity.resize(num_joints, std::vector<double>(num_points));
-
-  for (int i = 0; i < num_joints; i++)
-  {
-    for (int j = 0; j < num_points; j++)
-    {
-      buffer_position[i][j] = moveit_traj.joint_trajectory.points[j].positions[i];
-      buffer_velocity[i][j] = moveit_traj.joint_trajectory.points[j].velocities[i];
-      // joint_pose.position[i] = moveit_traj.joint_trajectory.points[j].positions[i];
-      // joint_pose.velocity[i] = moveit_traj.joint_trajectory.points[j].velocities[i];
-      joint_pose.position.push_back(buffer_position[0][j]);
-      joint_pose.velocity.push_back(buffer_velocity[0][j]);
-    }
-
-    joint_pose.header = moveit_traj.joint_trajectory.header;
-    joint_pose.name.push_back(moveit_traj.joint_trajectory.joint_names[i]);
-    
-
-    // joint_pose.position.push_back(buffer_position[i]);
-    // joint_pose.velocity.push_back(buffer_velocity[i]);
-  }
-
-  //joint_pose_publisher_.publish(joint_pose);
-  joint_pose_publisher_.publish(moveit_traj.joint_trajectory);
-
-  ////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////
-
+move_group.setMaxVelocityScalingFactor(MAX_VELOCITY_SCALING);
   // sending robot path to server for execution
   moveit_msgs::ExecuteTrajectoryGoal goal;
   goal.trajectory = moveit_traj;
