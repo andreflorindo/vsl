@@ -25,8 +25,8 @@
 #include <descartes_moveit/ikfast_moveit_state_adapter.h>
 #include <descartes_trajectory/axial_symmetric_pt.h>
 #include <descartes_trajectory/cart_trajectory_pt.h>
-//#include <descartes_planner/sparse_planner.h>
-#include <descartes_planner/dense_planner.h>
+#include <descartes_planner/sparse_planner.h>
+//#include <descartes_planner/dense_planner.h>
 
 namespace vsl_motion_planning
 {
@@ -80,8 +80,8 @@ protected:
 
     //Descartes
     descartes_core::RobotModelPtr robot_model_ptr_;
-    //descartes_planner::SparsePlanner planner_;
-    descartes_planner::DensePlanner planner_;
+    descartes_planner::SparsePlanner planner_;
+    //descartes_planner::DensePlanner planner_;
 
 };
 

@@ -23,8 +23,9 @@ void VSLPlanner::initRos()
         ph.getParam("base_link", config_.base_link) &&
         ph.getParam("world_frame", config_.world_frame) &&
         //ph.getParam("trajectory/time_delay", config_.time_delay) &&
-        ph.getParam("trajectory/seed_pose", config_.seed_pose) &&
-        nh.getParam("controller_joint_names", config_.joint_names))
+        ph.getParam("trajectory/seed_pose", config_.seed_pose)
+        //nh.getParam("controller_joint_names", config_.joint_names)
+        )
     {
         ROS_INFO_STREAM("Loaded application parameters");
     }

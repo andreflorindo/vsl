@@ -34,14 +34,14 @@ void PoseBuilder::createCourse()
     //Read File containing the course
     CourseStruct course;
     //std::shared_ptr<CourseStruct> course = std::make_shared<CourseStruct>();
-    readFileContent("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/simplePath.txt", course);
+    readFileContent("/home/amendesflorind/workspaces/kuka_testing_ws/src/vsl_core/examples/simplePath.txt", course);
     int npoints = course.x.size();
 
     //Read Files with the binormal and tangent of the course
     CourseStruct tangent;
     CourseStruct binormal;
-    readFileContent("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/tangent_simplePath.txt", tangent);
-    readFileContent("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/binormal_simplePath.txt", binormal);
+    readFileContent("/home/amendesflorind/workspaces/kuka_testing_ws/src/vsl_core/examples/tangent_simplePath.txt", tangent);
+    readFileContent("/home/amendesflorind/workspaces/kuka_testing_ws/src/vsl_core/examples/binormal_simplePath.txt", binormal);
 
     //Initializate pose message
     course_poses.poses.reserve(npoints); //  <---------------
