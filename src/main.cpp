@@ -14,6 +14,9 @@ int main(int argc, char **argv)
     planner.initRos();
 
     EigenSTL::vector_Isometry3d poses;
+
+    ros::Duration(5).sleep();
+    
     planner.getCourse(poses);
 
     planner.initDescartes();
