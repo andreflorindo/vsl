@@ -8,7 +8,7 @@
 #include <pose_builder_server.h>
 #include <course_display_topic.h>
 #include <ee_cartesian_pose_publisher.h>
-#include <ee_velocity_publisher.h>
+#include <joint_request_publisher.h>
 
 // Eigen library
 #include <eigen_conversions/eigen_msg.h>

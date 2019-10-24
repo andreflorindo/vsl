@@ -1,53 +1,43 @@
 /* Author: Andre Florindo*/
 
-#include <ee_velocity_publisher.h>
+#include <joint_request_publisher.h>
 
 namespace vsl_motion_planning
 {
 
-CartesianVelocityPublisher::CartesianVelocityPublisher() {}
-CartesianVelocityPublisher::~CartesianVelocityPublisher() {}
+JointRequestPublisher::JointRequestPublisher() {}
+JointRequestPublisher::~JointRequestPublisher() {}
 
-void CartesianVelocityPublisher::initTopic()
+void JointRequestPublisher::initTopic()
 {
     ros::NodeHandle nh;
     ros::NodeHandle ph("~");
 
-    if (ph.getParam("tip_link", config_.tip_link) &&
-        ph.getParam("base_link", config_.base_link))
-    {
-        ROS_INFO_STREAM("ee_velocity_publisher: Loaded Topic parameters");
-    }
-    else
-    {
-        ROS_ERROR_STREAM("ee_velocity_publisher: Failed to load Topic parameters");
-        exit(-1);
-    }
-
-    joint_path_subscriber_ = nh.subscribe("joint_path_command", 1000, &CartesianVelocityPublisher::subscriberCallback, this);
+    joint_path_subscriber_ = nh.subscribe("joint_path_command", 1000, &JointRequestPublisher::subscriberCallback, this);
 
     joint_request_publisher_ = nh.advertise<vsl_core::JointRequest>("joint_request", 1000, true);
 
-    ROS_INFO_STREAM("ee_velocity_publisher: Task '" << __FUNCTION__ << "' completed");
+    ROS_INFO_STREAM("joint_request_publisher: Task '" << __FUNCTION__ << "' completed");
 }
 
-void CartesianVelocityPublisher::subscriberCallback(const trajectory_msgs::JointTrajectory &msg)
+void JointRequestPublisher::subscriberCallback(const trajectory_msgs::JointTrajectory &msg)
 {
     seq++;
     time_point = ros::Time::now();
     joint_path_ = msg;
-    ROS_INFO("ee_velocity_publisher: Joint trajectory %d received", seq);
+    ROS_INFO("joint_request_publisher: Joint trajectory %d received", seq);
     publishJointRequest();
 }
 
-void CartesianVelocityPublisher::publishJointRequest()
+void JointRequestPublisher::publishJointRequest()
 {
     std::vector<std::vector<double>> buffer_position;
     std::vector<std::vector<double>> buffer_velocity;
     std::vector<std::vector<double>> buffer_acceleration;
     std::vector<std::vector<double>> buffer_jerk;
     std::vector<double> buffer_time;
-    
+
+
     vsl_core::JointRequest joint_request;
 
     int num_joints = joint_path_.points[0].positions.size();
@@ -92,18 +82,18 @@ void CartesianVelocityPublisher::publishJointRequest()
         total_num_points++;
     }
 
-    ROS_INFO_STREAM("ee_velocity_publisher: Task '" << __FUNCTION__ << "' completed");
+    ROS_INFO_STREAM("joint_request_publisher: Task '" << __FUNCTION__ << "' completed");
 }
 
 } // namespace vsl_motion_planning
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "ee_velocity_publisher");
+    ros::init(argc, argv, "joint_request_publisher");
 
-    vsl_motion_planning::CartesianVelocityPublisher ee_velocity_publisher;
+    vsl_motion_planning::JointRequestPublisher joint_request_publisher;
 
-    ee_velocity_publisher.initTopic();
+    joint_request_publisher.initTopic();
 
     ros::spin();
 }

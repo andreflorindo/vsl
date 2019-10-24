@@ -59,6 +59,7 @@ find_package(Boost REQUIRED COMPONENTS system)
 ## Generate messages in the 'msg' folder
  add_message_files(
    FILES
+   EERequest.msg
    JointRequest.msg
  )
 
@@ -165,7 +166,8 @@ add_executable(vsl_planner_descartes src/main.cpp)
 add_executable(pose_builder src/pose_builder.cpp)
 add_executable(course_display src/course_display.cpp)
 add_executable(ee_cartesian_pose_publisher src/ee_cartesian_pose_publisher.cpp)
-add_executable(ee_velocity_publisher src/ee_velocity_publisher.cpp)
+add_executable(joint_request_publisher src/joint_request_publisher.cpp)
+add_executable(ee_request_publisher src/ee_request_publisher.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -180,14 +182,16 @@ add_dependencies(vsl_planner_descartes vsl_core_generate_messages_cpp ${${PROJEC
 add_dependencies(pose_builder vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(course_display vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ee_cartesian_pose_publisher vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(ee_velocity_publisher vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(joint_request_publisher vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(ee_request_publisher vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(vsl_planner_descartes ${PROJECT_NAME} ${catkin_LIBRARIES})
 target_link_libraries(pose_builder ${PROJECT_NAME} ${catkin_LIBRARIES})
 target_link_libraries(course_display ${PROJECT_NAME} ${catkin_LIBRARIES})
 target_link_libraries(ee_cartesian_pose_publisher ${PROJECT_NAME} ${catkin_LIBRARIES})
-target_link_libraries(ee_velocity_publisher ${PROJECT_NAME} ${catkin_LIBRARIES})
+target_link_libraries(joint_request_publisher ${PROJECT_NAME} ${catkin_LIBRARIES})
+target_link_libraries(ee_request_publisher ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 #############
 ## Install ##

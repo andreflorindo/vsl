@@ -2,9 +2,7 @@
 <launch>
 
   <arg name="sim" default="true" />    <!--Simulation-->
-  <!-- <arg name="robot_ip" unless="$(arg sim)" />
-  <arg name="min_payload" default="0.0" />
-  <arg name="max_payload" default="210.0" /> -->
+  <arg name="robot_ip" unless="$(arg sim)" />
   <arg name="limited" default="true" />
   <arg name="prefix" default="" />
 
@@ -16,9 +14,9 @@
 
   <!-- Load the URDF, SRDF and other .yaml configuration files on the param server -->
   <!--<include file="$(find vsl_core)/kr210_no_eef_cell_moveit_config/launch/planning_context.launch">-->
-  <!-- <include file="$(find kr210_pen_moveit_config)/launch/planning_context.launch">
+  <include file="$(find kr210_pen_moveit_config)/launch/planning_context.launch">
     <arg name="load_robot_description" value="true"/>
-  </include> -->
+  </include>
 
   <!-- Run the main MoveIt executable without trajectory execution (we do not have controllers configured by default) -->
   <!--<include file="$(find vsl_core)/kr210_no_eef_cell_moveit_config/launch/move_group.launch">-->
@@ -41,18 +39,11 @@
   <!--   - this typically includes: robot_state, motion_interface, and joint_trajectory_action nodes -->
   <!--   - replace these calls with appropriate robot-specific calls or launch files -->
    <group unless="$(arg sim)"> -->
-    <!-- <remap from="/follow_joint_trajectory/status" to="/joint_trajectory_action/status" /> -->
-    <!-- <remap from="/follow_joint_trajectory/feedback" to="/joint_trajectory_action/feedback" /> -->
-    <!-- <remap from="/follow_joint_trajectory/result" to="/joint_trajectory_action/result" /> -->
-    <!-- <remap from="/follow_joint_trajectory/goal" to="/joint_trajectory_action/goal" /> -->
-    <!-- <remap from="/follow_joint_trajectory/cancel" to="/joint_trajectory_action/cancel" /> -->
-
-    <!-- <include file="$(find ur_modern_driver)/launch/ur_common.launch">
-      <arg name="prefix" value="$(arg prefix)" />
-      <arg name="robot_ip" value="$(arg robot_ip)" />
-      <arg name="min_payload" value="$(arg min_payload)" />
-      <arg name="max_payload" value="$(arg max_payload)" />
-    </include> -->
+     <remap from="/follow_joint_trajectory/status" to="/joint_trajectory_action/status" /> -->
+     <remap from="/follow_joint_trajectory/feedback" to="/joint_trajectory_action/feedback" /> -->
+     <remap from="/follow_joint_trajectory/result" to="/joint_trajectory_action/result" /> -->
+     <remap from="/follow_joint_trajectory/goal" to="/joint_trajectory_action/goal" /> -->
+     <remap from="/follow_joint_trajectory/cancel" to="/joint_trajectory_action/cancel" /> -->
 
     <include file="$(find kr210_pen_drivers)/launch/kr210_pen_controller_bringup.launch"/>
 

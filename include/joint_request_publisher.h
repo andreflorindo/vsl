@@ -1,6 +1,6 @@
 /* Author: Andre Florindo*/
-#ifndef EE_VELOCITY_PUBLISHER_H
-#define EE_VELOCITY_PUBLISHER_H
+#ifndef JOINT_REQUEST_PUBLISHER_H
+#define JOINT_REQUEST_PUBLISHER_H
 
 // ROS
 #include <ros/ros.h>
@@ -14,21 +14,20 @@ namespace vsl_motion_planning
 
 //const std::string EE_VELOCITY_TOPIC = "ee_velocity";
 
-struct CartesianVelocityPublisherConfiguration
+struct JointRequestPublisherConfiguration
 {
     std::string tip_link;
     std::string base_link;
 };
 
-class CartesianVelocityPublisher
+class JointRequestPublisher
 {
 public:
-    CartesianVelocityPublisher();
-    virtual ~CartesianVelocityPublisher();
+    JointRequestPublisher();
+    virtual ~JointRequestPublisher();
 
     void initTopic();
     void subscriberCallback(const trajectory_msgs::JointTrajectory &msg);
-    void checkForPublisher();
     void publishJointRequest();
 
     trajectory_msgs::JointTrajectory joint_path_;
@@ -37,7 +36,7 @@ public:
     ros::Time time_point;
 
 protected:
-    CartesianVelocityPublisherConfiguration config_;
+    JointRequestPublisherConfiguration config_;
     ros::NodeHandle nh_;
     ros::Publisher joint_request_publisher_;
     ros::Subscriber joint_path_subscriber_;
