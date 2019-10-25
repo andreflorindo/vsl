@@ -11,6 +11,7 @@ bool VSLPlanner::getCourse(EigenSTL::vector_Isometry3d &poses)
     // srv.request.num_layer = num_layer;
     // srv.request.num_course = num_course;
     // ROS_INFO_STREAM("Requesting pose in base frame: " << num_layer);
+
     if (!pose_builder_client_.call(srv))
     {
         ROS_ERROR("Could not localize service");

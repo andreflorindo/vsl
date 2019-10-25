@@ -37,7 +37,7 @@ const double ORIENTATION_INCREMENT = 0.5f;
 const std::string PLANNER_ID = "RRTConnectkConfigDefault";
 const std::string HOME_POSITION_NAME = "above-table";
 const std::string JOINT_POSE_TOPIC = "joint_pose";
-const double MAX_VELOCITY_SCALING = 0.1f; 
+const double MAX_VELOCITY_SCALING = 0.05f; 
 
 struct VSLPlannerConfiguration
 {
@@ -81,6 +81,15 @@ protected:
     descartes_core::RobotModelPtr robot_model_ptr_;
     //descartes_planner::SparsePlanner planner_;
     descartes_planner::DensePlanner planner_;
+
+
+    // //PlanningScene
+    // robot_model_loader::RobotModelLoaderPtr robot_model_loader_;
+    // mutable robot_state::RobotStatePtr kinematic_state_;
+    // const robot_model::JointModelGroup *joint_model_group_;
+    // robot_model::RobotModelConstPtr kinematic_model_;
+    // planning_scene_monitor::PlanningSceneMonitorPtr planning_scene_monitor_;
+    // planning_pipeline::PlanningPipelinePtr planning_pipeline_;
 
 };
 
