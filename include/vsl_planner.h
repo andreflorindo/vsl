@@ -37,7 +37,7 @@ const double ORIENTATION_INCREMENT = 0.5f;
 const std::string PLANNER_ID = "RRTConnectkConfigDefault";
 const std::string HOME_POSITION_NAME = "above-table";
 const std::string JOINT_POSE_TOPIC = "joint_pose";
-const double MAX_VELOCITY_SCALING = 1.0f; 
+const double MAX_VELOCITY_SCALING = 0.1f; 
 
 struct VSLPlannerConfiguration
 {
@@ -76,7 +76,6 @@ protected:
     ros::NodeHandle nh_;
     std::shared_ptr<actionlib::SimpleActionClient<moveit_msgs::ExecuteTrajectoryAction>> moveit_run_path_client_ptr_; /* Sends a robot trajectory to moveit for execution */
     ros::ServiceClient pose_builder_client_;
-    ros::Publisher joint_pose_publisher_; 
 
     //Descartes
     descartes_core::RobotModelPtr robot_model_ptr_;
