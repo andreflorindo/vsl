@@ -29,6 +29,7 @@ void JointRequestPublisher::subscriberCallback(const trajectory_msgs::JointTraje
     publishJointRequest();
 }
 
+
 void JointRequestPublisher::publishJointRequest()
 {
     std::vector<std::vector<double>> buffer_position;
@@ -36,7 +37,6 @@ void JointRequestPublisher::publishJointRequest()
     std::vector<std::vector<double>> buffer_acceleration;
     std::vector<std::vector<double>> buffer_jerk;
     std::vector<double> buffer_time;
-
 
     vsl_core::JointRequest joint_request;
 

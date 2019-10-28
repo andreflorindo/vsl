@@ -71,13 +71,39 @@ void VSLPlanner::initDescartes()
 //    RobotState's are useful for computing the forward and inverse kinematics of the robot among many other uses */
 
 //     kinematic_state_.reset(new robot_state::RobotState(planning_scene_monitor::LockedPlanningSceneRO(planning_scene_monitor_)->getCurrentState()));
-    
+
 //     /* Create a JointModelGroup to keep track of the current robot pose and planning group. The Joint Model
 //    group is useful for dealing with one set of joints at a time such as a left arm or a end effector */
 
 //     joint_model_group_ = kinematic_state_->getJointModelGroup(config_.group_name);
 
 //     planning_pipeline_.reset(new planning_pipeline::PlanningPipeline(kinematic_model_, nh_, "planning_plugin", "request_adapters"));
+//     /* First, set the state in the planning scene to the final state of the last plan */
+
+//     kinematic_state_ = planning_scene_monitor::LockedPlanningSceneRO(planning_scene_monitor_)->getCurrentStateUpdated(response.trajectory_start);
+//     kinematic_state_->setJointGroupPositions(joint_model_group_, response.trajectory.joint_trajectory.points.back().positions);
+//     kinematic_state_::robotStateToRobotStateMsg(*kinematic_state_, req.start_state);
+
+//     robot_state::RobotState goal_state(*kinematic_state_);
+//     std::vector<double> joint_values = {-1.0, 0.7, 0.7, -1.5, -0.7, 2.0, 0.0};
+//     goal_state.setJointGroupPositions(joint_model_group, joint_values);
+//     moveit_msgs::Constraints joint_goal = kinematic_constraints::constructGoalConstraints(goal_state, joint_model_group);
+
+//     req.goal_constraints.clear();
+//     req.goal_constraints.push_back(joint_goal);
+
+//     // Before planning, we will need a Read Only lock on the planning scene so that it does not modify the world
+//     // representation while planning
+//     {
+//         planning_scene_monitor::LockedPlanningSceneRO lscene(psm);
+//         /* Now, call the pipeline and check whether planning was successful. */
+//         planning_pipeline->generatePlan(lscene, req, res);
+//     }
+//     if (res.error_code_.val != res.error_code_.SUCCESS)
+//     {
+//         ROS_ERROR("Could not compute plan successfully");
+//         return 0;
+//     }
 // }
 
 } // namespace vsl_motion_planning
