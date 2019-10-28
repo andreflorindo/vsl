@@ -48,6 +48,8 @@ void VSLPlanner::runPath(const std::vector<descartes_core::TrajectoryPtPtr> &pat
   // moving arm to joint goal by using another planner, for example RRT
   move_group.setJointValueTarget(start_pose);
 
+//  addTimeParameterizationToDescartes(move_group.Plan.trajectory_); TODO Have to create a plan first
+
   result = move_group.move();
   if (result.val != result.SUCCESS)
   {
@@ -63,6 +65,8 @@ void VSLPlanner::runPath(const std::vector<descartes_core::TrajectoryPtPtr> &pat
   moveit_msgs::RobotTrajectory moveit_traj;
   fromDescartesToMoveitTrajectory(path, moveit_traj.joint_trajectory);
 
+  //addTimeParameterizationToDescartes(moveit_traj);
+  
   moveit_msgs::ExecuteTrajectoryGoal goal;
   goal.trajectory = moveit_traj;
 
@@ -138,6 +142,15 @@ void VSLPlanner::addAcc(trajectory_msgs::JointTrajectory &traj) //Velocity of th
             traj.points[j].accelerations[i] = a;
         }
     }
+}
+
+void VSLPlanner::addTimeParameterizationToDescartes(moveit_msgs::RobotTrajectory &traj)
+{
+  robot_trajectory::RobotTrajectory robot_trajectory(robot_model_loader_->getModel(), config_.group_name);
+
+  robot_trajectory.setRobotTrajectoryMsg(*kinematic_state_,traj);
+  time_parameterization_.computeTimeStamps(robot_trajectory);
+  robot_trajectory.getRobotTrajectoryMsg(traj);
 }
 
 // void VSLPlanner::addVel(trajectory_msgs::JointTrajectory &traj) //Velocity of the joints

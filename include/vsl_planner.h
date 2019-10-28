@@ -17,7 +17,7 @@
 #include <actionlib/client/simple_action_client.h>
 
 // MoveIt
-#include <moveit_msgs/ExecuteTrajectoryAction.h>    //or #include <control_msgs/FollowJointTrajectoryAction.h>
+#include <moveit_msgs/ExecuteTrajectoryAction.h> //or #include <control_msgs/FollowJointTrajectoryAction.h>
 #include <moveit/move_group_interface/move_group_interface.h>
 
 // Descartes
@@ -28,6 +28,9 @@
 //#include <descartes_planner/sparse_planner.h>
 #include <descartes_planner/dense_planner.h>
 
+//  Time Parameterization
+#include <moveit/trajectory_processing/time_optimal_trajectory_generation.h>
+
 namespace vsl_motion_planning
 {
 const std::string ROBOT_DESCRIPTION_PARAM = "robot_description";
@@ -37,7 +40,7 @@ const double ORIENTATION_INCREMENT = 0.5f;
 const std::string PLANNER_ID = "RRTConnectkConfigDefault";
 const std::string HOME_POSITION_NAME = "above-table";
 const std::string JOINT_POSE_TOPIC = "joint_pose";
-const double MAX_VELOCITY_SCALING = 0.05f; 
+const double MAX_VELOCITY_SCALING = 1.00f; //0.05
 const double VELOCITY_DESCARTES = 0.10f;
 
 struct VSLPlannerConfiguration
@@ -64,13 +67,14 @@ public:
     void planPath(std::vector<descartes_core::TrajectoryPtPtr> &input_traj,
                   std::vector<descartes_core::TrajectoryPtPtr> &output_path);
     void runPath(const std::vector<descartes_core::TrajectoryPtPtr> &path);
+    void loadRobotModel();
 
 protected:
     void fromDescartesToMoveitTrajectory(const std::vector<descartes_core::TrajectoryPtPtr> &input_traj,
                                          trajectory_msgs::JointTrajectory &traj);
     void addVel(trajectory_msgs::JointTrajectory &traj);
     void addAcc(trajectory_msgs::JointTrajectory &traj);
-    void computeToolVel();
+    void addTimeParameterizationToDescartes(moveit_msgs::RobotTrajectory &traj);
 
 protected:
     VSLPlannerConfiguration config_;
@@ -83,15 +87,16 @@ protected:
     //descartes_planner::SparsePlanner planner_;
     descartes_planner::DensePlanner planner_;
 
-
     // //PlanningScene
-    // robot_model_loader::RobotModelLoaderPtr robot_model_loader_;
-    // mutable robot_state::RobotStatePtr kinematic_state_;
-    // const robot_model::JointModelGroup *joint_model_group_;
-    // robot_model::RobotModelConstPtr kinematic_model_;
+    robot_model_loader::RobotModelLoaderPtr robot_model_loader_;
+    mutable robot_state::RobotStatePtr kinematic_state_;
+    const robot_model::JointModelGroup *joint_model_group_;
+    robot_model::RobotModelConstPtr kinematic_model_;
     // planning_scene_monitor::PlanningSceneMonitorPtr planning_scene_monitor_;
     // planning_pipeline::PlanningPipelinePtr planning_pipeline_;
 
+    //Time Parameterization
+    trajectory_processing::TimeOptimalTrajectoryGeneration time_parameterization_;
 };
 
 } // namespace vsl_motion_planning
