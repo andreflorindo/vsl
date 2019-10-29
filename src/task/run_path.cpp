@@ -115,7 +115,6 @@ void VSLPlanner::addVel(trajectory_msgs::JointTrajectory &traj) //Velocity of th
     }
   }
 }
-}
 
 // void VSLPlanner::addAcc(trajectory_msgs::JointTrajectory &traj) //Velocity of the joints
 // {

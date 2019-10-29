@@ -8,7 +8,7 @@
 #include <pose_builder_server.h>
 #include <course_display_topic.h>
 #include <ee_cartesian_pose_publisher.h>
-#include <ee_velocity_publisher.h>
+#include <joint_request_publisher.h>
 
 // Eigen library
 #include <eigen_conversions/eigen_msg.h>
@@ -37,7 +37,8 @@ const double ORIENTATION_INCREMENT = 0.5f;
 const std::string PLANNER_ID = "RRTConnectkConfigDefault";
 const std::string HOME_POSITION_NAME = "above-table";
 const std::string JOINT_POSE_TOPIC = "joint_pose";
-const double MAX_VELOCITY_SCALING = 0.1f;
+const double MAX_VELOCITY_SCALING = 0.05f; 
+const double VELOCITY_DESCARTES = 0.10f;
 
 struct VSLPlannerConfiguration
 {
@@ -76,12 +77,20 @@ protected:
     ros::NodeHandle nh_;
     std::shared_ptr<actionlib::SimpleActionClient<moveit_msgs::ExecuteTrajectoryAction>> moveit_run_path_client_ptr_; /* Sends a robot trajectory to moveit for execution */
     ros::ServiceClient pose_builder_client_;
-    ros::Publisher joint_pose_publisher_; 
 
     //Descartes
     descartes_core::RobotModelPtr robot_model_ptr_;
     //descartes_planner::SparsePlanner planner_;
     descartes_planner::DensePlanner planner_;
+
+
+    // //PlanningScene
+    // robot_model_loader::RobotModelLoaderPtr robot_model_loader_;
+    // mutable robot_state::RobotStatePtr kinematic_state_;
+    // const robot_model::JointModelGroup *joint_model_group_;
+    // robot_model::RobotModelConstPtr kinematic_model_;
+    // planning_scene_monitor::PlanningSceneMonitorPtr planning_scene_monitor_;
+    // planning_pipeline::PlanningPipelinePtr planning_pipeline_;
 
 };
 
