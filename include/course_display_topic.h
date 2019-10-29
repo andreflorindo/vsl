@@ -16,13 +16,13 @@
 namespace vsl_motion_planning
 {
 const std::string VISUALIZE_TRAJECTORY_TOPIC = "visualize_trajectory_curve";
-const double AXIS_LINE_LENGHT = 0.01;
+const double ARROW_LENGHT = 0.02;
+const double ARROW_WIDTH  = 0.003;
 const double AXIS_LINE_WIDTH = 0.01;
 
 struct CourseDisplayConfiguration
 {
     std::string world_frame;
-    double min_point_distance; /* Minimum distance between consecutive trajectory points. */
 };
 
 class CourseDisplay

@@ -13,9 +13,30 @@ namespace vsl_motion_planning
 void VSLPlanner::runPath(const std::vector<descartes_core::TrajectoryPtPtr> &path)
 {
 
+  // moving to "above-table" configuration
   // creating move group to move the arm in free space
   moveit::planning_interface::MoveGroupInterface move_group(config_.group_name);
-  move_group.setPlannerId(PLANNER_ID);
+  move_group.setPlannerId(PLANNER_ID); //RRTConnect
+  move_group.setPlanningTime(10.0f);
+  move_group.setMaxVelocityScalingFactor(MAX_VELOCITY_SCALING);
+
+  // setting above-table position as target
+  if (!move_group.setNamedTarget(HOME_POSITION_NAME))
+  {
+    ROS_ERROR_STREAM("Failed to set home '" << HOME_POSITION_NAME << "' position");
+    exit(-1);
+  }
+
+  moveit_msgs::MoveItErrorCodes result = move_group.move();
+  if (result.val != result.SUCCESS)
+  {
+    ROS_ERROR_STREAM("Failed to move to " << HOME_POSITION_NAME << " position");
+    exit(-1);
+  }
+  else
+  {
+    ROS_INFO_STREAM("Robot reached home position");
+  }
 
   // creating goal joint pose to start of the path
   std::vector<double> seed_pose(robot_model_ptr_->getDOF());
@@ -26,20 +47,22 @@ void VSLPlanner::runPath(const std::vector<descartes_core::TrajectoryPtPtr> &pat
 
   // moving arm to joint goal by using another planner, for example RRT
   move_group.setJointValueTarget(start_pose);
-  move_group.setPlanningTime(10.0f);
-  move_group.setMaxVelocityScalingFactor(MAX_VELOCITY_SCALING);
-  moveit_msgs::MoveItErrorCodes result = move_group.move();
+
+  result = move_group.move();
   if (result.val != result.SUCCESS)
   {
     ROS_ERROR_STREAM("Move to start joint pose failed");
     exit(-1);
+  }
+  else
+  {
+    ROS_INFO_STREAM("Robot reached start position");
   }
 
   // creating Moveit trajectory from Descartes Trajectory
   moveit_msgs::RobotTrajectory moveit_traj;
   fromDescartesToMoveitTrajectory(path, moveit_traj.joint_trajectory);
 
-  // sending robot path to server for execution
   moveit_msgs::ExecuteTrajectoryGoal goal;
   goal.trajectory = moveit_traj;
 
@@ -65,9 +88,9 @@ void VSLPlanner::fromDescartesToMoveitTrajectory(const std::vector<descartes_cor
   traj.header.frame_id = config_.world_frame;
   traj.joint_names = config_.joint_names;
 
-  descartes_utilities::toRosJointPoints(*robot_model_ptr_, input_traj, 0.4, traj.points);
+  descartes_utilities::toRosJointPoints(*robot_model_ptr_, input_traj, VELOCITY_DESCARTES, traj.points);
   addVel(traj);
-  // addAcc(traj);
+  //addAcc(traj);
 }
 
 void VSLPlanner::addVel(trajectory_msgs::JointTrajectory &traj) //Velocity of the joints
@@ -80,7 +103,7 @@ void VSLPlanner::addVel(trajectory_msgs::JointTrajectory &traj) //Velocity of th
   for (auto i = 0; i < n_joints; ++i)
   {
     traj.points[0].velocities[i] = 0.0f;
-    traj.points[traj.points.size()-1].velocities[i] = 0.0f;
+    traj.points[traj.points.size() - 1].velocities[i] = 0.0f;
     for (auto j = 1; j < traj.points.size() - 1; j++)
     {
       // For each point in a given joint
@@ -90,33 +113,32 @@ void VSLPlanner::addVel(trajectory_msgs::JointTrajectory &traj) //Velocity of th
       double v = delta_theta / delta_time;
       traj.points[j].velocities[i] = v;
     }
-
   }
 }
 
 // void VSLPlanner::addAcc(trajectory_msgs::JointTrajectory &traj) //Velocity of the joints
 // {
-//   if (traj.points.size() < 3)
-//     return;
+//     if (traj.points.size() < 3)
+//         return;
 
-//   auto n_joints = traj.points.front().positions.size();
+//     auto n_joints = traj.points.front().positions.size();
 
-//   for (auto i = 0; i < n_joints; ++i)
-//   {
-
-//     for (auto j = 1; j < traj.points.size(); j++)
+//     for (auto i = 0; i < n_joints; ++i)
 //     {
-//       // For each point in a given joint
-//       //Finite difference, first order, central. Gives the average velocity, not conservative
-//       double delta_velocity = -traj.points[j - 1].velocities[i] + traj.points[j + 1].velocities[i];
-//       double delta_time = -traj.points[j - 1].time_from_start.toSec() + traj.points[j + 1].time_from_start.toSec();
-//       double a = delta_velocity / delta_time;
-//       traj.points[j].accelerations[i] = a;
+//         traj.points[0].accelerations[i] = 0.0f;      // <- Incorrect!!!! TODO
+//         traj.points[traj.points.size() - 1].accelerations[i] = 0.0f;
+
+//         for (auto j = 1; j < traj.points.size()-1; j++)
+//         {
+//             // For each point in a given joint
+//             //Finite difference, first order, central. Gives the average velocity, not conservative
+//             double delta_velocity = -traj.points[j - 1].velocities[i] + traj.points[j + 1].velocities[i];
+//             double delta_time = -traj.points[j - 1].time_from_start.toSec() + traj.points[j + 1].time_from_start.toSec();
+//             double a = delta_velocity / delta_time;
+//             traj.points[j].accelerations[i] = a;
+//         }
 //     }
-
-//   }
 // }
-
 
 // void VSLPlanner::addVel(trajectory_msgs::JointTrajectory &traj) //Velocity of the joints
 // {
@@ -130,7 +152,7 @@ void VSLPlanner::addVel(trajectory_msgs::JointTrajectory &traj) //Velocity of th
 //     traj.points[0].velocities[i] = 0.0f;
 //     //traj.points[traj.points.size()-1].velocities[i] = 0.0f;
 
-//     for (auto j = 1; j < traj.points.size(); j++)
+//     for (auto j = 1; j < traj.points.size()-1; j++)
 //     {
 //       // For each point in a given joint
 //       //Finite difference, first order, regressive
@@ -166,5 +188,4 @@ void VSLPlanner::addVel(trajectory_msgs::JointTrajectory &traj) //Velocity of th
 //     }
 
 //   }
-// }
-
+} // namespace vsl_motion_planning

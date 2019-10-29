@@ -16,8 +16,7 @@ void CourseDisplay::initTopic()
     ros::NodeHandle nh;
     ros::NodeHandle ph("~");
 
-    if (ph.getParam("world_frame", config_.world_frame) &&
-        ph.getParam("visualization/min_point_distance", config_.min_point_distance))
+    if (ph.getParam("world_frame", config_.world_frame))
     {
         ROS_INFO_STREAM("course_display: Loaded Topic parameters");
     }
@@ -56,11 +55,12 @@ void CourseDisplay::publishPosesMarkers(const geometry_msgs::PoseArray &course_p
     // creating rviz markers
     visualization_msgs::Marker z_axes, y_axes, x_axes, line;
     z_axes.type = y_axes.type = x_axes.type = visualization_msgs::Marker::LINE_LIST;
+    //z_axes.type = y_axes.type = x_axes.type = visualization_msgs::Marker::ARROW;
     z_axes.ns = y_axes.ns = x_axes.ns = "axes";
     z_axes.action = y_axes.action = x_axes.action = visualization_msgs::Marker::ADD;
     z_axes.lifetime = y_axes.lifetime = x_axes.lifetime = ros::Duration(0);
     z_axes.header.frame_id = y_axes.header.frame_id = x_axes.header.frame_id = config_.world_frame;
-    z_axes.scale.x = y_axes.scale.x = x_axes.scale.x = AXIS_LINE_WIDTH;
+    z_axes.scale.x = y_axes.scale.x = x_axes.scale.x = ARROW_WIDTH;
 
     // z properties
     z_axes.id = 0;
@@ -125,19 +125,19 @@ void CourseDisplay::publishPosesMarkers(const geometry_msgs::PoseArray &course_p
 
         tf::pointEigenToMsg(pose.translation(), p_start);
 
-        if (distance > config_.min_point_distance)
+        if (distance > ARROW_LENGHT)
         {
-            Eigen::Isometry3d moved_along_x = pose * Eigen::Translation3d(AXIS_LINE_LENGHT, 0, 0);
+            Eigen::Isometry3d moved_along_x = pose * Eigen::Translation3d(ARROW_LENGHT, 0, 0);
             tf::pointEigenToMsg(moved_along_x.translation(), p_end);
             x_axes.points.emplace_back(p_start);
             x_axes.points.emplace_back(p_end);
 
-            Eigen::Isometry3d moved_along_y = pose * Eigen::Translation3d(0, AXIS_LINE_LENGHT, 0);
+            Eigen::Isometry3d moved_along_y = pose * Eigen::Translation3d(0, ARROW_LENGHT, 0);
             tf::pointEigenToMsg(moved_along_y.translation(), p_end);
             y_axes.points.emplace_back(p_start);
             y_axes.points.emplace_back(p_end);
 
-            Eigen::Isometry3d moved_along_z = pose * Eigen::Translation3d(0, 0, AXIS_LINE_LENGHT);
+            Eigen::Isometry3d moved_along_z = pose * Eigen::Translation3d(0, 0, ARROW_LENGHT);
             tf::pointEigenToMsg(moved_along_z.translation(), p_end);
             z_axes.points.emplace_back(p_start);
             z_axes.points.emplace_back(p_end);
