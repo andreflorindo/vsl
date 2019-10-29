@@ -45,7 +45,7 @@
     <remap from="/follow_joint_trajectory/goal" to="/joint_trajectory_action/goal" />
     <remap from="/follow_joint_trajectory/cancel" to="/joint_trajectory_action/cancel" />
 
-    <include file="$(find kr210_pen_controller)/launch/kr210_pen_controller_bringup.launch" />
+    <include file="$(find kr210_pen_drivers)/launch/kr210_pen_controller_bringup.launch" />
 
     <param name="move_group/trajectory_execution/execution_duration_monitoring" value="false"/>
 
@@ -65,6 +65,6 @@
   </group>
 
   <!-- rviz -->
-  <node name="rviz" type="rviz" pkg="rviz" args="-d $(find vsl_core)/config/config.rviz" required="true" />
+  <node name="rviz" type="rviz" pkg="rviz" args="-d $(find vsl_core)/config/config.rviz" required="true" output="screen" />
 
 </launch>

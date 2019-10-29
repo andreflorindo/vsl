@@ -34,14 +34,14 @@ void PoseBuilder::createCourse()
     //Read File containing the course
     CourseStruct course;
     //std::shared_ptr<CourseStruct> course = std::make_shared<CourseStruct>();
-    readFileContent("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/simplePath.txt", course);
+    readFileContent("/home/amendesflorind/workspaces/kuka_testing_ws/src/vsl_core/examples/simplePath.txt", course);
     int npoints = course.x.size();
 
     //Read Files with the binormal and tangent of the course
     CourseStruct tangent;
     CourseStruct binormal;
-    readFileContent("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/tangent_simplePath.txt", tangent);
-    readFileContent("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/binormal_simplePath.txt", binormal);
+    readFileContent("/home/amendesflorind/workspaces/kuka_testing_ws/src/vsl_core/examples/tangent_simplePath.txt", tangent);
+    readFileContent("/home/amendesflorind/workspaces/kuka_testing_ws/src/vsl_core/examples/binormal_simplePath.txt", binormal);
 
     //Initializate pose message
     course_poses.poses.reserve(npoints); //  <---------------
@@ -66,7 +66,7 @@ void PoseBuilder::createCourse()
         Eigen::Isometry3d rot_start_table;
         rot_start_table.matrix() << -1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1;
         //single_pose = rot_start_table * (Eigen::Translation3d(course.x[i], course.y[i] - 1.2 - 0.6, course.z[i] + 0.78 + 0.002)) * rot;
-        single_pose = rot_start_table * (Eigen::Translation3d(course.x[i]- 1.2 - 0.6, course.y[i] - 0.6, course.z[i] + 0.78 + 0.002)) * rot;
+        single_pose = rot_start_table * (Eigen::Translation3d(course.x[i]- 1.2 - 0.6, course.y[i] - 0.6, course.z[i] + 0.78 + 0.002+0.7)) * rot;
 
         tf::poseEigenToMsg(single_pose, single_pose_msg);
 
