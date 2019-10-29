@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(vsl_core)
+project(vsl_motion_planner_support)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
@@ -10,12 +10,7 @@ add_compile_options(-std=c++11)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   moveit_msgs
-  moveit_ros_planning_interface
-  descartes_core
-  descartes_moveit
-  descartes_trajectory
-  descartes_planner
-  descartes_utilities
+  # moveit_ros_planning_interface
   eigen_conversions
   message_generation
   geometry_msgs
@@ -24,7 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 ## System dependencies are found with CMake's conventions
-find_package(Boost REQUIRED COMPONENTS system)
+# find_package(Boost REQUIRED COMPONENTS system)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -114,22 +109,15 @@ find_package(Boost REQUIRED COMPONENTS system)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   INCLUDE_DIRS 
-  include
+   include
   LIBRARIES
-  ${PROJECT_NAME}
+   ${PROJECT_NAME}
  CATKIN_DEPENDS
    roscpp
    moveit_msgs
-   moveit_ros_planning_interface
-   descartes_core
-   descartes_moveit
-   descartes_trajectory
-   descartes_planner
-   descartes_utilities
    eigen_conversions
    message_runtime
    
-
 #  DEPENDS system_lib
 )
 
@@ -139,30 +127,23 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(
-  include
+ include_directories(
+   include
   ${catkin_INCLUDE_DIRS}
-)
+ )
 
 ## Declare a C++ library
- add_library(${PROJECT_NAME}
-   src/task/init_ros.cpp
-   src/task/init_descartes.cpp
-   src/task/generate_trajectory.cpp
-   src/task/plan_path.cpp
-   src/task/run_path.cpp
-   src/task/get_course.cpp
- )
+#  add_library(${PROJECT_NAME}
+#  )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+  # add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(vsl_planner_descartes src/main.cpp)
 add_executable(pose_builder src/pose_builder.cpp)
 add_executable(course_display src/course_display.cpp)
 add_executable(ee_cartesian_pose_publisher src/ee_cartesian_pose_publisher.cpp)
@@ -178,15 +159,13 @@ add_executable(ee_request_publisher src/ee_request_publisher.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(vsl_planner_descartes vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(pose_builder vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(course_display vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(ee_cartesian_pose_publisher vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(joint_request_publisher vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(ee_request_publisher vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(pose_builder vsl_motion_planner_support_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(course_display vsl_motion_planner_support_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(ee_cartesian_pose_publisher vsl_motion_planner_support_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(joint_request_publisher vsl_motion_planner_support_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(ee_request_publisher vsl_motion_planner_support_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(vsl_planner_descartes ${PROJECT_NAME} ${catkin_LIBRARIES})
 target_link_libraries(pose_builder ${PROJECT_NAME} ${catkin_LIBRARIES})
 target_link_libraries(course_display ${PROJECT_NAME} ${catkin_LIBRARIES})
 target_link_libraries(ee_cartesian_pose_publisher ${PROJECT_NAME} ${catkin_LIBRARIES})

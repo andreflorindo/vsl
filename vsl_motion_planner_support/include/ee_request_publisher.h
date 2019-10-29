@@ -6,8 +6,8 @@
 #include <ros/ros.h>
 
 //msg
-#include <vsl_core/JointRequest.h>
-#include <vsl_core/EERequest.h>
+#include <vsl_motion_planner_support/JointRequest.h>
+#include <vsl_motion_planner_support/EERequest.h>
 
 //moveit
 #include <moveit/robot_model_loader/robot_model_loader.h>
@@ -36,7 +36,7 @@ public:
     virtual ~EERequestPublisher();
 
     void initTopic();
-    void subscriberCallback(const vsl_core::JointRequest &msg);
+    void subscriberCallback(const vsl_motion_planner_support::JointRequest &msg);
     void publishEERequest();
     void loadRobotModel();
     geometry_msgs::Transform getEEPosition();
@@ -44,7 +44,7 @@ public:
     double getEELinearVelocity(geometry_msgs::Twist &ee_request_velocity);
     void getJacobian(Eigen::MatrixXd &jacobian);
 
-    vsl_core::JointRequest joint_request_;
+    vsl_motion_planner_support::JointRequest joint_request_;
 
 protected:
     EERequestPublisherConfiguration config_;

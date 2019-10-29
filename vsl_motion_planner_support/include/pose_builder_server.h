@@ -5,7 +5,7 @@
 
 // ROS
 #include <ros/ros.h>
-#include <vsl_core/PoseBuilder.h>
+#include <vsl_motion_planner_support/PoseBuilder.h>
 
 // C++
 #include <iostream>
@@ -45,7 +45,7 @@ public:
   
 
   void initServer();
-  bool serviceCallback(vsl_core::PoseBuilder::Request &request, vsl_core::PoseBuilder::Response &response);
+  bool serviceCallback(vsl_motion_planner_support::PoseBuilder::Request &request, vsl_motion_planner_support::PoseBuilder::Response &response);
 
 protected:
   void readFileContent(std::string filename, CourseStruct &course);

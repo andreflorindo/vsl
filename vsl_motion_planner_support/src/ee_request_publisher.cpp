@@ -29,12 +29,12 @@ void EERequestPublisher::initTopic()
 
     joint_request_subscriber_ = nh.subscribe("joint_request", 1000, &EERequestPublisher::subscriberCallback, this);
 
-    ee_request_publisher_ = nh.advertise<vsl_core::EERequest>("ee_request", 1000, true);
+    ee_request_publisher_ = nh.advertise<vsl_motion_planner_support::EERequest>("ee_request", 1000, true);
 
     ROS_INFO_STREAM("ee_request_publisher: Task '" << __FUNCTION__ << "' completed");
 }
 
-void EERequestPublisher::subscriberCallback(const vsl_core::JointRequest &msg)
+void EERequestPublisher::subscriberCallback(const vsl_motion_planner_support::JointRequest &msg)
 {
     joint_request_ = msg;
     publishEERequest();
@@ -56,7 +56,7 @@ void EERequestPublisher::loadRobotModel()
 
 void EERequestPublisher::publishEERequest()
 {
-    vsl_core::EERequest ee_request;
+    vsl_motion_planner_support::EERequest ee_request;
     kinematic_state_->setJointGroupPositions(config_.group_name, joint_request_.position);
 
     ee_request.header = joint_request_.header;

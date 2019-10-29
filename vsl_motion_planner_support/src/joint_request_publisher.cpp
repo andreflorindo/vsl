@@ -15,7 +15,7 @@ void JointRequestPublisher::initTopic()
 
     joint_path_subscriber_ = nh.subscribe("joint_path_command", 1000, &JointRequestPublisher::subscriberCallback, this);
 
-    joint_request_publisher_ = nh.advertise<vsl_core::JointRequest>("joint_request", 1000, true);
+    joint_request_publisher_ = nh.advertise<vsl_motion_planner_support::JointRequest>("joint_request", 1000, true);
 
     ROS_INFO_STREAM("joint_request_publisher: Task '" << __FUNCTION__ << "' completed");
 }
@@ -38,7 +38,7 @@ void JointRequestPublisher::publishJointRequest()
     std::vector<std::vector<double>> buffer_jerk;
     std::vector<double> buffer_time;
 
-    vsl_core::JointRequest joint_request;
+    vsl_motion_planner_support::JointRequest joint_request;
 
     int num_joints = joint_path_.points[0].positions.size();
     int num_points = joint_path_.points.size();

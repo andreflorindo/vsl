@@ -17,7 +17,7 @@ class CourseClass:
 
 def read_path():
     input = np.loadtxt(
-        "/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/simplePath.txt", dtype='f')
+        "/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_motion_planner_support/examples/simplePath.txt", dtype='f')
     x = []
     y = []
     z = []
@@ -167,9 +167,9 @@ if __name__ == "__main__":
     # for i in range(0,len(tangent)):
     #     binormal.append([0,0,1])
 
-    np.savetxt("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/tangent_simplePath.txt", tangent, fmt='%.6f')
-    np.savetxt("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/normal_simplePath.txt", normal, fmt='%.6f')
-    np.savetxt("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/binormal_simplePath.txt", binormal, fmt='%.6f')
+    np.savetxt("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_motion_planner_support/examples/tangent_simplePath.txt", tangent, fmt='%.6f')
+    np.savetxt("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_motion_planner_support/examples/normal_simplePath.txt", normal, fmt='%.6f')
+    np.savetxt("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_motion_planner_support/examples/binormal_simplePath.txt", binormal, fmt='%.6f')
 
     plot_course(bspline_course)
 

@@ -6,8 +6,8 @@ bool VSLPlanner::getCourse(EigenSTL::vector_Isometry3d &poses)
 {
     // Initialize Service client
     ros::service::waitForService(POSE_BUILDER_SERVICE);
-    pose_builder_client_ = nh_.serviceClient<vsl_core::PoseBuilder>(POSE_BUILDER_SERVICE);
-    vsl_core::PoseBuilder srv;
+    pose_builder_client_ = nh_.serviceClient<vsl_motion_planner_support::PoseBuilder>(POSE_BUILDER_SERVICE);
+    vsl_motion_planner_support::PoseBuilder srv;
     // srv.request.num_layer = num_layer;
     // srv.request.num_course = num_course;
     // ROS_INFO_STREAM("Requesting pose in base frame: " << num_layer);

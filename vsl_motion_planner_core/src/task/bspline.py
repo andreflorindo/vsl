@@ -16,7 +16,7 @@ class CourseClass:
 
 def read_path():
     input = np.loadtxt(
-        "/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/simplePath.txt", dtype='f')
+        "/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_motion_planner_support/examples/simplePath.txt", dtype='f')
     x = []
     y = []
     z = []

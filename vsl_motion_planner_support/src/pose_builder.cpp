@@ -34,14 +34,14 @@ void PoseBuilder::createCourse()
     //Read File containing the course
     CourseStruct course;
     //std::shared_ptr<CourseStruct> course = std::make_shared<CourseStruct>();
-    readFileContent("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/simplePath.txt", course);
+    readFileContent("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_motion_planner_support/examples/simplePath.txt", course);
     int npoints = course.x.size();
 
     //Read Files with the binormal and tangent of the course
     CourseStruct tangent;
     CourseStruct binormal;
-    readFileContent("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/tangent_simplePath.txt", tangent);
-    readFileContent("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/binormal_simplePath.txt", binormal);
+    readFileContent("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_motion_planner_support/examples/tangent_simplePath.txt", tangent);
+    readFileContent("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_motion_planner_support/examples/binormal_simplePath.txt", binormal);
 
     //Initializate pose message
     course_poses.poses.reserve(npoints); //  <---------------
@@ -117,7 +117,7 @@ void PoseBuilder::readFileContent(std::string filename, CourseStruct &course)
     }
 }
 
-bool PoseBuilder::serviceCallback(vsl_core::PoseBuilder::Request &request, vsl_core::PoseBuilder::Response &response)
+bool PoseBuilder::serviceCallback(vsl_motion_planner_support::PoseBuilder::Request &request, vsl_motion_planner_support::PoseBuilder::Response &response)
 {
     response.single_course_poses = course_poses; //  <---------------
     return true;

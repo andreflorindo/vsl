@@ -6,7 +6,7 @@
 #include <ros/ros.h>
 
 //msg
-#include <vsl_core/JointRequest.h>
+#include <vsl_motion_planner_support/JointRequest.h>
 #include <trajectory_msgs/JointTrajectory.h>
 
 namespace vsl_motion_planning

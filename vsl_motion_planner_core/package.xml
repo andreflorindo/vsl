@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>vsl_core</name>
+  <name>vsl_motion_planner_core</name>
   <version>0.0.0</version>
-  <description>The vsl_core package</description>
+  <description>The vsl_motion_planner_core package</description>
   <maintainer email="a.m.mendesflorindo@student.tudelft.nl">Andre Florindo</maintainer>
   <license>Tu Delft</license>
 
@@ -64,6 +64,8 @@
   <build_depend>geometry_msgs</build_depend>
   <build_depend>std_msgs</build_depend>
    <build_depend>trajectory_msgs</build_depend>
+
+   <depend>vsl_motion_planner_support</depend>
   
     
   

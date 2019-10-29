@@ -5,10 +5,10 @@
 
 // ROS
 #include <ros/ros.h>
-#include <pose_builder_server.h>
-#include <course_display_topic.h>
-#include <ee_cartesian_pose_publisher.h>
-#include <joint_request_publisher.h>
+#include <vsl_motion_planner_support/pose_builder_server.h>
+#include <vsl_motion_planner_support/course_display_topic.h>
+#include <vsl_motion_planner_support/ee_cartesian_pose_publisher.h>
+#include <vsl_motion_planner_support/joint_request_publisher.h>
 
 // Eigen library
 #include <eigen_conversions/eigen_msg.h>
