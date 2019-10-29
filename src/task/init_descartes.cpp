@@ -53,6 +53,11 @@ void VSLPlanner::initDescartes()
         exit(-1);
     }
 
+    move_group.setPlanningTime(10.0f);
+    move_group.setMaxVelocityScalingFactor(MAX_VELOCITY_SCALING);
+    move_group.setMaxAccelerationScalingFactor(MAX_VELOCITY_SCALING);
+
+   // moveit::planning_interface::MoveGroupInterface::Plan my_plan;
     moveit_msgs::MoveItErrorCodes result = move_group.move();
     if (result.val != result.SUCCESS)
     {

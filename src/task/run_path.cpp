@@ -28,12 +28,16 @@ void VSLPlanner::runPath(const std::vector<descartes_core::TrajectoryPtPtr> &pat
   move_group.setJointValueTarget(start_pose);
   move_group.setPlanningTime(10.0f);
   move_group.setMaxVelocityScalingFactor(MAX_VELOCITY_SCALING);
+  move_group.setMaxAccelerationScalingFactor(MAX_VELOCITY_SCALING);
+
+  //moveit::planning_interface::MoveGroupInterface::Plan my_plan;
   moveit_msgs::MoveItErrorCodes result = move_group.move();
-  if (result.val != result.SUCCESS)
-  {
-    ROS_ERROR_STREAM("Move to start joint pose failed");
-    exit(-1);
-  }
+
+   if (result.val != result.SUCCESS)
+   {
+     ROS_ERROR_STREAM("Move to start joint pose failed");
+     exit(-1);
+   }
 
   // creating Moveit trajectory from Descartes Trajectory
   moveit_msgs::RobotTrajectory moveit_traj;
