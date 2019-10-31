@@ -149,7 +149,7 @@ void VSLPlanner::addTimeParameterizationToDescartes(moveit_msgs::RobotTrajectory
   robot_trajectory::RobotTrajectory robot_trajectory(robot_model_loader_->getModel(), config_.group_name);
 
   robot_trajectory.setRobotTrajectoryMsg(*kinematic_state_,traj);
-  time_parameterization_.computeTimeStamps(robot_trajectory, 0.5, 1);
+  time_parameterization_.computeTimeStamps(robot_trajectory, 0.05, 1);
   robot_trajectory.getRobotTrajectoryMsg(traj);
 }
 
