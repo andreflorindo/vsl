@@ -65,7 +65,7 @@ void VSLPlanner::runPath(const std::vector<descartes_core::TrajectoryPtPtr> &pat
   moveit_msgs::RobotTrajectory moveit_traj;
   fromDescartesToMoveitTrajectory(path, moveit_traj.joint_trajectory);
 
-  //addTimeParameterizationToDescartes(moveit_traj);
+  addTimeParameterizationToDescartes(moveit_traj);
   
   moveit_msgs::ExecuteTrajectoryGoal goal;
   goal.trajectory = moveit_traj;
@@ -149,7 +149,7 @@ void VSLPlanner::addTimeParameterizationToDescartes(moveit_msgs::RobotTrajectory
   robot_trajectory::RobotTrajectory robot_trajectory(robot_model_loader_->getModel(), config_.group_name);
 
   robot_trajectory.setRobotTrajectoryMsg(*kinematic_state_,traj);
-  time_parameterization_.computeTimeStamps(robot_trajectory);
+  time_parameterization_.computeTimeStamps(robot_trajectory, 0.5, 1);
   robot_trajectory.getRobotTrajectoryMsg(traj);
 }
 

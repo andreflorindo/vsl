@@ -31,7 +31,8 @@
     <param name="world_frame" value="kl2000_base_link"/>  <!--table_table_top-->  
     <!-- <param name="trajectory/time_delay" value="0.1"/> -->
     <!-- <rosparam param="trajectory/seed_pose">[1.57, -1.57, 1.04 , 0.0, 1.57, 0.0]</rosparam> -->
-    <rosparam param="trajectory/seed_pose">[0.52, -1.57, 1.04 , 0.0, 0.52, 0.0]</rosparam>
+    <!-- <rosparam param="trajectory/seed_pose">[0.52, -1.57, 1.04 , 0.0, 0.52, 0.0]</rosparam> -->
+    <rosparam param="trajectory/seed_pose">[0.30, -0.76, 1.72 , 0.0, 0.60, -0.13]</rosparam>
 
   </node>
 
