@@ -28,6 +28,9 @@
 //#include <descartes_planner/sparse_planner.h>
 #include <descartes_planner/dense_planner.h>
 
+//  Time Parameterization
+#include <moveit/trajectory_processing/time_optimal_trajectory_generation.h>
+
 namespace vsl_motion_planning
 {
 const std::string ROBOT_DESCRIPTION_PARAM = "robot_description";
@@ -64,13 +67,14 @@ public:
     void planPath(std::vector<descartes_core::TrajectoryPtPtr> &input_traj,
                   std::vector<descartes_core::TrajectoryPtPtr> &output_path);
     void runPath(const std::vector<descartes_core::TrajectoryPtPtr> &path);
+    void loadRobotModel();
 
 protected:
     void fromDescartesToMoveitTrajectory(const std::vector<descartes_core::TrajectoryPtPtr> &input_traj,
                                          trajectory_msgs::JointTrajectory &traj);
     void addVel(trajectory_msgs::JointTrajectory &traj);
     void addAcc(trajectory_msgs::JointTrajectory &traj);
-    void computeToolVel();
+    void addTimeParameterizationToDescartes(moveit_msgs::RobotTrajectory &traj);
 
 protected:
     VSLPlannerConfiguration config_;
@@ -82,6 +86,14 @@ protected:
     descartes_core::RobotModelPtr robot_model_ptr_;
     //descartes_planner::SparsePlanner planner_;
     descartes_planner::DensePlanner planner_;
+
+        // //PlanningScene
+    robot_model_loader::RobotModelLoaderPtr robot_model_loader_;
+    mutable robot_state::RobotStatePtr kinematic_state_;
+    const robot_model::JointModelGroup *joint_model_group_;
+    robot_model::RobotModelConstPtr kinematic_model_;
+        //Time Parameterization
+    trajectory_processing::TimeOptimalTrajectoryGeneration time_parameterization_;
 
 
     // //PlanningScene

@@ -63,6 +63,8 @@ void VSLPlanner::runPath(const std::vector<descartes_core::TrajectoryPtPtr> &pat
   moveit_msgs::RobotTrajectory moveit_traj;
   fromDescartesToMoveitTrajectory(path, moveit_traj.joint_trajectory);
 
+  //addTimeParameterizationToDescartes(moveit_traj);
+
   moveit_msgs::ExecuteTrajectoryGoal goal;
   goal.trajectory = moveit_traj;
 
@@ -79,6 +81,7 @@ void VSLPlanner::runPath(const std::vector<descartes_core::TrajectoryPtPtr> &pat
 
   ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");
 }
+
 
 void VSLPlanner::fromDescartesToMoveitTrajectory(const std::vector<descartes_core::TrajectoryPtPtr> &input_traj,
                                                  trajectory_msgs::JointTrajectory &traj)
@@ -114,6 +117,15 @@ void VSLPlanner::addVel(trajectory_msgs::JointTrajectory &traj) //Velocity of th
       traj.points[j].velocities[i] = v;
     }
   }
+}
+
+void VSLPlanner::addTimeParameterizationToDescartes(moveit_msgs::RobotTrajectory &traj)
+{
+  robot_trajectory::RobotTrajectory robot_trajectory(robot_model_loader_->getModel(), config_.group_name);
+
+  robot_trajectory.setRobotTrajectoryMsg(*kinematic_state_,traj);
+  time_parameterization_.computeTimeStamps(robot_trajectory, 0.05, 1);
+  robot_trajectory.getRobotTrajectoryMsg(traj);
 }
 
 // void VSLPlanner::addAcc(trajectory_msgs::JointTrajectory &traj) //Velocity of the joints

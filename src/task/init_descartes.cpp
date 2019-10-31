@@ -42,7 +42,23 @@ void VSLPlanner::initDescartes()
     }
 
     ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");
+    loadRobotModel();
 }
+
+void VSLPlanner::loadRobotModel()
+{
+    robot_model_loader_.reset(new robot_model_loader::RobotModelLoader(ROBOT_DESCRIPTION_PARAM));
+
+    kinematic_model_ = robot_model_loader_->getModel();
+    if (!kinematic_model_)
+    {
+        ROS_ERROR_STREAM("Failed to load robot model from robot description parameter:robot_description");
+        exit(-1);
+    }
+    joint_model_group_ = kinematic_model_->getJointModelGroup(config_.group_name);
+    kinematic_state_.reset(new moveit::core::RobotState(kinematic_model_));
+}
+
 
 // void VSLPlanner::loadRobotModel()
 // {
