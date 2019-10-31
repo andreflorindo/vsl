@@ -10,7 +10,6 @@ add_compile_options(-std=c++11)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   moveit_msgs
-  # moveit_ros_planning_interface
   eigen_conversions
   message_generation
   geometry_msgs
@@ -117,6 +116,9 @@ catkin_package(
    moveit_msgs
    eigen_conversions
    message_runtime
+   geometry_msgs
+   std_msgs
+   trajectory_msgs
    
 #  DEPENDS system_lib
 )
@@ -133,7 +135,13 @@ catkin_package(
  )
 
 ## Declare a C++ library
-#  add_library(${PROJECT_NAME}
+#   add_library(${PROJECT_NAME}
+#   src/pose_builder.cpp
+#   src/course_display.cpp
+#   src/ee_cartesian_pose_publisher.cpp
+#   src/joint_request_publisher.cpp
+#   src/ee_request_publisher.cpp
+  
 #  )
 
 ## Add cmake target dependencies of the library
@@ -159,6 +167,7 @@ add_executable(ee_request_publisher src/ee_request_publisher.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
+add_dependencies(${PROJECT_NAME} vsl_core_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(pose_builder vsl_motion_planner_support_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(course_display vsl_motion_planner_support_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ee_cartesian_pose_publisher vsl_motion_planner_support_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
