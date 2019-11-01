@@ -17,7 +17,7 @@ class CourseClass:
 
 def read_path():
     input = np.loadtxt(
-        "/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/simplePath.txt", dtype='f')
+        "/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/examples/simplePath.txt", dtype='f')
     x = []
     y = []
     z = []
@@ -82,19 +82,20 @@ def deriv_bspline3D(order, parameter, u, course, k):
 
 def recognize_position(course, bspline_course):
     position = []
-    for j in range(0,len(course.x)):
+    for j in range(0, len(course.x)):
         percentage = 0.2
         for i in range(0, len(bspline_course.x)):
             if bspline_course.x[i] >= (1-percentage)*course.x[j] and bspline_course.x[i] <= (1+percentage)*course.x[j]:
-                if bspline_course.x[i]>course.x[j]:
-                    percentage= bspline_course.x[i]/course.x[j]-1
+                if bspline_course.x[i] > course.x[j]:
+                    percentage = bspline_course.x[i]/course.x[j]-1
                 else:
-                    percentage= 1-bspline_course.x[i]/course.x[j]
+                    percentage = 1-bspline_course.x[i]/course.x[j]
                 k = i
-        position.append(k)            
+        position.append(k)
     return position
 
-def deriv_bspline_position(order,position, parameter, u, course, k):
+
+def deriv_bspline_position(order, position, parameter, u, course, k):
     xd = BSpline(u, course.x, k)
     yd = BSpline(u, course.y, k)
     zd = BSpline(u, course.z, k)
@@ -103,7 +104,7 @@ def deriv_bspline_position(order,position, parameter, u, course, k):
     deriv_yd = yd.derivative(order)
     deriv_zd = zd.derivative(order)
 
-    deriv_parameter=[]
+    deriv_parameter = []
     for i in range(0, len(position)):
         deriv_parameter.append(parameter[position[i]])
 
@@ -115,11 +116,14 @@ def deriv_bspline_position(order,position, parameter, u, course, k):
         deriv_bspline_x, deriv_bspline_y, deriv_bspline_z)
     return deriv_bspline_course
 
+
 def build_vector(deriv_bspline):
-    deriv_vector=[]
+    deriv_vector = []
     for i in range(0, len(deriv_bspline.x)):
-        vector_norm = math.sqrt(deriv_bspline.x[i]**2+deriv_bspline.y[i]**2+deriv_bspline.z[i]**2)
-        vector=[(deriv_bspline.x[i])/vector_norm,(deriv_bspline.y[i])/vector_norm,(deriv_bspline.z[i])/vector_norm]
+        vector_norm = math.sqrt(
+            deriv_bspline.x[i]**2+deriv_bspline.y[i]**2+deriv_bspline.z[i]**2)
+        vector = [(deriv_bspline.x[i])/vector_norm, (deriv_bspline.y[i]
+                                                     )/vector_norm, (deriv_bspline.z[i])/vector_norm]
         deriv_vector.append(vector)
     return deriv_vector
 
@@ -131,7 +135,7 @@ if __name__ == "__main__":
     # k curve degree
 
     course = read_path()
-    #plot_course(course)
+    # plot_course(course)
 
     k = len(course.x)-1
 
@@ -147,29 +151,31 @@ if __name__ == "__main__":
     bspline_course = bspline3D(parameter, u, course, k)
     position = recognize_position(course, bspline_course)
 
-    deriv1_bspline_position = deriv_bspline_position(1, position, parameter, u, course, k)
-    deriv2_bspline_position = deriv_bspline_position(2, position, parameter, u, course, k)
-    tangent=build_vector(deriv1_bspline_position)
-    normal=build_vector(deriv2_bspline_position)
+    deriv1_bspline_position = deriv_bspline_position(
+        1, position, parameter, u, course, k)
+    deriv2_bspline_position = deriv_bspline_position(
+        2, position, parameter, u, course, k)
+    tangent = build_vector(deriv1_bspline_position)
+    normal = build_vector(deriv2_bspline_position)
 
-    binormal=[]
-    for i in range(0,len(tangent)):
-         binormal_vector = np.cross(tangent[i], normal[i])
-         binormal_norm = math.sqrt(binormal_vector[0]**2+binormal_vector[1]**2+binormal_vector[2]**2)
-         if binormal_vector[2]<0:
-             binormal_vector[0]=-binormal_vector[0]
-             binormal_vector[1]=-binormal_vector[1]
-             binormal_vector[2]=-binormal_vector[2]
-         binormal.append(binormal_vector/binormal_norm)
-
+    binormal = []
+    for i in range(0, len(tangent)):
+        binormal_vector = np.cross(tangent[i], normal[i])
+        binormal_norm = math.sqrt(
+            binormal_vector[0]**2+binormal_vector[1]**2+binormal_vector[2]**2)
+        if binormal_vector[2] < 0:
+            binormal_vector[0] = -binormal_vector[0]
+            binormal_vector[1] = -binormal_vector[1]
+            binormal_vector[2] = -binormal_vector[2]
+        binormal.append(binormal_vector/binormal_norm)
 
     # binormal=[]
     # for i in range(0,len(tangent)):
     #     binormal.append([0,0,1])
 
-    np.savetxt("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/tangent_simplePath.txt", tangent, fmt='%.6f')
-    np.savetxt("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/normal_simplePath.txt", normal, fmt='%.6f')
-    np.savetxt("/home/andreflorindo/workspaces/vsl_msc_project_ws/src/vsl_core/examples/binormal_simplePath.txt", binormal, fmt='%.6f')
+    np.savetxt("/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/examples/tangent_simplePath.txt", tangent, fmt='%.6f')
+    np.savetxt("/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/examples/normal_simplePath.txt", normal, fmt='%.6f')
+    np.savetxt("/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/examples/binormal_simplePath.txt", binormal, fmt='%.6f')
 
     plot_course(bspline_course)
 
