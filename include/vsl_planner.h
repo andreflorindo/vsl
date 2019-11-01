@@ -65,6 +65,10 @@ public:
                   std::vector<descartes_core::TrajectoryPtPtr> &output_path);
     void runPath(const std::vector<descartes_core::TrajectoryPtPtr> &path);
 
+    void initTrajOpt();
+    void loadRobotModel();
+    void createMotionPlanRequest();
+
 protected:
     void fromDescartesToMoveitTrajectory(const std::vector<descartes_core::TrajectoryPtPtr> &input_traj,
                                          trajectory_msgs::JointTrajectory &traj);
@@ -83,14 +87,14 @@ protected:
     //descartes_planner::SparsePlanner planner_;
     descartes_planner::DensePlanner planner_;
 
-
-    // //PlanningScene
-    // robot_model_loader::RobotModelLoaderPtr robot_model_loader_;
-    // mutable robot_state::RobotStatePtr kinematic_state_;
-    // const robot_model::JointModelGroup *joint_model_group_;
-    // robot_model::RobotModelConstPtr kinematic_model_;
+        // //PlanningScene
+    robot_model_loader::RobotModelLoaderPtr robot_model_loader_;
+    mutable robot_state::RobotStatePtr kinematic_state_;
+    const robot_model::JointModelGroup *joint_model_group_;
+    robot_model::RobotModelPtr kinematic_model_;
     // planning_scene_monitor::PlanningSceneMonitorPtr planning_scene_monitor_;
     // planning_pipeline::PlanningPipelinePtr planning_pipeline_;
+
 
 };
 
