@@ -29,6 +29,8 @@
 #include <descartes_planner/dense_planner.h>
 
 //  Time Parameterization
+//#include <moveit/trajectory_processing/iterative_time_parameterization.h>
+//#include <moveit/trajectory_processing/iterative_spline_parameterization.h>
 #include <moveit/trajectory_processing/time_optimal_trajectory_generation.h>
 
 namespace vsl_motion_planning
@@ -41,7 +43,7 @@ const std::string PLANNER_ID = "RRTConnectkConfigDefault";
 const std::string HOME_POSITION_NAME = "above-table";
 const std::string JOINT_POSE_TOPIC = "joint_pose";
 const double MAX_VELOCITY_SCALING = 1.00f; //0.05
-const double VELOCITY_DESCARTES = 0.10f;
+const double VELOCITY_DESCARTES = 2.0f;
 
 struct VSLPlannerConfiguration
 {
@@ -96,6 +98,8 @@ protected:
     // planning_pipeline::PlanningPipelinePtr planning_pipeline_;
 
     //Time Parameterization
+    //trajectory_processing::IterativeParabolicTimeParameterization time_parameterization_;
+    //trajectory_processing::IterativeSplineParameterization time_parameterization_;
     trajectory_processing::TimeOptimalTrajectoryGeneration time_parameterization_;
 };
 
