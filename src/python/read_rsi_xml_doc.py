@@ -54,6 +54,7 @@ def read_path(robot_state_from_file):
     i = 0
     infile = open(
         '/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/rsi_xml_doc_01_11.txt', 'r')
+        #'/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/trial_txt_files/rsi_xml_doc_01_11.txt', 'r')
     for line in infile:
         input = re.findall(r"[-+]?\d*\.\d+|\d+", line)
         if len(input) != 0:
@@ -525,9 +526,9 @@ if __name__ == "__main__":
 
     index_switch = find_switch_point(robot_state_velocity)
 
-    plot_joint_state(robot_state, robot_state_velocity,
-                     robot_state_acceleration)
-    # plot_ee_state(robot_state, ee_velocity)
+    # plot_joint_state(robot_state, robot_state_velocity,
+    #                  robot_state_acceleration)
+    plot_ee_state(robot_state, ee_velocity)
 
     print(index_switch)
     plot_path(robot_state, index_switch)
