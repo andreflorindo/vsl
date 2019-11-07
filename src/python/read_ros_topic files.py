@@ -168,9 +168,8 @@ def adjust_time(time):
 
 
 def clean_path(robot_state_from_file, robot_state):
-    robot_state_from_file.ee_request = robot_state.ee_request
-    robot_state_from_file.joint_request = robot_state.joint_request
-
+    robot_state.ee_request = robot_state_from_file.ee_request
+    robot_state.joint_request = robot_state_from_file.joint_request
     j = 0
     for i in range(1, len(robot_state_from_file.joint_states.time)):
         if robot_state_from_file.joint_states.a1[i] != robot_state_from_file.joint_states.a1[i-1] or j != 0:
@@ -265,7 +264,10 @@ def compute_derivative(time, variable):
     return v
 
 
-def fill_derivative_class(robot_state, robot_state_velocity):
+def fill_derivative_class(robot_state, robot_state_velocity, robot_state_from_file_velocity):
+    robot_state_velocity.ee_request = robot_state_from_file_velocity.ee_request
+    robot_state_velocity.joint_request = robot_state_from_file_velocity.joint_request
+
     robot_state_velocity.joint_states.time = robot_state.joint_states.time
     robot_state_velocity.joint_request.time = robot_state.joint_request.time
     robot_state_velocity.ee_request.time = robot_state.ee_request.time
@@ -430,27 +432,6 @@ def plot_ee_state(robot_state, ee_velocity):
     plt.figure()
 
 
-# def find_switch_point(robot_state_velocity):
-#     index_switch = []
-#     index_switch.append(0)
-#     j=0
-#     path_started = True
-#     for i in range(1, len(robot_state_velocity .time)-1):
-#         if robot_state_velocity.joint_states.a1[i-1] == 0 and i-index_switch[j]>5 and path_started == False:
-#             if robot_state_velocity.joint_states.a1[i] == 0:
-#                 if robot_state_velocity.joint_states.a1[i+1] != 0:
-#                     index_switch.append(i)
-#                     j=j+1
-#                     path_started = True
-
-#         if robot_state_velocity.joint_states.a1[i-1] != 0 and i-index_switch[j]>5 and path_started == True:
-#             if robot_state_velocity.joint_states.a1[i] == 0:
-#                 if robot_state_velocity.joint_states.a1[i+1] == 0:
-#                     index_switch.append(i)
-#                     j=j+1
-#                     path_started = False
-#     return index_switch
-
 def find_switch_point(robot_state_velocity):
     index_switch = []
     index_switch.append(0)
@@ -532,8 +513,8 @@ if __name__ == "__main__":
 
     clean_path(robot_state_from_file, robot_state)
 
-    fill_derivative_class(robot_state, robot_state_velocity)
-    fill_derivative_class(robot_state_velocity, robot_state_acceleration)
+    fill_derivative_class(robot_state, robot_state_velocity, robot_state_from_file_velocity)
+    fill_derivative_class(robot_state_velocity, robot_state_acceleration, robot_state_from_file_acceleration)
 
     # compute_ee_velocity(robot_state_velocity, ee_velocity)
 
