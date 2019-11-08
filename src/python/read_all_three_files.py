@@ -1367,7 +1367,7 @@ if __name__ == "__main__":
 
     # Plots
 
-    # plot_all_joint(ros_robot_state, ros_robot_state_velocity, ros_robot_state_acceleration,rsi_robot_state, rsi_robot_state_velocity, rsi_robot_state_acceleration,kuka_robot_state, kuka_robot_state_velocity, kuka_robot_state_acceleration)
+    plot_all_joint(ros_robot_state, ros_robot_state_velocity, ros_robot_state_acceleration,rsi_robot_state, rsi_robot_state_velocity, rsi_robot_state_acceleration,kuka_robot_state, kuka_robot_state_velocity, kuka_robot_state_acceleration)
     # plot_ee_state(ros_robot_state, ros_robot_state_velocity,
     #             rsi_robot_state, rsi_robot_state_velocity)
     # plot_path(ros_robot_state, ros_index_switch, rsi_robot_state, rsi_index_switch)
@@ -1383,7 +1383,7 @@ if __name__ == "__main__":
     kuka_store_only_course_variables(kuka_index_switch, kuka_index_switch_joint_request, kuka_robot_state, kuka_robot_state_velocity, kuka_robot_state_acceleration,
                                      kuka_robot_state_course, kuka_robot_state_course_velocity, kuka_robot_state_course_acceleration)
 
-    plot_all_joint(ros_robot_state_course, ros_robot_state_course_velocity, ros_robot_state_course_acceleration, rsi_robot_state_course, rsi_robot_state_course_velocity,
-                   rsi_robot_state_course_acceleration, kuka_robot_state_course, kuka_robot_state_course_velocity, kuka_robot_state_course_acceleration)
+    # plot_all_joint(ros_robot_state_course, ros_robot_state_course_velocity, ros_robot_state_course_acceleration, rsi_robot_state_course, rsi_robot_state_course_velocity,
+    #                rsi_robot_state_course_acceleration, kuka_robot_state_course, kuka_robot_state_course_velocity, kuka_robot_state_course_acceleration)
 
     # plot_ee_state(ros_robot_state_course, ros_robot_state_course_velocity, rsi_robot_state_course, rsi_robot_state_course_velocity)
