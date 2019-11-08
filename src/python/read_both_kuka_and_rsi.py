@@ -543,7 +543,7 @@ def plot_path(rsi_robot_state, kuka_robot_state, rsi_index_switch, kuka_index_sw
 
     # Rotate ee_state by -90 degrees and make sure that it starts at same spot as the given course
     for i in range(kuka_index_switch[4], len(kuka_robot_state.ee_states.y)):
-        # for i in range(index_switch[4], index_switch[5]):
+        # for i in range(index_switch[4], index_switch[5]+1):
         # x=x_course0+(y_ee-y_ee0)
         kuka_x.append(course.x[0]+(kuka_robot_state.ee_states.y[i] -
                               kuka_robot_state.ee_states.y[kuka_index_switch[4]]))
@@ -552,7 +552,7 @@ def plot_path(rsi_robot_state, kuka_robot_state, rsi_index_switch, kuka_index_sw
                               kuka_robot_state.ee_states.x[kuka_index_switch[4]]))
 
     for i in range(rsi_index_switch[4]-7, len(rsi_robot_state.ee_states.y)):    #Don't forget the delay
-        # for i in range(index_switch[4], index_switch[5]):
+        # for i in range(index_switch[4], index_switch[5]+1):
         # x=x_course0+(y_ee-y_ee0)
         rsi_x.append(course.x[0]+(rsi_robot_state.ee_states.y[i] -
                               rsi_robot_state.ee_states.y[rsi_index_switch[4]-7]))
@@ -609,6 +609,6 @@ if __name__ == "__main__":
     print(rsi_index_switch)
     print(kuka_index_switch)
 
-    # plot_all_joint(kuka_robot_state, kuka_robot_state_velocity, kuka_robot_state_acceleration, rsi_robot_state, rsi_robot_state_velocity, rsi_robot_state_acceleration)
+    plot_all_joint(kuka_robot_state, kuka_robot_state_velocity, kuka_robot_state_acceleration, rsi_robot_state, rsi_robot_state_velocity, rsi_robot_state_acceleration)
     # plot_ee_state(kuka_robot_state, kuka_ee_velocity, rsi_robot_state, rsi_ee_velocity)
-    plot_path(rsi_robot_state, kuka_robot_state, rsi_index_switch, kuka_index_switch)
+    # plot_path(rsi_robot_state, kuka_robot_state, rsi_index_switch, kuka_index_switch)

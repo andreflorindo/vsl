@@ -449,7 +449,7 @@ def plot_path(robot_state, index_switch):
     course = read_course_path()
 
     # Rotate ee_state by -90 degrees and make sure that it starts at same spot as the given course
-    # for i in range(index_switch[4], index_switch[5]):
+    # for i in range(index_switch[4], index_switch[5]+1):
     for i in range(index_switch[4], len(robot_state.ee_request.y)):
         # x=x_course0+(y_ee-y_ee0)
         x.append(course.x[0]+(robot_state.ee_request.y[i] -
@@ -470,7 +470,7 @@ def plot_path(robot_state, index_switch):
     plt.figure()
 
 def store_only_course_variables(index_switch, robot_state, robot_state_velocity, robot_state_acceleration, robot_state_course, robot_state_course_velocity, robot_state_course_acceleration):
-    for i in range(index_switch[4], index_switch[5]):
+    for i in range(index_switch[4], index_switch[5]+1):
         # Joint States
         # robot_state_course.joint_states.time.append(robot_state.joint_states.time[i])
         # robot_state_course.joint_states.a1.append(robot_state.joint_states.a1[i])
@@ -539,7 +539,7 @@ def store_only_course_variables(index_switch, robot_state, robot_state_velocity,
         robot_state_course_acceleration.ee_request.y.append(robot_state_acceleration.ee_request.y[i])
         robot_state_course_acceleration.ee_request.z.append(robot_state_acceleration.ee_request.z[i])
         robot_state_course_acceleration.ee_request.rx.append(robot_state_acceleration.ee_request.rx[i])
-        robot_state_course_acceleration.ee_request.ry.append(robot_state_acceleration.ee_request.ry[i])
+        robot_state_course_acceleration.ee_request.ry.append(robot_state_acceleration.ee_request.ry[i])  
         robot_state_course_acceleration.ee_request.rz.append(robot_state_acceleration.ee_request.rz[i])
         robot_state_course_acceleration.ee_request.linear.append(robot_state_acceleration.ee_request.linear[i])
 
@@ -570,6 +570,6 @@ if __name__ == "__main__":
 
     store_only_course_variables(index_switch,robot_state, robot_state_velocity,robot_state_acceleration,robot_state_course, robot_state_course_velocity,robot_state_course_acceleration)
 
-    # plot_all_joint(robot_state, robot_state_velocity, robot_state_acceleration)
+    plot_all_joint(robot_state, robot_state_velocity, robot_state_acceleration)
     # plot_ee_request(robot_state, robot_state_velocity)
     # plot_path(robot_state, index_switch)

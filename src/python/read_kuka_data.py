@@ -607,7 +607,7 @@ def plot_path(robot_state, index_switch):
     course = read_course_path()
 
     # Rotate ee_state by -90 degrees and make sure that it starts at same spot as the given course
-    # for i in range(index_switch[4], index_switch[5]):
+    # for i in range(index_switch[4], index_switch[5]+1):
     for i in range(index_switch[4], len(robot_state.ee_states.y)):
         # x=x_course0+(y_ee-y_ee0)
         x.append(course.x[0]+(robot_state.ee_states.y[i] -
