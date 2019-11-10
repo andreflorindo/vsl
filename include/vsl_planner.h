@@ -29,7 +29,7 @@
 #include <descartes_planner/dense_planner.h>
 
 //  Time Parameterization
-#include <moveit/trajectory_processing/time_optimal_trajectory_generation.h>
+#include <moveit/trajectory_processing/iterative_time_parameterization.h>
 
 namespace vsl_motion_planning
 {
@@ -93,7 +93,7 @@ protected:
     const robot_model::JointModelGroup *joint_model_group_;
     robot_model::RobotModelConstPtr kinematic_model_;
         //Time Parameterization
-    trajectory_processing::TimeOptimalTrajectoryGeneration time_parameterization_;
+    trajectory_processing::IterativeParabolicTimeParameterization time_parameterization_;
 
 
     // //PlanningScene
