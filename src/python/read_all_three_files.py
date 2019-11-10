@@ -47,8 +47,8 @@ class RobotState:
 
 def ros_read_path(robot_state_from_file, robot_state_from_file_velocity, robot_state_from_file_acceleration):
     infile = open(
-        '/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/simulated_ee_request_01_11.txt', 'r')
-    # '/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/trial_txt_files/simulated_ee_request_01_11.txt', 'r')
+    #    '/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/simulated_ee_request_01_11.txt', 'r')
+     '/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/trial_txt_files/simulated_ee_request_01_11.txt', 'r')
     next(infile)
     for line in infile:
         input = re.findall(
@@ -101,8 +101,8 @@ def ros_read_path(robot_state_from_file, robot_state_from_file_velocity, robot_s
     adjust_ee_poses(robot_state_from_file.ee_request)
 
     infile = open(
-        '/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/simulated_joint_request_01_11.txt', 'r')
-    # '/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/trial_txt_files/simulated_joint_request_01_11.txt', 'r')
+    #    '/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/simulated_joint_request_01_11.txt', 'r')
+     '/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/trial_txt_files/simulated_joint_request_01_11.txt', 'r')
     next(infile)
     for line in infile:
         input = re.findall(
@@ -150,8 +150,8 @@ def ros_read_path(robot_state_from_file, robot_state_from_file_velocity, robot_s
     adjust_time(robot_state_from_file_acceleration.joint_request.time)
 
     infile = open(
-        '/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/simulated_joint_states_01_11.txt', 'r')
-    # '/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/trial_txt_files/simulated_joint_states_01_11.txt', 'r')
+    #    '/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/simulated_joint_states_01_11.txt', 'r')
+     '/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/trial_txt_files/simulated_joint_states_01_11.txt', 'r')
     next(infile)
     for line in infile:
         input = re.findall(
@@ -172,7 +172,8 @@ def ros_read_path(robot_state_from_file, robot_state_from_file_velocity, robot_s
 def rsi_read_path(robot_state_from_file):
     i = 0
     infile = open(
-        '/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/rsi_xml_doc_01_11.txt', 'r')
+    #    '/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/rsi_xml_doc_01_11.txt', 'r')
+        '/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/trial_txt_files/rsi_xml_doc_01_11.txt', 'r')
     for line in infile:
         input = re.findall(r"[-+]?\d*\.\d+|\d+", line)
         if len(input) != 0:
@@ -206,7 +207,9 @@ def rsi_read_path(robot_state_from_file):
 
 def kuka_read_path(robot_state_from_file):
     input = np.loadtxt(
-        "/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/kuka_robot_01_11.dat", dtype='f')
+        #"/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/kuka_robot_01_11.dat", dtype='f')
+                "/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/trial_txt_files/kuka_robot_01_11.dat", dtype='f')
+        
     for i in range(0, len(input)):
         robot_state_from_file.joint_request.time.append(input[i][0]*0.001)
         robot_state_from_file.joint_request.a1.append(input[i][1]*np.pi/180)
