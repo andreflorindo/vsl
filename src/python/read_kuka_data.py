@@ -652,6 +652,6 @@ if __name__ == "__main__":
     #          robot_state_acceleration)
     # plot_joint_state(robot_state, robot_state_velocity,robot_state_acceleration)
     #  robot_state_acceleration)
-    plot_all_joint(robot_state, robot_state_velocity, robot_state_acceleration)
+    # plot_all_joint(robot_state, robot_state_velocity, robot_state_acceleration)
     # plot_ee_state(robot_state, ee_velocity)
-    # plot_path(robot_state, index_switch)
+    plot_path(robot_state, index_switch)

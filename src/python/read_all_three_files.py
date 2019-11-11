@@ -47,8 +47,8 @@ class RobotState:
 
 def ros_read_path(robot_state_from_file, robot_state_from_file_velocity, robot_state_from_file_acceleration):
     infile = open(
-    #    '/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/simulated_ee_request_01_11.txt', 'r')
-     '/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/trial_txt_files/simulated_ee_request_01_11.txt', 'r')
+        '/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/simulated_ee_request_01_11.txt', 'r')
+    #  '/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/trial_txt_files/simulated_ee_request_01_11.txt', 'r')
     next(infile)
     for line in infile:
         input = re.findall(
@@ -101,8 +101,8 @@ def ros_read_path(robot_state_from_file, robot_state_from_file_velocity, robot_s
     adjust_ee_poses(robot_state_from_file.ee_request)
 
     infile = open(
-    #    '/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/simulated_joint_request_01_11.txt', 'r')
-     '/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/trial_txt_files/simulated_joint_request_01_11.txt', 'r')
+        '/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/simulated_joint_request_01_11.txt', 'r')
+    #  '/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/trial_txt_files/simulated_joint_request_01_11.txt', 'r')
     next(infile)
     for line in infile:
         input = re.findall(
@@ -150,8 +150,8 @@ def ros_read_path(robot_state_from_file, robot_state_from_file_velocity, robot_s
     adjust_time(robot_state_from_file_acceleration.joint_request.time)
 
     infile = open(
-    #    '/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/simulated_joint_states_01_11.txt', 'r')
-     '/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/trial_txt_files/simulated_joint_states_01_11.txt', 'r')
+        '/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/simulated_joint_states_01_11.txt', 'r')
+    #  '/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/trial_txt_files/simulated_joint_states_01_11.txt', 'r')
     next(infile)
     for line in infile:
         input = re.findall(
@@ -172,8 +172,8 @@ def ros_read_path(robot_state_from_file, robot_state_from_file_velocity, robot_s
 def rsi_read_path(robot_state_from_file):
     i = 0
     infile = open(
-    #    '/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/rsi_xml_doc_01_11.txt', 'r')
-        '/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/trial_txt_files/rsi_xml_doc_01_11.txt', 'r')
+        '/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/rsi_xml_doc_01_11.txt', 'r')
+    # '/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/trial_txt_files/rsi_xml_doc_01_11.txt', 'r')
     for line in infile:
         input = re.findall(r"[-+]?\d*\.\d+|\d+", line)
         if len(input) != 0:
@@ -207,9 +207,9 @@ def rsi_read_path(robot_state_from_file):
 
 def kuka_read_path(robot_state_from_file):
     input = np.loadtxt(
-        #"/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/kuka_robot_01_11.dat", dtype='f')
-                "/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/trial_txt_files/kuka_robot_01_11.dat", dtype='f')
-        
+        "/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/kuka_robot_01_11.dat", dtype='f')
+    # "/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/trial_txt_files/kuka_robot_01_11.dat", dtype='f')
+
     for i in range(0, len(input)):
         robot_state_from_file.joint_request.time.append(input[i][0]*0.001)
         robot_state_from_file.joint_request.a1.append(input[i][1]*np.pi/180)
@@ -517,6 +517,7 @@ def ros_fill_derivative_class(robot_state, robot_state_velocity, robot_state_fro
     # robot_state_velocity.ee_states.c = compute_derivative(
     #     robot_state.time, robot_state.ee_states.c)
 
+
 def rsi_fill_derivative_class(robot_state, robot_state_velocity):
     robot_state_velocity.joint_states.time = robot_state.joint_states.time
     robot_state_velocity.ee_states.time = robot_state.ee_states.time
@@ -645,7 +646,6 @@ def make_joints_plots(joint_name, joint_request_time, joint_request,
 
     plt.subplot(313)
     plt.ylabel('Acceleration(rad/s^2)')
-    plt.xlabel('Time (s)')
     plt.plot(joint_request_acceleration_time,
              joint_request_acceleration, 'r--.', label='Simulated Joint Traj. Requested')
     plt.plot(simulated_joint_states_acceleration_time,
@@ -655,6 +655,7 @@ def make_joints_plots(joint_name, joint_request_time, joint_request,
     plt.plot(real_joint_states_acceleration_time,
              real_joint_states_acceleration, 'g', label='Real Joint Traj. State')
     plt.legend()
+    plt.xlabel('Time (s)')
     plt.show()
 
 
@@ -877,7 +878,17 @@ def read_course_path():
         z.append(input[i][2])
 
     course = CourseClass(x, y, z)
+    arc_length = compute_arc_length(course)
+    # print(arc_length)
     return course
+
+
+def compute_arc_length(course):
+    arc_length = 0
+    for i in range(1, len(course.x)):
+        arc_length = arc_length + math.sqrt((course.x[i]-course.x[i-1])**2 + (
+            course.y[i]-course.y[i-1])**2+(course.z[i]-course.z[i-1])**2)
+    return arc_length
 
 
 def plot_path(ros_robot_state, ros_index_switch, rsi_robot_state, rsi_index_switch):
@@ -909,11 +920,11 @@ def plot_path(ros_robot_state, ros_index_switch, rsi_robot_state, rsi_index_swit
                                   rsi_robot_state.ee_states.x[rsi_index_switch[4]]))
 
     plt.figure()
-    plt.title('Path performed')
+    plt.title('Cartesian Path')
     plt.ylabel('y(m)')
     plt.xlabel('x(m)')
     plt.plot(course.x, course.y, 'r--.', label='Path requested')
-    plt.plot(ros_x, ros_y, 'b', label='Simlated Path request')
+    plt.plot(ros_x, ros_y, 'b', label='Simulated Path request')
     plt.plot(rsi_x, rsi_y, 'g', label='Real Path performed')
     plt.legend()
     plt.show()
@@ -1370,10 +1381,12 @@ if __name__ == "__main__":
 
     # Plots
 
-    plot_all_joint(ros_robot_state, ros_robot_state_velocity, ros_robot_state_acceleration,rsi_robot_state, rsi_robot_state_velocity, rsi_robot_state_acceleration,kuka_robot_state, kuka_robot_state_velocity, kuka_robot_state_acceleration)
+    plot_all_joint(ros_robot_state, ros_robot_state_velocity, ros_robot_state_acceleration, rsi_robot_state, rsi_robot_state_velocity,
+                   rsi_robot_state_acceleration, kuka_robot_state, kuka_robot_state_velocity, kuka_robot_state_acceleration)
     # plot_ee_state(ros_robot_state, ros_robot_state_velocity,
     #             rsi_robot_state, rsi_robot_state_velocity)
-    # plot_path(ros_robot_state, ros_index_switch, rsi_robot_state, rsi_index_switch)
+    # plot_path(ros_robot_state, ros_index_switch,
+    #           rsi_robot_state, rsi_index_switch)
 
     # Store only a specific motion
 

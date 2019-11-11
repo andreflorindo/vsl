@@ -47,6 +47,40 @@ def plot_course(course):
     pyplot.show()
 
 
+
+
+def plot_both_courses2d(course, bspline):
+    pyplot.figure()
+    pyplot.title('Cartesian Path')
+    pyplot.ylabel('y(m)')
+    pyplot.xlabel('x(m)')
+    pyplot.plot(course.x, course.y, label='Course', marker='.',
+            color='red', linestyle='dashed', markerfacecolor='yellow')
+    pyplot.plot(bspline.x, bspline.y, label='Bspline',
+            color='blue', linestyle='dashed', markerfacecolor='yellow')
+    pyplot.legend()
+    pyplot.show()
+
+
+def plot_both_courses3d(course, bspline):
+    # 3D plotting setup
+    fig = pyplot.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    axis_size = 0.5
+    ax.plot(course.x, course.y, course.z, label='Course', marker='.',
+            color='red', linestyle='dashed', markerfacecolor='yellow')
+    ax.plot(bspline.x, bspline.y, bspline.z, label='Bspline',
+            color='blue', linestyle='dashed', markerfacecolor='yellow')
+    ax.legend()
+    ax.set_xlabel('X')
+    ax.set_xlim(0, axis_size)
+    ax.set_ylabel('Y')
+    ax.set_ylim(0, axis_size)
+    ax.set_zlabel('Z')
+    ax.set_zlim(-axis_size/2, axis_size/2)
+    pyplot.show()
+
+
 def bspline3D(parameter, u, course, k):
 
     xd = BSpline(u, course.x, k)
@@ -128,6 +162,33 @@ def build_vector(deriv_bspline):
     return deriv_vector
 
 
+def compute_arc_length(course):
+    arc_length = 0
+    for i in range(1, len(course.x)):
+        arc_length = arc_length + math.sqrt((course.x[i]-course.x[i-1])**2 + (
+            course.y[i]-course.y[i-1])**2+(course.z[i]-course.z[i-1])**2)
+    print('Arc Length: ', arc_length)
+    return arc_length
+
+
+def compute_radius2D(dp, ddp):
+    radius = []
+    for i in range(0, len(dp.x)):
+        num = math.sqrt(dp.x[i]**2+dp.y[i]**2)**3
+        denom = dp.x[i]*ddp.y[i]-dp.y[i]*ddp.x[i]
+        radius.append(abs(num/denom))
+    return radius
+
+def compute_radius3D(dp, ddp):
+    radius = []
+    for i in range(0, len(dp.x)):
+        num = math.sqrt(dp.x[i]**2+dp.y[i]**2+dp.z[i]**2)**3
+        denom = math.sqrt((dp.y[i]*ddp.z[i]-ddp.y[i]*dp.z[i])**2+(dp.x[i]*ddp.z[i]-ddp.x[i]*dp.z[i])**2+(dp.x[i]*ddp.y[i]-dp.y[i]*ddp.x[i])**2)
+        radius.append(abs(num/denom))
+    return radius
+
+
+
 if __name__ == "__main__":
 
     # m+1 knots vector elements
@@ -135,6 +196,7 @@ if __name__ == "__main__":
     # k curve degree
 
     course = read_path()
+    compute_arc_length(course)
     # plot_course(course)
 
     k = len(course.x)-1
@@ -173,11 +235,14 @@ if __name__ == "__main__":
     # for i in range(0,len(tangent)):
     #     binormal.append([0,0,1])
 
-    np.savetxt("/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/examples/tangent_simplePath.txt", tangent, fmt='%.6f')
-    np.savetxt("/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/examples/normal_simplePath.txt", normal, fmt='%.6f')
-    np.savetxt("/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/examples/binormal_simplePath.txt", binormal, fmt='%.6f')
+    # np.savetxt("/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/examples/tangent_simplePath.txt", tangent, fmt='%.6f')
+    # np.savetxt("/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/examples/normal_simplePath.txt", normal, fmt='%.6f')
+    # np.savetxt("/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/examples/binormal_simplePath.txt", binormal, fmt='%.6f')
 
-    plot_course(bspline_course)
+    # plot_course(bspline_course)
+    plot_both_courses2d(course, bspline_course)
+    radius = compute_radius2D(deriv1_bspline_position,deriv2_bspline_position)
+    print(radius)
 
     #deriv_bspline_course = deriv_bspline3D(1,parameter, u, course, k)
     # plot_course(deriv_bspline_course)

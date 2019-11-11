@@ -428,8 +428,8 @@ def find_switch_point(robot_state_velocity):
 
 def read_course_path():
     input = np.loadtxt(
-        #"/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/examples/simplePath.txt", dtype='f')
-        "/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/examples/simplePath.txt", dtype='f')
+        "/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/examples/simplePath.txt", dtype='f')
+        # "/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/examples/simplePath.txt", dtype='f')
     x = []
     y = []
     z = []
@@ -570,6 +570,8 @@ if __name__ == "__main__":
 
     store_only_course_variables(index_switch,robot_state, robot_state_velocity,robot_state_acceleration,robot_state_course, robot_state_course_velocity,robot_state_course_acceleration)
 
-    plot_all_joint(robot_state, robot_state_velocity, robot_state_acceleration)
+    # plot_all_joint(robot_state, robot_state_velocity, robot_state_acceleration)
     # plot_ee_request(robot_state, robot_state_velocity)
     # plot_path(robot_state, index_switch)
+
+    plot_all_joint(robot_state_course, robot_state_course_velocity, robot_state_course_acceleration)
