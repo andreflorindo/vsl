@@ -42,8 +42,8 @@ const double ORIENTATION_INCREMENT = 0.5f;
 const std::string PLANNER_ID = "RRTConnectkConfigDefault";
 const std::string HOME_POSITION_NAME = "above-table";
 const std::string JOINT_POSE_TOPIC = "joint_pose";
-const double MAX_VELOCITY_SCALING = 1.00f; //0.05
-const double VELOCITY_DESCARTES = 2.0f;
+const double MAX_VELOCITY_SCALING = 0.05f; //0.05
+const double VELOCITY_DESCARTES = 0.1f;
 
 struct VSLPlannerConfiguration
 {

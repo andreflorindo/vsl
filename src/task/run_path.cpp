@@ -48,7 +48,7 @@ void VSLPlanner::runPath(const std::vector<descartes_core::TrajectoryPtPtr> &pat
   // moving arm to joint goal by using another planner, for example RRT
   move_group.setJointValueTarget(start_pose);
 
-//  addTimeParameterizationToDescartes(move_group.Plan.trajectory_); TODO Have to create a plan first
+  // addTimeParameterizationToDescartes(move_group.Plan.trajectory_); TODO Have to create a plan first
 
   result = move_group.move();
   if (result.val != result.SUCCESS)
@@ -65,7 +65,7 @@ void VSLPlanner::runPath(const std::vector<descartes_core::TrajectoryPtPtr> &pat
   moveit_msgs::RobotTrajectory moveit_traj;
   fromDescartesToMoveitTrajectory(path, moveit_traj.joint_trajectory);
 
-  addTimeParameterizationToDescartes(moveit_traj);
+  // addTimeParameterizationToDescartes(moveit_traj);
   
   moveit_msgs::ExecuteTrajectoryGoal goal;
   goal.trajectory = moveit_traj;
