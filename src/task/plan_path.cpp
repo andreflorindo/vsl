@@ -15,7 +15,6 @@ namespace vsl_motion_planning
 void VSLPlanner::planPath(std::vector<descartes_core::TrajectoryPtPtr> &input_traj,
                           std::vector<descartes_core::TrajectoryPtPtr> &output_path)
 {
-
   //modifying start and end points such that are close to "seed_pose" -> Pose with joint values close to the desired start of the robot path
   std::vector<double> start_pose, end_pose;
   if (input_traj.front()->getClosestJointPose(config_.seed_pose, *robot_model_ptr_, start_pose) &&
