@@ -52,10 +52,9 @@ void PoseBuilder::createCourse()
     Eigen::Isometry3d single_pose;
     geometry_msgs::Pose single_pose_msg;
 
-    for (unsigned int i = 0; i < npoints; i++)
+    for (int i = 0; i < npoints; i++)
     {
         ee_z << -binormal.x[i], -binormal.y[i], -binormal.z[i];
-
         ee_x << -tangent.x[i], -tangent.y[i], -tangent.z[i];
         ee_y = (ee_z.cross(ee_x)).normalized();
 
@@ -65,12 +64,16 @@ void PoseBuilder::createCourse()
 
         Eigen::Isometry3d rot_start_table;
         rot_start_table.matrix() << -1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1;
-        single_pose = rot_start_table * (Eigen::Translation3d(course.x[i], course.y[i] - 1.2 - 0.6, course.z[i] + 0.78 + 0.002)) * rot;
+        single_pose = rot_start_table * (Eigen::Translation3d(course.x[i], course.y[i] - TABLE_WIDTH - TABLE_WIDTH / 2, course.z[i] + TABLE_HEIGHT + APPROACH_TABLE)) * rot;
 
         tf::poseEigenToMsg(single_pose, single_pose_msg);
 
         course_poses.poses.emplace_back(single_pose_msg);
     }
+
+    introduceSmoothApproximantion(0, tangent, binormal, course);
+    introduceSmoothApproximantion(npoints - 1, tangent, binormal, course);
+
     pose_builder_server_ = nh_.advertiseService(POSE_BUILDER_SERVICE, &PoseBuilder::serviceCallback, this); //  <---------------
 
     ROS_INFO_STREAM("pose_builder: Task '" << __FUNCTION__ << "' completed");
@@ -92,28 +95,90 @@ void PoseBuilder::readFileContent(std::string filename, CourseStruct &course)
     std::vector<double> file_nums{infile_begin, eof};
     infile.close();
 
-    int nx = 0;
-    int ny = 0;
+    unsigned int nx = 0;
+    unsigned int ny = 0;
     int npoints = file_nums.size() / 3;
 
     course.x.reserve(npoints);
     course.y.reserve(npoints);
     course.z.reserve(npoints);
 
-    for (int i = 0; i < file_nums.size(); i++)
+    for (unsigned int t = 0; t < file_nums.size(); t++)
     {
-        if (i == nx * 3)
+        if (t == nx * 3)
         {
-            course.x.emplace_back(file_nums[i]);
+            course.x.emplace_back(file_nums[t]);
             nx++;
         }
-        else if (i == 1 + ny * 3)
+        else if (t == 1 + ny * 3)
         {
-            course.y.emplace_back(file_nums[i]);
+            course.y.emplace_back(file_nums[t]);
             ny++;
         }
         else
-            course.z.emplace_back(file_nums[i]);
+            course.z.emplace_back(file_nums[t]);
+    }
+}
+
+void PoseBuilder::introduceSmoothApproximantion(int i, CourseStruct &tangent, CourseStruct &binormal, CourseStruct &course)
+{
+    Eigen::Vector3d ee_z, ee_y, ee_x;
+    Eigen::Isometry3d single_pose;
+    geometry_msgs::Pose single_pose_msg;
+
+    ee_z << -binormal.x[i], -binormal.y[i], -binormal.z[i];
+    ee_x << -tangent.x[i], -tangent.y[i], -tangent.z[i];
+    ee_y = (ee_z.cross(ee_x)).normalized();
+
+    Eigen::Isometry3d rot;
+    rot.matrix() << ee_x(0), ee_y(0), ee_z(0), 0, ee_x(1), ee_y(1), ee_z(1), 0, ee_x(2), ee_y(2), ee_z(2), 0, 0, 0, 0, 1;
+    Eigen::Isometry3d rot_start_table;
+    rot_start_table.matrix() << -1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1;
+
+    int course_extension_npoints = 2;
+    int raise_course_npoints = 10;
+    double signal;
+
+    if (i == 0)
+    {
+        signal = 1.0;
+    }
+    else
+    {
+        signal = -1.0;
+    }
+    
+    CourseStruct smooth_course_approximation;
+    smooth_course_approximation.x.reserve(course_extension_npoints + raise_course_npoints);
+    smooth_course_approximation.y.reserve(course_extension_npoints + raise_course_npoints);
+    smooth_course_approximation.z.reserve(course_extension_npoints + raise_course_npoints);
+
+    for (int f = 1; f <= course_extension_npoints; f++)
+    {
+        smooth_course_approximation.x.emplace_back(course.x[i] - signal * ((double)f / (double)course_extension_npoints) * (tangent.x[i] / (tangent.x[i] + tangent.y[i])) * XY_EXTENSION_DISTANCE);
+        smooth_course_approximation.y.emplace_back(course.y[i] - signal * ((double)f / (double)course_extension_npoints) * (tangent.y[i] / (tangent.x[i] + tangent.y[i])) * XY_EXTENSION_DISTANCE);
+        smooth_course_approximation.z.emplace_back(course.z[i]);
+    }
+
+    for (int f = 1; f <= raise_course_npoints; f++)
+    {
+        smooth_course_approximation.x.emplace_back(smooth_course_approximation.x[course_extension_npoints-1] - signal*((double)f / (double)raise_course_npoints) * (tangent.x[i] / (tangent.x[i] + tangent.y[i])) * XY_RAISE_DISTANCE);
+        smooth_course_approximation.y.emplace_back(smooth_course_approximation.y[course_extension_npoints-1] - signal*((double)f / (double)raise_course_npoints) * (tangent.y[i] / (tangent.x[i] + tangent.y[i])) * XY_RAISE_DISTANCE);
+        smooth_course_approximation.z.emplace_back(smooth_course_approximation.z[course_extension_npoints-1] + ((double)f / (double)raise_course_npoints) * Z_RAISE_DISTANCE);
+    }
+
+    for (int f = 0; f < course_extension_npoints + raise_course_npoints; f++)
+    {
+        single_pose = rot_start_table * (Eigen::Translation3d(smooth_course_approximation.x[f], smooth_course_approximation.y[f] - TABLE_WIDTH - TABLE_WIDTH / 2, smooth_course_approximation.z[f] + TABLE_HEIGHT + APPROACH_TABLE)) * rot;
+        tf::poseEigenToMsg(single_pose, single_pose_msg);
+        if (i == 0)
+        {
+            course_poses.poses.insert(course_poses.poses.begin(), single_pose_msg);
+        }
+        else
+        {
+            course_poses.poses.insert(course_poses.poses.end(), single_pose_msg);
+        }
     }
 }
 

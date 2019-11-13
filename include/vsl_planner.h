@@ -38,7 +38,7 @@ namespace vsl_motion_planning
 const std::string ROBOT_DESCRIPTION_PARAM = "robot_description";
 const std::string EXECUTE_TRAJECTORY_ACTION = "execute_trajectory";
 const double SERVER_TIMEOUT = 5.0f; // seconds
-const double ORIENTATION_INCREMENT = 0.5f;
+const double ORIENTATION_INCREMENT = 0.2f;
 const std::string PLANNER_ID = "RRTConnectkConfigDefault";
 const std::string HOME_POSITION_NAME = "above-table";
 const std::string JOINT_POSE_TOPIC = "joint_pose";

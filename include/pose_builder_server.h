@@ -27,6 +27,14 @@ struct CourseStruct
 
 namespace vsl_motion_planning
 {
+const double TABLE_HEIGHT = 0.78;
+const double TABLE_WIDTH = 1.2;
+const double APPROACH_TABLE = 0.002; 
+const double XY_EXTENSION_DISTANCE = 0.02; //meters
+const double XY_RAISE_DISTANCE = 0.05; //meters
+const double ANGLE_RAISE = 10; //degrees
+const double Z_RAISE_DISTANCE= XY_RAISE_DISTANCE*tan(ANGLE_RAISE*M_PI/180);
+ 
 
 const std::string POSE_BUILDER_SERVICE = "single_course";
 
@@ -49,6 +57,7 @@ public:
 
 protected:
   void readFileContent(std::string filename, CourseStruct &course);
+  void introduceSmoothApproximantion(int i, CourseStruct &tangent, CourseStruct &binormal, CourseStruct &course);
   
 
 protected:
