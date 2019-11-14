@@ -74,15 +74,15 @@ void PoseBuilder::createCourse()
         Eigen::Isometry3d rot_start_table;
         rot_start_table.matrix() << -1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1;
         //single_pose = rot_start_table * (Eigen::Translation3d(course.x[i], course.y[i] - 1.2 - 0.6, course.z[i] + 0.78 + 0.002)) * rot;
-        single_pose = rot_start_table * (Eigen::Translation3d(course.x[i]- TABLE_WIDTH - TABLE_WIDTH / 2, course.y[i] - TABLE_WIDTH, course.z[i] + TABLE_HEIGHT + APPROACH_TABLE +0.7)) * rot;
+        single_pose = rot_start_table * (Eigen::Translation3d(course.x[i]- TABLE_WIDTH - TABLE_WIDTH / 2, course.y[i] - TABLE_WIDTH/2, course.z[i] + TABLE_HEIGHT + APPROACH_TABLE +0.7)) * rot;
 
         tf::poseEigenToMsg(single_pose, single_pose_msg);
 
         course_poses.poses.emplace_back(single_pose_msg);
     }
 
-    introduceSmoothApproximantion(0, tangent, binormal, course);
-    introduceSmoothApproximantion(npoints-1, tangent, binormal, course);
+    // introduceSmoothApproximantion(0, tangent, binormal, course);
+    // introduceSmoothApproximantion(npoints-1, tangent, binormal, course);
 
     pose_builder_server_ = nh_.advertiseService(POSE_BUILDER_SERVICE, &PoseBuilder::serviceCallback, this); //  <---------------
 
@@ -179,7 +179,7 @@ void PoseBuilder::introduceSmoothApproximantion(int i, CourseStruct &tangent, Co
 
     for (int f = 0; f < course_extension_npoints + raise_course_npoints; f++)
     {
-        single_pose = rot_start_table * (Eigen::Translation3d(smooth_course_approximation.x[f]- TABLE_WIDTH - TABLE_WIDTH / 2, smooth_course_approximation.y[f] - TABLE_WIDTH, smooth_course_approximation.z[f] + TABLE_HEIGHT + APPROACH_TABLE + 0.7)) * rot;
+        single_pose = rot_start_table * (Eigen::Translation3d(smooth_course_approximation.x[f]- TABLE_WIDTH - TABLE_WIDTH / 2, smooth_course_approximation.y[f] - TABLE_WIDTH/2, smooth_course_approximation.z[f] + TABLE_HEIGHT + APPROACH_TABLE + 0.7)) * rot;
         tf::poseEigenToMsg(single_pose, single_pose_msg);
         if (i == 0)
         {
