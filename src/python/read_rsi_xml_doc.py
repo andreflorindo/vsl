@@ -53,8 +53,8 @@ class EEVelocity:
 def read_path(robot_state_from_file):
     i = 0
     infile = open(
-        '/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/rsi_xml_doc_01_11.txt', 'r')
-        #'/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/trial_txt_files/rsi_xml_doc_01_11.txt', 'r')
+        '/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/14_11_2019/with_time_parameterization_parabolic_rsi.txt', 'r')
+    # '/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/trial_txt_files/rsi_xml_doc_01_11.txt', 'r')
     for line in infile:
         input = re.findall(r"[-+]?\d*\.\d+|\d+", line)
         if len(input) != 0:
@@ -272,6 +272,7 @@ def compute_ee_velocity(robot_state_velocity, ee_velocity):
 
     return ee_velocity
 
+
 def plot_joint_state(robot_state, robot_state_velocity, robot_state_acceleration):
     plt.figure()
 
@@ -381,6 +382,7 @@ def plot_joint_state(robot_state, robot_state_velocity, robot_state_acceleration
              robot_state_acceleration.joint_states.a6)
     plt.show()
 
+
 def plot_ee_state(robot_state, ee_velocity):
     plt.figure()
 
@@ -443,26 +445,28 @@ def plot_ee_state(robot_state, ee_velocity):
 #                     path_started = False
 #     return index_switch
 
+
 def find_switch_point(robot_state_velocity):
     index_switch = []
     index_switch.append(0)
-    j=0
+    j = 0
     path_started = True
     for i in range(1, len(robot_state_velocity .time)-1):
-        if abs(robot_state_velocity.joint_states.a1[i-1]) < 0.0003 and i-index_switch[j]>10 and path_started == False:
+        if abs(robot_state_velocity.joint_states.a1[i-1]) < 0.0003 and i-index_switch[j] > 10 and path_started == False:
             if abs(robot_state_velocity.joint_states.a1[i]) < 0.0003:
                 if abs(robot_state_velocity.joint_states.a1[i+1]) > 0.0003:
                     index_switch.append(i)
-                    j=j+1
+                    j = j+1
                     path_started = True
 
-        if abs(robot_state_velocity.joint_states.a1[i-1]) > 0.0003 and i-index_switch[j]>10 and path_started == True:
+        if abs(robot_state_velocity.joint_states.a1[i-1]) > 0.0003 and i-index_switch[j] > 10 and path_started == True:
             if abs(robot_state_velocity.joint_states.a1[i]) < 0.0003:
                 if abs(robot_state_velocity.joint_states.a1[i+1]) < 0.0003:
                     index_switch.append(i)
-                    j=j+1
+                    j = j+1
                     path_started = False
     return index_switch
+
 
 def read_course_path():
     input = np.loadtxt(
@@ -487,13 +491,13 @@ def plot_path(robot_state, index_switch):
 
     # Rotate ee_state by -90 degrees and make sure that it starts at same spot as the given course
     for i in range(index_switch[4], len(robot_state.ee_states.y)):
-    # for i in range(index_switch[4], index_switch[5]):
+        # for i in range(index_switch[4], index_switch[5]):
         # x=x_course0+(y_ee-y_ee0)
         x.append(course.x[0]+(robot_state.ee_states.y[i] -
-                              robot_state.ee_states.y[index_switch[4]]))
+                              robot_state.ee_states.y[index_switch[4]]))  #250
         # y=y_course0+(-x_ee+x_ee0)
         y.append(course.y[0]+(-robot_state.ee_states.x[i] +
-                              robot_state.ee_states.x[index_switch[4]]))
+                              robot_state.ee_states.x[index_switch[4]])) #250
 
     plt.figure()
     plt.title('Path performed')
