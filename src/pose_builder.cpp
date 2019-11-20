@@ -136,7 +136,7 @@ void PoseBuilder::introduceSmoothApproximantion(int i, CourseStruct &tangent, Co
     rot_start_table.matrix() << -1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1;
 
     int course_extension_npoints = 2;
-    int raise_course_npoints = 10;
+    int raise_course_npoints = 3;
     double signal;
 
     if (i == 0)

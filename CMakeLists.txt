@@ -155,6 +155,7 @@ include_directories(
    src/task/plan_path.cpp
    src/task/run_path.cpp
    src/task/get_course.cpp
+   src/task/const_ee_speed_time_parameterization.cpp
  )
 
 ## Add cmake target dependencies of the library

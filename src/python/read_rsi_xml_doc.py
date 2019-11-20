@@ -53,7 +53,7 @@ class EEVelocity:
 def read_path(robot_state_from_file):
     i = 0
     infile = open(
-        '/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/14_11_2019/with_time_parameterization_parabolic_rsi.txt', 'r')
+        '/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/14_11_2019/10_angle_spline_rsi.txt', 'r')
     # '/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/trial_txt_files/rsi_xml_doc_01_11.txt', 'r')
     for line in infile:
         input = re.findall(r"[-+]?\d*\.\d+|\d+", line)
@@ -494,10 +494,10 @@ def plot_path(robot_state, index_switch):
         # for i in range(index_switch[4], index_switch[5]):
         # x=x_course0+(y_ee-y_ee0)
         x.append(course.x[0]+(robot_state.ee_states.y[i] -
-                              robot_state.ee_states.y[index_switch[4]]))  #250
+                              robot_state.ee_states.y[index_switch[4]]))  # 250
         # y=y_course0+(-x_ee+x_ee0)
         y.append(course.y[0]+(-robot_state.ee_states.x[i] +
-                              robot_state.ee_states.x[index_switch[4]])) #250
+                              robot_state.ee_states.x[index_switch[4]]))  # 250
 
     plt.figure()
     plt.title('Path performed')
@@ -532,7 +532,7 @@ if __name__ == "__main__":
 
     # plot_joint_state(robot_state, robot_state_velocity,
     #                  robot_state_acceleration)
-    plot_ee_state(robot_state, ee_velocity)
+    # plot_ee_state(robot_state, ee_velocity)
 
     print(index_switch)
     plot_path(robot_state, index_switch)
