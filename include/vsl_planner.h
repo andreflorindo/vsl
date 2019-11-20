@@ -5,10 +5,13 @@
 
 // ROS
 #include <ros/ros.h>
+
+// VSL Lib
 #include <pose_builder_server.h>
 #include <course_display_topic.h>
 #include <ee_cartesian_pose_publisher.h>
 #include <joint_request_publisher.h>
+#include <const_ee_speed_time_parameterization.h>
 
 // Eigen library
 #include <eigen_conversions/eigen_msg.h>
