@@ -53,7 +53,8 @@ class EEVelocity:
 def read_path(robot_state_from_file):
     i = 0
     infile = open(
-        '/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/14_11_2019/10_angle_spline_rsi.txt', 'r')
+        # '/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/14_11_2019/10_angle_spline_rsi.txt', 'r')
+        '/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/trial_txt_files/03_12_2019/rsi_const_laydown_speed.txt', 'r')
     # '/home/andre/workspaces/vsl_msc_project_ws/src/vsl_core/trial_txt_files/rsi_xml_doc_01_11.txt', 'r')
     for line in infile:
         input = re.findall(r"[-+]?\d*\.\d+|\d+", line)

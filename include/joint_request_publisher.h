@@ -28,6 +28,7 @@ public:
 
     void initTopic();
     void subscriberCallback(const trajectory_msgs::JointTrajectory &msg);
+    void checkJointPathCommand();
     void publishJointRequest();
 
     trajectory_msgs::JointTrajectory joint_path_;

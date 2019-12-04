@@ -26,9 +26,46 @@ void JointRequestPublisher::subscriberCallback(const trajectory_msgs::JointTraje
     time_point = ros::Time::now();
     joint_path_ = msg;
     ROS_INFO("joint_request_publisher: Joint trajectory %d received", seq);
+    checkJointPathCommand();
     publishJointRequest();
 }
 
+void JointRequestPublisher::checkJointPathCommand()
+{
+
+    if (joint_path_.points[0].positions.empty())
+    {
+        ROS_ERROR_STREAM("joint_request_publisher: Joint path is not available in the topic joint_path_command");
+        exit(-1);
+    }
+
+    int num_joints = joint_path_.points[0].positions.size();
+    int num_points = joint_path_.points.size();
+
+    if (joint_path_.points[0].velocities.empty())
+    {
+        ROS_WARN_STREAM("joint_request_publisher: Joint velocity is not given in the topic joint_path_command, it will be assumed as 0");
+        for (int j = 0; j < num_points; j++)
+        {
+            for (int i = 0; i < num_joints; i++)
+            {
+                joint_path_.points[j].velocities.push_back(0.0f);
+            }
+        }
+    }
+
+    if (joint_path_.points[0].accelerations.empty())
+    {
+        ROS_WARN_STREAM("joint_request_publisher: Joint acceleration is not given in the topic joint_path_command, it will be assumed as 0");
+        for (int j = 0; j < num_points; j++)
+        {
+            for (int i = 0; i < num_joints; i++)
+            {
+                joint_path_.points[j].accelerations.push_back(0.0f);
+            }
+        }
+    }
+}
 
 void JointRequestPublisher::publishJointRequest()
 {
