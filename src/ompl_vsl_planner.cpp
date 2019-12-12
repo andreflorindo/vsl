@@ -1,33 +1,126 @@
-// #include <ompl_vsl_planner.h>
+#include <ompl_vsl_planner.h>
 
-// namespace vsl_motion_planning
-// {
+namespace vsl_motion_planning
+{
 
-// void VSLPlanner::initOmpl()
-// {
-//     ros::NodeHandle nh;
-//     ros::NodeHandle ph("~");
+void VSLPlanner::initOmpl()
+{
+    ros::NodeHandle nh;
+    ros::NodeHandle ph("~");
 
-//     if (ph.getParam("group_name", config_.group_name) &&
-//         ph.getParam("tip_link", config_.tip_link) &&
-//         ph.getParam("base_link", config_.base_link) &&
-//         ph.getParam("world_frame", config_.world_frame) &&
-//         ph.getParam("trajectory/seed_pose", config_.seed_pose) &&
-//         nh.getParam("controller_joint_names", config_.joint_names))
-//     {
-//         ROS_INFO_STREAM("Loaded application parameters");
-//     }
-//     else
-//     {
-//         ROS_ERROR_STREAM("Failed to load application parameters");
-//         exit(-1);
-//     }
+    if (ph.getParam("group_name", config_.group_name) &&
+        ph.getParam("tip_link", config_.tip_link) &&
+        ph.getParam("base_link", config_.base_link) &&
+        ph.getParam("world_frame", config_.world_frame) &&
+        ph.getParam("trajectory/seed_pose", config_.seed_pose) &&
+        nh.getParam("controller_joint_names", config_.joint_names) &&
+        nh.getParam("planner_id", config_.planner_id) &&
+        nh.getParam("max_velocity_scaling", config_.max_velocity_scaling))
+    {
+        ROS_INFO_STREAM("Loaded application parameters");
+    }
+    else
+    {
+        ROS_ERROR_STREAM("Failed to load application parameters");
+        exit(-1);
+    }
 
-//     loadRobotModel();
-//     createMotionPlanRequest()
+    ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");
+}
 
-//         ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");
-// }
+void VSLPlanner::getCourse(std::vector<geometry_msgs::Pose> &poses)
+{
+    // Initialize Service client
+    if (ros::service::waitForService(POSE_BUILDER_SERVICE, ros::Duration(SERVER_TIMEOUT)))
+    {
+        ROS_INFO_STREAM("Connected to '" << POSE_BUILDER_SERVICE << "' service");
+    }
+    else
+    {
+        ROS_ERROR_STREAM("Failed to connect to '" << POSE_BUILDER_SERVICE << "' service");
+        exit(-1);
+    }
+
+    pose_builder_client_ = nh_.serviceClient<vsl_core::PoseBuilder>(POSE_BUILDER_SERVICE);
+    vsl_core::PoseBuilder srv;
+
+    if (!pose_builder_client_.call(srv))
+    {
+        ROS_ERROR_STREAM("Failed to call '" << POSE_BUILDER_SERVICE << "' service");
+        exit(-1);
+    }
+
+    geometry_msgs::Pose single_pose;
+
+    for (unsigned int i = 0; i < srv.response.single_course_poses.poses.size(); i++)
+    {
+        single_pose = srv.response.single_course_poses.poses[i];
+        poses.emplace_back(single_pose);
+    }
+}
+
+void VSLPlanner::createMotionPlanRequest(std::vector<geometry_msgs::Pose> &poses)
+{
+    moveit::planning_interface::MoveGroupInterface move_group(config_.group_name);
+    move_group.setPlannerId(config_.planner_id); //RRTConnect
+    move_group.setPlanningTime(10.0f);
+    move_group.setMaxVelocityScalingFactor(config_.max_velocity_scaling);
+
+    // setting above-table position as target
+    if (!move_group.setNamedTarget(HOME_POSITION_NAME))
+    {
+        ROS_ERROR_STREAM("Failed to set home '" << HOME_POSITION_NAME << "' position");
+        exit(-1);
+    }
+
+    moveit_msgs::MoveItErrorCodes result = move_group.move();
+    if (result.val != result.SUCCESS)
+    {
+        ROS_ERROR_STREAM("Failed to move to " << HOME_POSITION_NAME << " position");
+        exit(-1);
+    }
+    else
+    {
+        ROS_INFO_STREAM("Robot reached home position");
+    }
+
+    // moving arm to joint goal by using another planner, for example RRT
+    move_group.setJointValueTarget(config_.seed_pose);
+
+    result = move_group.move();
+    if (result.val != result.SUCCESS)
+    {
+        ROS_ERROR_STREAM("Move to start joint pose failed");
+        exit(-1);
+    }
+    else
+    {
+        ROS_INFO_STREAM("Robot reached start position");
+    }
+
+    moveit_msgs::RobotTrajectory trajectory;
+    const double jump_threshold = 0.0;
+    const double eef_step = 0.01;
+    double fraction = move_group.computeCartesianPath(waypoints, eef_step, jump_threshold, trajectory);
+}
+
+int main(int argc, char **argv)
+{
+    ros::init(argc, argv, "ompl_vsl_planner");
+    ros::AsyncSpinner spinner(1);
+    spinner.start();
+
+    vsl_motion_planning::VSLPlanner planner;
+
+    planner.initOmpl();
+
+    std::vector<geometry_msgs::Pose> waypoints;
+    planner.getCourse(waypoints);
+
+    planner.createMotionPlanRequest(waypoints);
+
+    return 0
+}
 
 // void VSLPlanner::loadRobotModel()
 // {
@@ -59,31 +152,6 @@
 
 //     // Create pipeline
 //     planning_pipeline_.reset(new planning_pipeline::PlanningPipeline(kinematic_model_, nh_, "planning_plugin", "request_adapters"));
-// }
-
-// void VSLPlanner::getCourse(geometry_msgs::PoseArray &poses)
-// {
-//     // Initialize Service client
-//     if (ros::service::waitForService(POSE_BUILDER_SERVICE, ros::Duration(SERVER_TIMEOUT)))
-//     {
-//         ROS_INFO_STREAM("Connected to '" << POSE_BUILDER_SERVICE << "' service");
-//     }
-//     else
-//     {
-//         ROS_ERROR_STREAM("Failed to connect to '" << POSE_BUILDER_SERVICE << "' service");
-//         exit(-1);
-//     }
-
-//     pose_builder_client_ = nh_.serviceClient<vsl_core::PoseBuilder>(POSE_BUILDER_SERVICE);
-//     vsl_core::PoseBuilder srv;
-
-//     if (!pose_builder_client_.call(srv))
-//     {
-//         ROS_ERROR_STREAM("Failed to call '" << POSE_BUILDER_SERVICE << "' service");
-//         exit(-1);
-//     }
-
-//     poses = srv.response.single_course_poses;
 // }
 
 // void VSLPlanner::createMotionPlanRequest(geometry_msgs::PoseArray &poses)
@@ -156,62 +224,3 @@
 // // }
 
 // } // namespace vsl_motion_planning
-
-// int main(int argc, char** argv)
-// {
-
-//     ros::init(argc, argv, "ompl_vsl_planner");
-//     ros::AsyncSpinner spinner(1);
-//     spinner.start();
-
-//     // Main program
-//     vsl_motion_planning::VSLPlanner planner;
-
-//     planner.initOmpl();
-
-//     geometry_msgs::PoseArray poses;
-//     planner.getCourse(poses);
-
-//     std::vector<descartes_core::TrajectoryPtPtr> input_traj;
-//     planner.generateTrajectory(poses, input_traj);
-
-//     std::vector<descartes_core::TrajectoryPtPtr> output_traj;
-//     planner.planPath(input_traj, output_traj);
-
-//     //ros::Duration(5).sleep();
-
-//     planner.runPath(output_traj);
-
-//     spinner.stop();
-
-//     return 0;
-// }
-
-int main(int argc, char **argv)
-{
-    ros::init(argc, argv, "ompl_vsl_planner");
-    ros::AsyncSpinner spinner(1);
-    spinner.start();
-
-    moveit::planning_interface::MoveGroupInterface move_group("group_name");
-    move_group.setPlannerId(PLANNER_ID); //RRTConnect
-    move_group.setPlanningTime(10.0f);
-    move_group.setMaxVelocityScalingFactor(MAX_VELOCITY_SCALING);
-
-    // setting above-table position as target
-    if (!move_group.setNamedTarget(HOME_POSITION_NAME))
-    {
-        ROS_ERROR_STREAM("Failed to set home '" << HOME_POSITION_NAME << "' position");
-        exit(-1);
-    }
-
-    moveit_msgs::MoveItErrorCodes result = move_group.move();
-    if (result.val != result.SUCCESS)
-    {
-        ROS_ERROR_STREAM("Failed to move to " << HOME_POSITION_NAME << " position");
-        exit(-1);
-    }
-    else
-    {
-        ROS_INFO_STREAM("Robot reached home position");
-    }
