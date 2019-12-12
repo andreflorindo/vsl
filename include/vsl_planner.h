@@ -45,7 +45,7 @@ const double ORIENTATION_INCREMENT = 0.2f;
 const std::string PLANNER_ID = "RRTConnectkConfigDefault";
 const std::string HOME_POSITION_NAME = "above-table";
 const std::string JOINT_POSE_TOPIC = "joint_pose";
-const double MAX_VELOCITY_SCALING = 0.05f; //0.05
+const double MAX_VELOCITY_SCALING = 0.1f; //0.05
 const double VELOCITY_DESCARTES = 0.1f;
 
 struct VSLPlannerConfiguration
@@ -103,7 +103,7 @@ protected:
     //Time Parameterization
     //trajectory_processing::IterativeParabolicTimeParameterization time_parameterization_;
     //trajectory_processing::IterativeSplineParameterization time_parameterization_;
-    trajectory_processing::TimeOptimalTrajectoryGeneration time_parameterization_;
+    //trajectory_processing::TimeOptimalTrajectoryGeneration time_parameterization_;
 };
 
 } // namespace vsl_motion_planning

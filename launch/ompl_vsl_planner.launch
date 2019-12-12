@@ -5,7 +5,7 @@
   <arg name="base_link" value="kr210_base_link"/>
   <arg name="world_frame" value="kl2000_base_link"/>  <!--table_table_top-->  
   <arg name="planner_id" value="RRTConnectkConfigDefault"/>  <!--table_table_top--> 
-  <arg name="max_velocity_scaling" value=0.01/>
+  <arg name="max_velocity_scaling" value="0.1"/>
 
   <node name="pose_builder" pkg="vsl_core" type="pose_builder" output="screen">
     <param name="world_frame" value="$(arg world_frame)"/> 
@@ -16,7 +16,7 @@
   </node>
 
   <node name="ee_cartesian_pose_publisher" pkg="vsl_core" type="ee_cartesian_pose_publisher" output="screen">
-    <param name="tip_link" value="$(arg top_link)"/>  
+    <param name="tip_link" value="$(arg tip_link)"/>  
     <param name="base_link" value="$(arg base_link)"/>
   </node>
 
@@ -24,19 +24,17 @@
 
   <node name="ee_request_publisher" pkg="vsl_core" type="ee_request_publisher" output="screen">
     <param name="group_name" value="$(arg group_name)"/>
-    <param name="tip_link" value="$(arg top_link)"/>  
+    <param name="tip_link" value="$(arg tip_link)"/>  
     <param name="base_link" value="$(arg base_link)"/>
   </node>
 
   <node name="ompl_vsl_planner" pkg="vsl_core" type="ompl_vsl_planner" output="screen">
     <param name="group_name" value="$(arg group_name)"/>
-    <param name="tip_link" value="$(arg top_link)"/>  
+    <param name="tip_link" value="$(arg tip_link)"/>  
     <param name="base_link" value="$(arg base_link)"/>
     <param name="world_frame" value="$(arg world_frame)"/>  <!--table_table_top-->  
     <rosparam param="trajectory/seed_pose">[0.30, -0.76, 1.72 , 0.0, 0.60, -0.13]</rosparam>
     <param name="planner_id" value="$(arg planner_id)" />
     <param name="max_velocity_scaling" value="$(arg max_velocity_scaling)" />
   </node>
-
-
-  <launch>
+  </launch>

@@ -14,8 +14,8 @@ void VSLPlanner::initOmpl()
         ph.getParam("world_frame", config_.world_frame) &&
         ph.getParam("trajectory/seed_pose", config_.seed_pose) &&
         nh.getParam("controller_joint_names", config_.joint_names) &&
-        nh.getParam("planner_id", config_.planner_id) &&
-        nh.getParam("max_velocity_scaling", config_.max_velocity_scaling))
+        ph.getParam("planner_id", config_.planner_id) &&
+        ph.getParam("max_velocity_scaling", config_.max_velocity_scaling))
     {
         ROS_INFO_STREAM("Loaded application parameters");
     }
@@ -24,6 +24,8 @@ void VSLPlanner::initOmpl()
         ROS_ERROR_STREAM("Failed to load application parameters");
         exit(-1);
     }
+
+    loadRobotModel();
 
     ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");
 }
@@ -50,13 +52,13 @@ void VSLPlanner::getCourse(std::vector<geometry_msgs::Pose> &poses)
         exit(-1);
     }
 
-    geometry_msgs::Pose single_pose;
-
     for (unsigned int i = 0; i < srv.response.single_course_poses.poses.size(); i++)
     {
-        single_pose = srv.response.single_course_poses.poses[i];
+        geometry_msgs::Pose single_pose = srv.response.single_course_poses.poses[i];
         poses.emplace_back(single_pose);
     }
+
+    ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");
 }
 
 void VSLPlanner::createMotionPlanRequest(std::vector<geometry_msgs::Pose> &poses)
@@ -84,25 +86,73 @@ void VSLPlanner::createMotionPlanRequest(std::vector<geometry_msgs::Pose> &poses
         ROS_INFO_STREAM("Robot reached home position");
     }
 
-    // moving arm to joint goal by using another planner, for example RRT
-    move_group.setJointValueTarget(config_.seed_pose);
+    // // moving arm to joint goal by using another planner, for example RRT
+    // move_group.setJointValueTarget(config_.seed_pose);
 
-    result = move_group.move();
-    if (result.val != result.SUCCESS)
+    // result = move_group.move();
+    // if (result.val != result.SUCCESS)
+    // {
+    //     ROS_ERROR_STREAM("Move to start joint pose failed");
+    //     exit(-1);
+    // }
+    // else
+    // {
+    //     ROS_INFO_STREAM("Robot reached start position");
+    // }
+
+    moveit::planning_interface::MoveGroupInterface::Plan initial_point_plan;
+    std::vector<geometry_msgs::Pose> initial_pose;
+    initial_pose.emplace_back(poses[0]);
+    moveit_msgs::RobotTrajectory initial_point_trajectory;
+    
+    const double jump_threshold = 0.00;
+    const double eef_step = 0.01;
+    double initial_fraction = move_group.computeCartesianPath(initial_pose, eef_step, jump_threshold, initial_point_trajectory);
+
+    initial_point_plan.trajectory_ = initial_point_trajectory;
+    move_group.execute(initial_point_plan);
+
+    moveit::planning_interface::MoveGroupInterface::Plan my_plan;
+    moveit_msgs::RobotTrajectory trajectory;
+    // const double jump_threshold = 0.00;
+    // const double eef_step = 0.01;
+    double fraction = move_group.computeCartesianPath(poses, eef_step, jump_threshold, trajectory);
+
+    // addTimeParameterizationToOmpl(trajectory);
+    my_plan.trajectory_ = trajectory;
+    move_group.execute(my_plan);
+
+    ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");
+}
+
+void VSLPlanner::loadRobotModel()
+{
+    robot_model_loader_.reset(new robot_model_loader::RobotModelLoader(ROBOT_DESCRIPTION_PARAM));
+
+    kinematic_model_ = robot_model_loader_->getModel();
+    if (!kinematic_model_)
     {
-        ROS_ERROR_STREAM("Move to start joint pose failed");
+        ROS_ERROR_STREAM("Failed to load robot model from robot description parameter:robot_description");
         exit(-1);
     }
-    else
-    {
-        ROS_INFO_STREAM("Robot reached start position");
-    }
-
-    moveit_msgs::RobotTrajectory trajectory;
-    const double jump_threshold = 0.0;
-    const double eef_step = 0.01;
-    double fraction = move_group.computeCartesianPath(waypoints, eef_step, jump_threshold, trajectory);
+    joint_model_group_ = kinematic_model_->getJointModelGroup(config_.group_name);
+    kinematic_state_.reset(new moveit::core::RobotState(kinematic_model_));
 }
+
+void VSLPlanner::addTimeParameterizationToOmpl(moveit_msgs::RobotTrajectory &traj)
+{
+    robot_trajectory::RobotTrajectory robot_trajectory(robot_model_loader_->getModel(), config_.group_name);
+
+    robot_trajectory.setRobotTrajectoryMsg(*kinematic_state_, traj);
+    //time_parameterization_.computeTimeStamps(robot_trajectory, 0.05, 1);
+
+    vsl_motion_planning::ConstEESpeedTimeParameterization designed_time_parameterization;
+    designed_time_parameterization.computeTimeStamps(robot_trajectory, config_.tip_link, 0.10, 1, 1);
+
+    robot_trajectory.getRobotTrajectoryMsg(traj);
+}
+
+} // namespace vsl_motion_planning
 
 int main(int argc, char **argv)
 {
@@ -119,7 +169,7 @@ int main(int argc, char **argv)
 
     planner.createMotionPlanRequest(waypoints);
 
-    return 0
+    return 0;
 }
 
 // void VSLPlanner::loadRobotModel()

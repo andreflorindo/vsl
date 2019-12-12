@@ -71,8 +71,8 @@ void PoseBuilder::createCourse()
         course_poses.poses.emplace_back(single_pose_msg);
     }
 
-    introduceSmoothApproximantion(0, tangent, binormal, course);
-    introduceSmoothApproximantion(npoints - 1, tangent, binormal, course);
+    // introduceSmoothApproximantion(0, tangent, binormal, course);
+    // introduceSmoothApproximantion(npoints - 1, tangent, binormal, course);
 
     pose_builder_server_ = nh_.advertiseService(POSE_BUILDER_SERVICE, &PoseBuilder::serviceCallback, this); //  <---------------
 

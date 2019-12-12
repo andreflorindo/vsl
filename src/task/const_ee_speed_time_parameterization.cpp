@@ -446,10 +446,10 @@ bool ConstEESpeedTimeParameterization::computeTimeStamps(robot_trajectory::Robot
     const int num_points = trajectory.getWayPointCount();
     std::vector<double> time_diff(num_points - 1, 0.0); // the time difference between adjacent points
 
-    applyConstEESpeed(trajectory, time_diff, end_effector_frame, ee_speed_request);
+    //applyConstEESpeed(trajectory, time_diff, end_effector_frame, ee_speed_request);
 
-    //applyVelocityConstraints(trajectory, time_diff, max_velocity_scaling_factor);
-    //applyAccelerationConstraints(trajectory, time_diff, max_acceleration_scaling_factor);
+    applyVelocityConstraints(trajectory, time_diff, max_velocity_scaling_factor);
+    applyAccelerationConstraints(trajectory, time_diff, max_acceleration_scaling_factor);
 
     updateTrajectory(trajectory, time_diff);
     return true;
