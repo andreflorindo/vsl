@@ -2,7 +2,7 @@
 
 namespace vsl_motion_planning
 {
-bool VSLPlanner::getCourse(EigenSTL::vector_Isometry3d &poses)
+void VSLPlanner::getCourse(EigenSTL::vector_Isometry3d &poses)
 {
     // Initialize Service client
     if (ros::service::waitForService(POSE_BUILDER_SERVICE, ros::Duration(SERVER_TIMEOUT)))

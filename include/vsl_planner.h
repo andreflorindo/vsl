@@ -67,7 +67,7 @@ public:
 
     void initRos();
     void initDescartes();
-    bool getCourse(EigenSTL::vector_Isometry3d &poses);
+    void getCourse(EigenSTL::vector_Isometry3d &poses);
     void generateTrajectory(EigenSTL::vector_Isometry3d &poses, std::vector<descartes_core::TrajectoryPtPtr> &input_traj);
     void planPath(std::vector<descartes_core::TrajectoryPtPtr> &input_traj,
                   std::vector<descartes_core::TrajectoryPtPtr> &output_path);

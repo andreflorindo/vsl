@@ -1,0 +1,49 @@
+<!-- <?xml version="1.0" ?>
+<launch>
+  <arg name="group_name" value="manipulator"/>
+  <arg name="tip_link" value="penholder_tool_tip"/>  <!--kr210_qr_tool0-->
+  <arg name="base_link" value="kr210_base_link"/>
+  <arg name="world_frame" value="kl2000_base_link"/>  <!--table_table_top-->  
+
+  <node name="pose_builder" pkg="vsl_core" type="pose_builder" output="screen">
+    <param name="world_frame" value="$(arg world_frame)"/> 
+  </node>
+
+  <node name="course_display" pkg="vsl_core" type="course_display" output="screen">
+    <param name="world_frame" value="$(arg world_frame)"/>  
+  </node>
+
+  <node name="ee_cartesian_pose_publisher" pkg="vsl_core" type="ee_cartesian_pose_publisher" output="screen">
+    <param name="tip_link" value="$(arg top_link)"/>  
+    <param name="base_link" value="$(arg base_link)"/>
+  </node>
+
+  <node name="joint_request_publisher" pkg="vsl_core" type="joint_request_publisher" output="screen" />
+
+  <node name="ee_request_publisher" pkg="vsl_core" type="ee_request_publisher" output="screen">
+    <param name="group_name" value="$(arg group_name)"/>
+    <param name="tip_link" value="$(arg top_link)"/>  
+    <param name="base_link" value="$(arg base_link)"/>
+  </node>
+
+<!-- Gets the planning_plugin and adapters-->
+  <include file="$(find kr210_pen_moveit_config)/launch/planning_pipeline.launch.xml" />
+
+  <node name="ompl_vsl_planner" pkg="vsl_core" type="ompl_vsl_planner" output="screen">
+    <param name="group_name" value="$(arg group_name)"/>
+    <param name="tip_link" value="$(arg top_link)"/>  
+    <param name="base_link" value="$(arg base_link)"/>
+    <param name="world_frame" value="$(arg world_frame)"/>  <!--table_table_top-->  
+    <rosparam param="trajectory/seed_pose">[0.30, -0.76, 1.72 , 0.0, 0.60, -0.13]</rosparam>
+    <param name="planning_plugin" value="$(arg planning_plugin)" />
+    <param name="request_adapters" value="$(arg planning_adapters)" />
+    <param name="start_state_max_bounds_error" value="0.1" />
+  </node>
+
+
+  <launch>
+   -->
+
+
+
+   
