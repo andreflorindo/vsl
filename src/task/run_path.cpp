@@ -155,7 +155,7 @@ void VSLPlanner::addTimeParameterizationToDescartes(moveit_msgs::RobotTrajectory
   //time_parameterization_.computeTimeStamps(robot_trajectory, 0.05, 1);
   
   vsl_motion_planning::ConstEESpeedTimeParameterization designed_time_parameterization;
-  designed_time_parameterization.computeTimeStamps(robot_trajectory, config_.tip_link, 0.10, 1, 1);
+  designed_time_parameterization.computeTimeStamps(robot_trajectory, config_.tip_link, 0.1, 0.05, 1);
 
   robot_trajectory.getRobotTrajectoryMsg(traj);
 }

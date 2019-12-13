@@ -4,7 +4,8 @@
   <arg name="tip_link" value="penholder_tool_tip"/>  <!--kr210_qr_tool0-->
   <arg name="base_link" value="kr210_base_link"/>
   <arg name="world_frame" value="kl2000_base_link"/>  <!--table_table_top-->  
-  <arg name="planner_id" value="RRTConnectkConfigDefault"/>  <!--table_table_top--> 
+  <arg name="planner_id" value="RRTConnect"/>
+  <!-- <arg name="planner_id" value="BiEST"/> -->
   <arg name="max_velocity_scaling" value="0.1"/>
 
   <node name="pose_builder" pkg="vsl_core" type="pose_builder" output="screen">

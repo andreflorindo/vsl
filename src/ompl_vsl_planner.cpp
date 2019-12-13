@@ -118,7 +118,7 @@ void VSLPlanner::createMotionPlanRequest(std::vector<geometry_msgs::Pose> &poses
     // const double eef_step = 0.01;
     double fraction = move_group.computeCartesianPath(poses, eef_step, jump_threshold, trajectory);
 
-    // addTimeParameterizationToOmpl(trajectory);
+    addTimeParameterizationToOmpl(trajectory);
     my_plan.trajectory_ = trajectory;
     move_group.execute(my_plan);
 
@@ -147,7 +147,7 @@ void VSLPlanner::addTimeParameterizationToOmpl(moveit_msgs::RobotTrajectory &tra
     //time_parameterization_.computeTimeStamps(robot_trajectory, 0.05, 1);
 
     vsl_motion_planning::ConstEESpeedTimeParameterization designed_time_parameterization;
-    designed_time_parameterization.computeTimeStamps(robot_trajectory, config_.tip_link, 0.10, 1, 1);
+    designed_time_parameterization.computeTimeStamps(robot_trajectory, config_.tip_link, 0.1, 0.05, 1);
 
     robot_trajectory.getRobotTrajectoryMsg(traj);
 }
