@@ -26,6 +26,16 @@ void CourseDisplay::initTopic()
         exit(-1);
     }
 
+    if (ros::service::waitForService(POSE_BUILDER_SERVICE, ros::Duration(SERVER_TIMEOUT)))
+    {
+        ROS_INFO_STREAM("Connected to '" << POSE_BUILDER_SERVICE << "' service");
+    }
+    else
+    {
+        ROS_ERROR_STREAM("Failed to connect to '" << POSE_BUILDER_SERVICE << "' service");
+        exit(-1);
+    }
+
     marker_publisher_ = nh.advertise<visualization_msgs::MarkerArray>(VISUALIZE_TRAJECTORY_TOPIC, 1, true);
 
     ROS_INFO_STREAM("course_display: Task '" << __FUNCTION__ << "' completed");

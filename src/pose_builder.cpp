@@ -34,14 +34,14 @@ void PoseBuilder::createCourse()
     //Read File containing the course
     CourseStruct course;
     //std::shared_ptr<CourseStruct> course = std::make_shared<CourseStruct>();
-    readFileContent("/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/examples/simplePath.txt", course);
+    readFileContent("/examples/simplePath.txt", course);
     int npoints = course.x.size();
 
     //Read Files with the binormal and tangent of the course
     CourseStruct tangent;
     CourseStruct binormal;
-    readFileContent("/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/examples/tangent_simplePath.txt", tangent);
-    readFileContent("/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/examples/binormal_simplePath.txt", binormal);
+    readFileContent("/examples/tangent_simplePath.txt", tangent);
+    readFileContent("/examples/binormal_simplePath.txt", binormal);
 
     //Initializate pose message
     course_poses.poses.reserve(npoints); //  <---------------
@@ -80,8 +80,9 @@ void PoseBuilder::createCourse()
     ROS_INFO_STREAM("pose_builder: Trajectory with " << npoints << " points was generated");
 }
 
-void PoseBuilder::readFileContent(std::string filename, CourseStruct &course)
+void PoseBuilder::readFileContent(std::string start_filename, CourseStruct &course)
 {
+    std::string filename = ros::package::getPath("vsl_core") + start_filename;
     std::ifstream infile{filename, std::ios::in};
 
     if (!infile.good())

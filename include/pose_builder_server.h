@@ -6,6 +6,7 @@
 // ROS
 #include <ros/ros.h>
 #include <vsl_core/PoseBuilder.h>
+#include <ros/package.h>
 
 // C++
 #include <iostream>
@@ -34,7 +35,7 @@ const double XY_EXTENSION_DISTANCE = 0.02; //meters
 const double XY_RAISE_DISTANCE = 0.05; //meters
 const double ANGLE_RAISE = 10; //degrees
 const double Z_RAISE_DISTANCE= XY_RAISE_DISTANCE*tan(ANGLE_RAISE*M_PI/180);
- 
+const double SERVER_TIMEOUT = 5.0f; // seconds
 
 const std::string POSE_BUILDER_SERVICE = "single_course";
 
@@ -56,7 +57,7 @@ public:
   bool serviceCallback(vsl_core::PoseBuilder::Request &request, vsl_core::PoseBuilder::Response &response);
 
 protected:
-  void readFileContent(std::string filename, CourseStruct &course);
+  void readFileContent(std::string start_filename, CourseStruct &course);
   void introduceSmoothApproximantion(int i, CourseStruct &tangent, CourseStruct &binormal, CourseStruct &course);
   
 

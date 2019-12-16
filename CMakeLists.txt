@@ -8,7 +8,6 @@ add_compile_options(-std=c++11 -Wall -Wextra)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  # roscpp
   moveit_msgs
   moveit_ros_planning_interface
   descartes_core
