@@ -36,5 +36,8 @@ bool VSLPlanner::getCourse(EigenSTL::vector_Isometry3d &poses)
         tf::poseMsgToEigen(srv.response.single_course_poses.poses[i], single_pose);
         poses.emplace_back(single_pose);
     }
+    
+    ROS_INFO_STREAM("Task '" << __FUNCTION__ << "' completed");
 }
 } // namespace vsl_motion_planning
+

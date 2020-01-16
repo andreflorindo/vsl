@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <launch>
+  <arg name="sim" default="true" />    <!--Simulation-->
   <param name="ikfast_base_frame" type="string" value="kr210_base_link" />
   <param name="ikfast_tool_frame" type="string" value="penholder_tool_tip" />  <!--kr210_qr_tool0-->
 
@@ -16,7 +17,9 @@
     <param name="base_link" value="kr210_base_link"/>
   </node>
 
-  <node name="joint_request_publisher" pkg="vsl_core" type="joint_request_publisher" output="screen" />
+  <node name="joint_request_publisher" pkg="vsl_core" type="joint_request_publisher" output="screen">
+    <param name="sim" value="$(arg sim)"/>
+  </node>
 
   <node name="ee_request_publisher" pkg="vsl_core" type="ee_request_publisher" output="screen">
     <param name="group_name" value="manipulator"/>
