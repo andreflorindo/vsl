@@ -6,10 +6,21 @@
                 "limitSymbolsToIncludedHeaders": true
             },
             "includePath": [
-                "/opt/ros/melodic/include",
-                "/usr/include"
+                "/opt/ros/melodic/include/**",
+                "/home/andreflorindo/workspaces/vsl_motion_planner_ws/devel/include/**",
+                "/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/descartes/descartes_core/include/**",
+                "/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/descartes/descartes_moveit/include/**",
+                "/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/descartes/descartes_planner/include/**",
+                "/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/descartes/descartes_tests/include/**",
+                "/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/descartes/descartes_trajectory/include/**",
+                "/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/descartes/descartes_utilities/include/**",
+                "/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/kr210_cell_support/kr210_pen_ikfast_manipulator_plugin/include/**",
+                "/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/kuka_experimental/kuka_eki_hw_interface/include/**",
+                "/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/kuka_experimental/kuka_rsi_hw_interface/include/**",
+                "/home/andreflorindo/workspaces/vsl_motion_planner_ws/src/vsl_core/include/**",
+                "/usr/include/**"
             ],
-            "name": "Linux",
+            "name": "ROS",
             "intelliSenseMode": "gcc-x64",
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c11",
